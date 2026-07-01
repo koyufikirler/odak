@@ -27,5 +27,77 @@
   width: 100vw !important;
   height: 100vh !important;
   pointer-events: none !important;
+  z-index: 2147483646 !important; /* One below the action bar */
+}
+
+/* ── Floating Action Bar ─────────────────────────────────────────────────── */
+#dh-action-bar {
+  position: fixed !important;
+  bottom: 24px !important;
+  top: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  background: rgba(10, 10, 20, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 100px !important;
   z-index: 2147483647 !important; /* Max z-index */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 8px 12px 8px 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(147, 51, 234, 0.2) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  animation: dh-slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes dh-slide-up {
+  from { transform: translate(-50%, 40px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+#dh-action-bar .dh-count-badge {
+  background: linear-gradient(135deg, #9333ea, #38bdf8) !important;
+  padding: 4px 10px !important;
+  border-radius: 100px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+#dh-action-bar button {
+  appearance: none !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+#dh-action-bar button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+#dh-action-bar button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+#dh-action-bar button.dh-cancel-btn {
+  background: rgba(248, 113, 113, 0.15) !important;
+  border-color: rgba(248, 113, 113, 0.3) !important;
+  color: #fca5a5 !important;
+  border-radius: 100px !important;
+  margin-left: 4px !important;
+}
+
+#dh-action-bar button.dh-cancel-btn:hover {
+  background: rgba(248, 113, 113, 0.25) !important;
 }

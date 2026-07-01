@@ -51,7 +51,12 @@ pickCheckbox.addEventListener('change', async () => {
       setRestrictedUI();
       return;
     }
-    if (resp) updatePickUI(resp.active);
+    if (resp) {
+      updatePickUI(resp.active);
+      if (resp.active) {
+        window.close();
+      }
+    }
   } catch (e) {
     pickCheckbox.checked = !pickCheckbox.checked; // revert on error
   }

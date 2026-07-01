@@ -19,6 +19,7 @@
   let hoveredEl = null;
   let isAnimating = false;
   let hiddenSelectors = [];
+  let actionBarEl = null;
 
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
@@ -68,6 +69,7 @@
   function enablePickMode() {
     if (pickModeActive) return;
     pickModeActive = true;
+    createActionBar();
     document.body.classList.add(CURSOR_CLASS);
     document.addEventListener('mouseover', onMouseOver, true);
     document.addEventListener('mouseout', onMouseOut, true);
@@ -79,6 +81,7 @@
     if (!pickModeActive) return;
     pickModeActive = false;
     clearHighlight();
+    removeActionBar();
     document.body.classList.remove(CURSOR_CLASS);
     document.removeEventListener('mouseover', onMouseOver, true);
     document.removeEventListener('mouseout', onMouseOut, true);
@@ -103,6 +106,9 @@
   }
 
   function onClick(e) {
+    // If clicking the action bar, let the event pass through to its buttons
+    if (e.target.closest && e.target.closest('#dh-action-bar')) return;
+
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
@@ -125,6 +131,8 @@
   // ── Helpers ───────────────────────────────────────────────────────────────
   function getValidTarget(el) {
     if (!el || !(el instanceof Element)) return null;
+    if (el.closest && el.closest('#dh-action-bar')) return null; // Ignore our action bar
+
     // Walk up to find a block-level or meaningful element
     let node = el;
     while (node && node !== document.documentElement) {
@@ -430,6 +438,7 @@
     hiddenSelectors.push(selector);
 
     isAnimating = false;
+    updateActionBarCount();
 
     try {
       await _browser.runtime.sendMessage({
@@ -451,6 +460,7 @@
           el.style.removeProperty('display');
           delete el.dataset.dhHidden;
         });
+        updateActionBarCount();
       }
     } catch (e) {}
   }
@@ -463,6 +473,53 @@
         delete el.dataset.dhHidden;
       });
       hiddenSelectors = [];
+      updateActionBarCount();
     } catch (e) {}
+  }
+
+  // ── Floating Action Bar ───────────────────────────────────────────────────
+  function createActionBar() {
+    if (actionBarEl) return;
+    actionBarEl = document.createElement('div');
+    actionBarEl.id = 'dh-action-bar';
+    actionBarEl.innerHTML = `
+      <span class="dh-count-badge">Hidden: <span id="dh-hidden-count">${hiddenSelectors.length}</span></span>
+      <button id="dh-undo-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>Undo Last</button>
+      <button id="dh-restore-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>Restore All</button>
+      <button id="dh-cancel-btn" class="dh-cancel-btn">Done (Esc)</button>
+    `;
+    document.body.appendChild(actionBarEl);
+
+    document.getElementById('dh-undo-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      undoLast();
+    });
+    document.getElementById('dh-restore-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      restoreAll();
+    });
+    document.getElementById('dh-cancel-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      disablePickMode();
+      _browser.runtime.sendMessage({ action: 'setPickMode', active: false }).catch(() => {});
+    });
+  }
+
+  function removeActionBar() {
+    if (actionBarEl) {
+      actionBarEl.remove();
+      actionBarEl = null;
+    }
+  }
+
+  function updateActionBarCount() {
+    if (!actionBarEl) return;
+    const countEl = document.getElementById('dh-hidden-count');
+    if (countEl) countEl.textContent = hiddenSelectors.length;
+    
+    const undoBtn = document.getElementById('dh-undo-btn');
+    const restoreBtn = document.getElementById('dh-restore-btn');
+    if (undoBtn) undoBtn.disabled = hiddenSelectors.length === 0;
+    if (restoreBtn) restoreBtn.disabled = hiddenSelectors.length === 0;
   }
 })();

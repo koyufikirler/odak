@@ -60,6 +60,7 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
           elements.push(message.selector);
           await _browser.storage.local.set({ [url]: elements });
         }
+        await updateBadge(tabId, elements.length);
         sendResponse({ count: elements.length });
 
       } else if (message.action === 'undoLast') {
@@ -69,12 +70,14 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         let elements = data[url] || [];
         const removed = elements.pop();
         await _browser.storage.local.set({ [url]: elements });
+        if (tab?.id) await updateBadge(tab.id, elements.length);
         sendResponse({ removed, count: elements.length });
 
       } else if (message.action === 'restoreAll') {
         const [tab] = await _browser.tabs.query({ active: true, currentWindow: true });
         const url = normalizeUrl(tab.url);
         await _browser.storage.local.remove(url);
+        if (tab?.id) await updateBadge(tab.id, 0);
         sendResponse({ ok: true });
 
       } else if (message.action === 'togglePickModeFromPopup') {
@@ -108,10 +111,31 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true; // Keep message channel open for async response
 });
 
-// ── Tab cleanup ──────────────────────────────────────────────────────────────
+// ── Tab cleanup & badge sync ─────────────────────────────────────────────────
 _browser.tabs.onRemoved.addListener(async (tabId) => {
   const key = `pickMode_${tabId}`;
   await _sessionStorage.remove(key).catch(() => {});
+});
+
+async function syncBadgeForTab(tabId) {
+  try {
+    const tab = await _browser.tabs.get(tabId);
+    if (!tab?.url || !isInjectableTab(tab)) return;
+    const url = normalizeUrl(tab.url);
+    const data = await _browser.storage.local.get(url);
+    const elements = data[url] || [];
+    await updateBadge(tabId, elements.length);
+  } catch (e) {}
+}
+
+_browser.tabs.onActivated.addListener((activeInfo) => {
+  syncBadgeForTab(activeInfo.tabId);
+});
+
+_browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete') {
+    syncBadgeForTab(tabId);
+  }
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -166,4 +190,15 @@ function normalizeUrl(url) {
   } catch {
     return url;
   }
+}
+
+async function updateBadge(tabId, count) {
+  if (!tabId) return;
+  try {
+    const text = count > 0 ? count.toString() : '';
+    await _browser.action.setBadgeText({ tabId, text });
+    if (count > 0) {
+      await _browser.action.setBadgeBackgroundColor({ tabId, color: '#9333ea' });
+    }
+  } catch (e) {}
 }
