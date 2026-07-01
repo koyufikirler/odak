@@ -1,0 +1,31 @@
+/* ── Distraction Hider — Injected Content Styles ─────────────────────────── */
+
+/* Highlight glow on hovered element in Pick Mode */
+.dh-highlight {
+  outline: 2px solid rgba(147, 51, 234, 0.9) !important;
+  outline-offset: 2px !important;
+  box-shadow:
+    0 0 0 2px rgba(147, 51, 234, 0.3),
+    0 0 12px rgba(147, 51, 234, 0.5),
+    0 0 24px rgba(56, 189, 248, 0.25) !important;
+  border-radius: 4px !important;
+  transition: outline 0.1s ease, box-shadow 0.1s ease !important;
+  cursor: crosshair !important;
+}
+
+/* Crosshair cursor on body when Pick Mode is active */
+.dh-cursor-crosshair,
+.dh-cursor-crosshair * {
+  cursor: crosshair !important;
+}
+
+/* Full-page particle canvas overlay */
+.dh-particle-canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 2147483647 !important; /* Max z-index */
+}
