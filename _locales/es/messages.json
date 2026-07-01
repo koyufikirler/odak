@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Ocultador de distracciones"
+  },
+  "extDesc": {
+    "message": "Oculta elementos que distraen en cualquier página web con un impresionante efecto de disolución de partículas."
+  },
+  "tagline": {
+    "message": "Concéntrate en lo importante"
+  },
+  "pickModeTitle": {
+    "message": "Modo selección"
+  },
+  "pickModeInactive": {
+    "message": "Pasa el ratón sobre los elementos para ocultarlos"
+  },
+  "pickModeActive": {
+    "message": "Haz clic en cualquier elemento para disolverlo"
+  },
+  "pickHintInactive": {
+    "message": "Haz clic en el interruptor para empezar a ocultar"
+  },
+  "pickHintActive": {
+    "message": "Pasa el ratón para seleccionar • Clic para disolver • Esc para detener"
+  },
+  "pickHintRestricted": {
+    "message": "No disponible en esta página"
+  },
+  "pickStatusRestricted": {
+    "message": "Navega a una página web normal"
+  },
+  "statsLabel": {
+    "message": "Ocultos en la página"
+  },
+  "badgeInactive": {
+    "message": "Inactivo"
+  },
+  "badgeActive": {
+    "message": "Activo"
+  },
+  "btnUndo": {
+    "message": "Deshacer"
+  },
+  "btnRestore": {
+    "message": "Restaurar todo"
+  },
+  "btnDone": {
+    "message": "Hecho (Esc)"
+  },
+  "footerText": {
+    "message": "Presiona Esc para salir del modo selección"
+  },
+  "barHidden": {
+    "message": "Oculto:"
+  }
+}

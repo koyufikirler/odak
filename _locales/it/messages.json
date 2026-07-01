@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Nascondi Distrazioni"
+  },
+  "extDesc": {
+    "message": "Nascondi gli elementi che ti distraggono in qualsiasi pagina web con un fantastico effetto di dissoluzione a particelle."
+  },
+  "tagline": {
+    "message": "Concentrati su ciò che conta"
+  },
+  "pickModeTitle": {
+    "message": "Modalità Selezione"
+  },
+  "pickModeInactive": {
+    "message": "Passa il mouse sugli elementi per nasconderli"
+  },
+  "pickModeActive": {
+    "message": "Clicca su qualsiasi elemento per dissolverlo"
+  },
+  "pickHintInactive": {
+    "message": "Clicca l'interruttore per iniziare a nascondere"
+  },
+  "pickHintActive": {
+    "message": "Passa il mouse per selezionare • Clicca per dissolvere • Esc per fermare"
+  },
+  "pickHintRestricted": {
+    "message": "Non disponibile su questa pagina"
+  },
+  "pickStatusRestricted": {
+    "message": "Naviga in una normale pagina web"
+  },
+  "statsLabel": {
+    "message": "Nascosti nella pagina"
+  },
+  "badgeInactive": {
+    "message": "Inattivo"
+  },
+  "badgeActive": {
+    "message": "Attivo"
+  },
+  "btnUndo": {
+    "message": "Annulla ultimo"
+  },
+  "btnRestore": {
+    "message": "Ripristina tutto"
+  },
+  "btnDone": {
+    "message": "Fatto (Esc)"
+  },
+  "footerText": {
+    "message": "Premi Esc per uscire dalla modalità selezione"
+  },
+  "barHidden": {
+    "message": "Nascosti:"
+  }
+}

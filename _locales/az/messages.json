@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Diqqət Yayındıranları Gizlədən"
+  },
+  "extDesc": {
+    "message": "Möhtəşəm bir hissəcik həllolma effekti ilə hər hansı bir veb səhifədəki diqqət yayındıran elementləri gizlədin."
+  },
+  "tagline": {
+    "message": "Əsas olana diqqət yetirin"
+  },
+  "pickModeTitle": {
+    "message": "Seçim Rejimi"
+  },
+  "pickModeInactive": {
+    "message": "Gizlətmək üçün elementlərin üzərinə gəlin"
+  },
+  "pickModeActive": {
+    "message": "Yox etmək üçün hər hansı elementə klikləyin"
+  },
+  "pickHintInactive": {
+    "message": "Gizlətməyə başlamaq üçün düyməyə klikləyin"
+  },
+  "pickHintActive": {
+    "message": "Seçmək üçün üzərinə gəlin • Yox etmək üçün klikləyin • Dayandırmaq üçün Esc"
+  },
+  "pickHintRestricted": {
+    "message": "Bu səhifədə əlçatan deyil"
+  },
+  "pickStatusRestricted": {
+    "message": "Normal bir veb səhifəyə keçin"
+  },
+  "statsLabel": {
+    "message": "Səhifədə gizlədilən"
+  },
+  "badgeInactive": {
+    "message": "Qeyri-aktiv"
+  },
+  "badgeActive": {
+    "message": "Aktiv"
+  },
+  "btnUndo": {
+    "message": "Geri Al"
+  },
+  "btnRestore": {
+    "message": "Hamısını Qaytar"
+  },
+  "btnDone": {
+    "message": "Bitdi (Esc)"
+  },
+  "footerText": {
+    "message": "Seçim Rejimindən çıxmaq üçün Esc basın"
+  },
+  "barHidden": {
+    "message": "Gizlədildi:"
+  }
+}

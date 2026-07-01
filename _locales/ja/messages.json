@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Distraction Hider"
+  },
+  "extDesc": {
+    "message": "見事なパーティクル消滅エフェクトで、ウェブページ上の邪魔な要素を隠します。"
+  },
+  "tagline": {
+    "message": "重要なことに集中する"
+  },
+  "pickModeTitle": {
+    "message": "選択モード"
+  },
+  "pickModeInactive": {
+    "message": "要素にホバーして隠す"
+  },
+  "pickModeActive": {
+    "message": "クリックして要素を消去"
+  },
+  "pickHintInactive": {
+    "message": "トグルをクリックして非表示を開始"
+  },
+  "pickHintActive": {
+    "message": "ホバーで選択 • クリックで消去 • Escで停止"
+  },
+  "pickHintRestricted": {
+    "message": "このページでは利用できません"
+  },
+  "pickStatusRestricted": {
+    "message": "通常のウェブページに移動してください"
+  },
+  "statsLabel": {
+    "message": "ページ内の非表示数"
+  },
+  "badgeInactive": {
+    "message": "無効"
+  },
+  "badgeActive": {
+    "message": "有効"
+  },
+  "btnUndo": {
+    "message": "元に戻す"
+  },
+  "btnRestore": {
+    "message": "すべて復元"
+  },
+  "btnDone": {
+    "message": "完了 (Esc)"
+  },
+  "footerText": {
+    "message": "Escキーを押して選択モードを終了"
+  },
+  "barHidden": {
+    "message": "非表示:"
+  }
+}

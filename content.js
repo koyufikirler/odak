@@ -480,13 +480,20 @@
   // ── Floating Action Bar ───────────────────────────────────────────────────
   function createActionBar() {
     if (actionBarEl) return;
+    
+    // Fetch localized strings (fallback to English if not available)
+    const strHidden = _browser.i18n.getMessage('barHidden') || 'Hidden:';
+    const strUndo = _browser.i18n.getMessage('btnUndo') || 'Undo Last';
+    const strRestore = _browser.i18n.getMessage('btnRestore') || 'Restore All';
+    const strDone = _browser.i18n.getMessage('btnDone') || 'Done (Esc)';
+
     actionBarEl = document.createElement('div');
     actionBarEl.id = 'dh-action-bar';
     actionBarEl.innerHTML = `
-      <span class="dh-count-badge">Hidden: <span id="dh-hidden-count">${hiddenSelectors.length}</span></span>
-      <button id="dh-undo-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>Undo Last</button>
-      <button id="dh-restore-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>Restore All</button>
-      <button id="dh-cancel-btn" class="dh-cancel-btn">Done (Esc)</button>
+      <span class="dh-count-badge">${strHidden} <span id="dh-hidden-count">${hiddenSelectors.length}</span></span>
+      <button id="dh-undo-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>${strUndo}</button>
+      <button id="dh-restore-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>${strRestore}</button>
+      <button id="dh-cancel-btn" class="dh-cancel-btn">${strDone}</button>
     `;
     document.body.appendChild(actionBarEl);
 

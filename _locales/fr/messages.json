@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Masqueur de distractions"
+  },
+  "extDesc": {
+    "message": "Masquez les éléments distrayants de n'importe quelle page web avec un effet de dissolution de particules époustouflant."
+  },
+  "tagline": {
+    "message": "Concentrez-vous sur l'essentiel"
+  },
+  "pickModeTitle": {
+    "message": "Mode sélection"
+  },
+  "pickModeInactive": {
+    "message": "Survolez les éléments pour les masquer"
+  },
+  "pickModeActive": {
+    "message": "Cliquez sur n'importe quel élément pour le dissoudre"
+  },
+  "pickHintInactive": {
+    "message": "Cliquez sur l'interrupteur pour commencer à masquer"
+  },
+  "pickHintActive": {
+    "message": "Survolez pour sélectionner • Cliquez pour dissoudre • Esc pour arrêter"
+  },
+  "pickHintRestricted": {
+    "message": "Non disponible sur cette page"
+  },
+  "pickStatusRestricted": {
+    "message": "Naviguez vers une page web standard"
+  },
+  "statsLabel": {
+    "message": "Masqués sur la page"
+  },
+  "badgeInactive": {
+    "message": "Inactif"
+  },
+  "badgeActive": {
+    "message": "Actif"
+  },
+  "btnUndo": {
+    "message": "Annuler le dernier"
+  },
+  "btnRestore": {
+    "message": "Tout restaurer"
+  },
+  "btnDone": {
+    "message": "Terminé (Esc)"
+  },
+  "footerText": {
+    "message": "Appuyez sur Esc pour quitter le mode sélection"
+  },
+  "barHidden": {
+    "message": "Masqué:"
+  }
+}

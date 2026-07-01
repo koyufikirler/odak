@@ -24,6 +24,12 @@ const restoreBtn      = document.getElementById('restore-btn');
 
 // ── Initialize popup state ────────────────────────────────────────────────
 async function init() {
+  // Apply i18n strings
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const msg = _browser.i18n.getMessage(el.getAttribute('data-i18n'));
+    if (msg) el.textContent = msg;
+  });
+
   try {
     const resp = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
     if (!resp) return;
@@ -101,15 +107,15 @@ function updatePickUI(active) {
   if (active) {
     pickCard.classList.add('active');
     statusBadge.classList.add('active');
-    badgeText.textContent = 'Active';
-    pickStatus.textContent = 'Click any element to dissolve it';
-    hintText.textContent = 'Hover to select • Click to dissolve • Esc to stop';
+    badgeText.textContent = _browser.i18n.getMessage('badgeActive');
+    pickStatus.textContent = _browser.i18n.getMessage('pickModeActive');
+    hintText.textContent = _browser.i18n.getMessage('pickHintActive');
   } else {
     pickCard.classList.remove('active');
     statusBadge.classList.remove('active');
-    badgeText.textContent = 'Inactive';
-    pickStatus.textContent = 'Hover over elements to hide them';
-    hintText.textContent = 'Click the toggle to start hiding distractions';
+    badgeText.textContent = _browser.i18n.getMessage('badgeInactive');
+    pickStatus.textContent = _browser.i18n.getMessage('pickModeInactive');
+    hintText.textContent = _browser.i18n.getMessage('pickHintInactive');
   }
 }
 
@@ -133,8 +139,8 @@ function setRestrictedUI() {
   pickCheckbox.disabled = true;
   undoBtn.disabled      = true;
   restoreBtn.disabled   = true;
-  hintText.textContent  = 'Not available on this page';
-  pickStatus.textContent = 'Navigate to a regular webpage';
+  hintText.textContent  = _browser.i18n.getMessage('pickHintRestricted');
+  pickStatus.textContent = _browser.i18n.getMessage('pickStatusRestricted');
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────

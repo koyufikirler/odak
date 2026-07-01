@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Distraction Hider"
+  },
+  "extDesc": {
+    "message": "Hide distracting elements on any webpage with a stunning particle dissolution effect. Click to pick, watch it dissolve."
+  },
+  "tagline": {
+    "message": "Focus on what matters"
+  },
+  "pickModeTitle": {
+    "message": "Pick Mode"
+  },
+  "pickModeInactive": {
+    "message": "Hover over elements to hide them"
+  },
+  "pickModeActive": {
+    "message": "Click any element to dissolve it"
+  },
+  "pickHintInactive": {
+    "message": "Click the toggle to start hiding distractions"
+  },
+  "pickHintActive": {
+    "message": "Hover to select • Click to dissolve • Esc to stop"
+  },
+  "pickHintRestricted": {
+    "message": "Not available on this page"
+  },
+  "pickStatusRestricted": {
+    "message": "Navigate to a regular webpage"
+  },
+  "statsLabel": {
+    "message": "Hidden on page"
+  },
+  "badgeInactive": {
+    "message": "Inactive"
+  },
+  "badgeActive": {
+    "message": "Active"
+  },
+  "btnUndo": {
+    "message": "Undo Last"
+  },
+  "btnRestore": {
+    "message": "Restore All"
+  },
+  "btnDone": {
+    "message": "Done (Esc)"
+  },
+  "footerText": {
+    "message": "Press Esc to exit Pick Mode"
+  },
+  "barHidden": {
+    "message": "Hidden:"
+  }
+}

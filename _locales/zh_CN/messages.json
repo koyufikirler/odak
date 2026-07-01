@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "干扰隐藏器"
+  },
+  "extDesc": {
+    "message": "使用惊艳的粒子消散效果隐藏网页上的任何干扰元素。点击选择，看着它消散。"
+  },
+  "tagline": {
+    "message": "专注于重要的事情"
+  },
+  "pickModeTitle": {
+    "message": "选择模式"
+  },
+  "pickModeInactive": {
+    "message": "悬停在元素上以隐藏它们"
+  },
+  "pickModeActive": {
+    "message": "点击任何元素使其消散"
+  },
+  "pickHintInactive": {
+    "message": "点击开关开始隐藏干扰"
+  },
+  "pickHintActive": {
+    "message": "悬停选择 • 点击消散 • 按Esc停止"
+  },
+  "pickHintRestricted": {
+    "message": "此页面不可用"
+  },
+  "pickStatusRestricted": {
+    "message": "请导航到常规网页"
+  },
+  "statsLabel": {
+    "message": "页面上已隐藏"
+  },
+  "badgeInactive": {
+    "message": "未激活"
+  },
+  "badgeActive": {
+    "message": "已激活"
+  },
+  "btnUndo": {
+    "message": "撤销"
+  },
+  "btnRestore": {
+    "message": "全部恢复"
+  },
+  "btnDone": {
+    "message": "完成 (Esc)"
+  },
+  "footerText": {
+    "message": "按 Esc 退出选择模式"
+  },
+  "barHidden": {
+    "message": "已隐藏:"
+  }
+}

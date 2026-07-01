@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "مخفي المشتتات"
+  },
+  "extDesc": {
+    "message": "أخفِ العناصر المشتتة للانتباه على أي صفحة ويب باستخدام تأثير تحلل الجزيئات المذهل."
+  },
+  "tagline": {
+    "message": "ركز على ما يهم"
+  },
+  "pickModeTitle": {
+    "message": "وضع الاختيار"
+  },
+  "pickModeInactive": {
+    "message": "مرر المؤشر فوق العناصر لإخفائها"
+  },
+  "pickModeActive": {
+    "message": "انقر على أي عنصر لتحليله"
+  },
+  "pickHintInactive": {
+    "message": "انقر فوق مفتاح التبديل للبدء في الإخفاء"
+  },
+  "pickHintActive": {
+    "message": "مرر للتحديد • انقر للتحليل • Esc للإيقاف"
+  },
+  "pickHintRestricted": {
+    "message": "غير متوفر في هذه الصفحة"
+  },
+  "pickStatusRestricted": {
+    "message": "انتقل إلى صفحة ويب عادية"
+  },
+  "statsLabel": {
+    "message": "مخفي في الصفحة"
+  },
+  "badgeInactive": {
+    "message": "غير نشط"
+  },
+  "badgeActive": {
+    "message": "نشط"
+  },
+  "btnUndo": {
+    "message": "تراجع"
+  },
+  "btnRestore": {
+    "message": "استعادة الكل"
+  },
+  "btnDone": {
+    "message": "تم (Esc)"
+  },
+  "footerText": {
+    "message": "اضغط على Esc للخروج من وضع الاختيار"
+  },
+  "barHidden": {
+    "message": "مخفي:"
+  }
+}

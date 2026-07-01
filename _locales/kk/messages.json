@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Алаңдататын нәрселерді жасырғыш"
+  },
+  "extDesc": {
+    "message": "Керемет бөлшектердің еру эффектісі арқылы кез келген веб-беттегі алаңдататын элементтерді жасырыңыз."
+  },
+  "tagline": {
+    "message": "Маңызды нәрсеге назар аударыңыз"
+  },
+  "pickModeTitle": {
+    "message": "Таңдау режимі"
+  },
+  "pickModeInactive": {
+    "message": "Жасыру үшін элементтердің үстіне апарыңыз"
+  },
+  "pickModeActive": {
+    "message": "Жою үшін кез келген элементті басыңыз"
+  },
+  "pickHintInactive": {
+    "message": "Жасыруды бастау үшін түймені басыңыз"
+  },
+  "pickHintActive": {
+    "message": "Таңдау үшін үстіне апарыңыз • Жою үшін басыңыз • Тоқтату үшін Esc"
+  },
+  "pickHintRestricted": {
+    "message": "Бұл бетте қолжетімсіз"
+  },
+  "pickStatusRestricted": {
+    "message": "Қалыпты веб-бетке өтіңіз"
+  },
+  "statsLabel": {
+    "message": "Бетте жасырылған"
+  },
+  "badgeInactive": {
+    "message": "Бексенді емес"
+  },
+  "badgeActive": {
+    "message": "Белсенді"
+  },
+  "btnUndo": {
+    "message": "Болдырмау"
+  },
+  "btnRestore": {
+    "message": "Барлығын қалпына келтіру"
+  },
+  "btnDone": {
+    "message": "Дайын (Esc)"
+  },
+  "footerText": {
+    "message": "Таңдау режимінен шығу үшін Esc басыңыз"
+  },
+  "barHidden": {
+    "message": "Жасырылған:"
+  }
+}

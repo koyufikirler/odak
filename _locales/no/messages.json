@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Distraksjonsskjuler"
+  },
+  "extDesc": {
+    "message": "Skjul distraherende elementer på enhver nettside med en fantastisk partikkeloppløsningseffekt."
+  },
+  "tagline": {
+    "message": "Fokuser på det som betyr noe"
+  },
+  "pickModeTitle": {
+    "message": "Valgmodus"
+  },
+  "pickModeInactive": {
+    "message": "Hold over elementer for å skjule dem"
+  },
+  "pickModeActive": {
+    "message": "Klikk på et element for å oppløse det"
+  },
+  "pickHintInactive": {
+    "message": "Klikk på bryteren for å begynne å skjule"
+  },
+  "pickHintActive": {
+    "message": "Hold over for å velge • Klikk for å oppløse • Esc for å stoppe"
+  },
+  "pickHintRestricted": {
+    "message": "Ikke tilgjengelig på denne siden"
+  },
+  "pickStatusRestricted": {
+    "message": "Naviger til en vanlig nettside"
+  },
+  "statsLabel": {
+    "message": "Skjult på siden"
+  },
+  "badgeInactive": {
+    "message": "Inaktiv"
+  },
+  "badgeActive": {
+    "message": "Aktiv"
+  },
+  "btnUndo": {
+    "message": "Angre"
+  },
+  "btnRestore": {
+    "message": "Gjenopprett alt"
+  },
+  "btnDone": {
+    "message": "Ferdig (Esc)"
+  },
+  "footerText": {
+    "message": "Trykk Esc for å avslutte valgmodus"
+  },
+  "barHidden": {
+    "message": "Skjult:"
+  }
+}

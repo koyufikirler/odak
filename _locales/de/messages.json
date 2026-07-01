@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Ablenkungsverberger"
+  },
+  "extDesc": {
+    "message": "Verbergen Sie ablenkende Elemente auf jeder Webseite mit einem atemberaubenden Partikelauflösungseffekt."
+  },
+  "tagline": {
+    "message": "Fokus auf das Wichtigste"
+  },
+  "pickModeTitle": {
+    "message": "Auswahlmodus"
+  },
+  "pickModeInactive": {
+    "message": "Fahren Sie über Elemente, um sie zu verbergen"
+  },
+  "pickModeActive": {
+    "message": "Klicken Sie auf ein Element, um es aufzulösen"
+  },
+  "pickHintInactive": {
+    "message": "Klicken Sie auf den Schalter, um das Verbergen zu starten"
+  },
+  "pickHintActive": {
+    "message": "Zum Auswählen darüberfahren • Zum Auflösen klicken • Esc zum Stoppen"
+  },
+  "pickHintRestricted": {
+    "message": "Auf dieser Seite nicht verfügbar"
+  },
+  "pickStatusRestricted": {
+    "message": "Navigieren Sie zu einer normalen Webseite"
+  },
+  "statsLabel": {
+    "message": "Auf Seite verborgen"
+  },
+  "badgeInactive": {
+    "message": "Inaktiv"
+  },
+  "badgeActive": {
+    "message": "Aktiv"
+  },
+  "btnUndo": {
+    "message": "Rückgängig"
+  },
+  "btnRestore": {
+    "message": "Alle wiederherstellen"
+  },
+  "btnDone": {
+    "message": "Fertig (Esc)"
+  },
+  "footerText": {
+    "message": "Drücken Sie Esc, um den Auswahlmodus zu beenden"
+  },
+  "barHidden": {
+    "message": "Verborgen:"
+  }
+}

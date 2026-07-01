@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Dikkat Dağıtıcı Gizleyici"
+  },
+  "extDesc": {
+    "message": "Çarpıcı bir parçacık çözünme efektiyle herhangi bir web sayfasındaki dikkat dağıtıcı öğeleri gizleyin."
+  },
+  "tagline": {
+    "message": "Önemli olana odaklanın"
+  },
+  "pickModeTitle": {
+    "message": "Seçim Modu"
+  },
+  "pickModeInactive": {
+    "message": "Gizlemek için öğelerin üzerine gelin"
+  },
+  "pickModeActive": {
+    "message": "Yok etmek için herhangi bir öğeye tıklayın"
+  },
+  "pickHintInactive": {
+    "message": "Gizlemeye başlamak için düğmeye tıklayın"
+  },
+  "pickHintActive": {
+    "message": "Seçmek için üzerine gelin • Yok etmek için tıklayın • Durmak için Esc"
+  },
+  "pickHintRestricted": {
+    "message": "Bu sayfada kullanılamaz"
+  },
+  "pickStatusRestricted": {
+    "message": "Normal bir web sayfasına gidin"
+  },
+  "statsLabel": {
+    "message": "Sayfada gizlenenler"
+  },
+  "badgeInactive": {
+    "message": "Pasif"
+  },
+  "badgeActive": {
+    "message": "Aktif"
+  },
+  "btnUndo": {
+    "message": "Geri Al"
+  },
+  "btnRestore": {
+    "message": "Tümünü Geri Getir"
+  },
+  "btnDone": {
+    "message": "Bitti (Esc)"
+  },
+  "footerText": {
+    "message": "Seçim Modundan çıkmak için Esc'ye basın"
+  },
+  "barHidden": {
+    "message": "Gizlenen:"
+  }
+}

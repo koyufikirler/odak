@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Distraktionsdöljare"
+  },
+  "extDesc": {
+    "message": "Dölj distraherande element på vilken webbsida som helst med en fantastisk partikelupplösningseffekt."
+  },
+  "tagline": {
+    "message": "Fokusera på det som är viktigt"
+  },
+  "pickModeTitle": {
+    "message": "Väljarläge"
+  },
+  "pickModeInactive": {
+    "message": "Håll över element för att dölja dem"
+  },
+  "pickModeActive": {
+    "message": "Klicka på ett element för att lösa upp det"
+  },
+  "pickHintInactive": {
+    "message": "Klicka på reglaget för att börja dölja"
+  },
+  "pickHintActive": {
+    "message": "Håll över för att välja • Klicka för att lösa upp • Esc för att stoppa"
+  },
+  "pickHintRestricted": {
+    "message": "Inte tillgängligt på denna sida"
+  },
+  "pickStatusRestricted": {
+    "message": "Navigera till en vanlig webbsida"
+  },
+  "statsLabel": {
+    "message": "Dolda på sidan"
+  },
+  "badgeInactive": {
+    "message": "Inaktiv"
+  },
+  "badgeActive": {
+    "message": "Aktiv"
+  },
+  "btnUndo": {
+    "message": "Ångra"
+  },
+  "btnRestore": {
+    "message": "Återställ alla"
+  },
+  "btnDone": {
+    "message": "Klar (Esc)"
+  },
+  "footerText": {
+    "message": "Tryck på Esc för att avsluta väljarläget"
+  },
+  "barHidden": {
+    "message": "Dold:"
+  }
+}

@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Distraction Hider",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "Hide distracting elements on any webpage with a stunning particle dissolution effect. Click to pick, watch it dissolve.",
+  "description": "__MSG_extDesc__",
+  "default_locale": "en",
   "browser_specific_settings": {
     "gecko": {
       "id": "distraction-hider@extension",
-      "strict_min_version": "121.0"
+      "strict_min_version": "142.0"
     }
   },
   "permissions": [
@@ -22,15 +23,21 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_idle"
     }
   ],
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Distraction Hider"
+    "default_title": "__MSG_extName__"
   },
   "icons": {
     "16": "icons/icon-16.png",

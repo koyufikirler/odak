@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Häiriöiden piilottaja"
+  },
+  "extDesc": {
+    "message": "Piilota häiritsevät elementit miltä tahansa verkkosivulta upealla hiukkasten liukenemisefektillä."
+  },
+  "tagline": {
+    "message": "Keskity olennaiseen"
+  },
+  "pickModeTitle": {
+    "message": "Valintatila"
+  },
+  "pickModeInactive": {
+    "message": "Vie hiiri elementtien päälle piilottaaksesi ne"
+  },
+  "pickModeActive": {
+    "message": "Napsauta mitä tahansa elementtiä liuottaaksesi sen"
+  },
+  "pickHintInactive": {
+    "message": "Napsauta kytkintä aloittaaksesi piilottamisen"
+  },
+  "pickHintActive": {
+    "message": "Vie hiiri valitaksesi • Napsauta liuottaaksesi • Esc lopettaaksesi"
+  },
+  "pickHintRestricted": {
+    "message": "Ei saatavilla tällä sivulla"
+  },
+  "pickStatusRestricted": {
+    "message": "Siirry tavalliselle verkkosivulle"
+  },
+  "statsLabel": {
+    "message": "Piilotettu sivulla"
+  },
+  "badgeInactive": {
+    "message": "Ei aktiivinen"
+  },
+  "badgeActive": {
+    "message": "Aktiivinen"
+  },
+  "btnUndo": {
+    "message": "Kumoa"
+  },
+  "btnRestore": {
+    "message": "Palauta kaikki"
+  },
+  "btnDone": {
+    "message": "Valmis (Esc)"
+  },
+  "footerText": {
+    "message": "Paina Esc poistuaksesi valintatilasta"
+  },
+  "barHidden": {
+    "message": "Piilotettu:"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "extName": {
+    "message": "Скрыватель отвлекающих факторов"
+  },
+  "extDesc": {
+    "message": "Скрывайте отвлекающие элементы на любой веб-странице с потрясающим эффектом распада на частицы."
+  },
+  "tagline": {
+    "message": "Сосредоточьтесь на главном"
+  },
+  "pickModeTitle": {
+    "message": "Режим выбора"
+  },
+  "pickModeInactive": {
+    "message": "Наведите курсор на элементы, чтобы скрыть их"
+  },
+  "pickModeActive": {
+    "message": "Нажмите на любой элемент, чтобы растворить его"
+  },
+  "pickHintInactive": {
+    "message": "Нажмите переключатель, чтобы начать скрывать"
+  },
+  "pickHintActive": {
+    "message": "Наведите для выбора • Нажмите для растворения • Esc для остановки"
+  },
+  "pickHintRestricted": {
+    "message": "Недоступно на этой странице"
+  },
+  "pickStatusRestricted": {
+    "message": "Перейдите на обычную веб-страницу"
+  },
+  "statsLabel": {
+    "message": "Скрыто на странице"
+  },
+  "badgeInactive": {
+    "message": "Неактивен"
+  },
+  "badgeActive": {
+    "message": "Активен"
+  },
+  "btnUndo": {
+    "message": "Отменить последнее"
+  },
+  "btnRestore": {
+    "message": "Восстановить все"
+  },
+  "btnDone": {
+    "message": "Готово (Esc)"
+  },
+  "footerText": {
+    "message": "Нажмите Esc, чтобы выйти из режима выбора"
+  },
+  "barHidden": {
+    "message": "Скрыто:"
+  }
+}
