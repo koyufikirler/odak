@@ -35,7 +35,3 @@ ODAK is a browser extension that helps you focus by allowing you to easily hide 
 4. Click on any highlighted element to hide it.
 5. You can press `Esc` to exit Pick Mode at any time.
 6. Use the **Undo Last** or **Restore All** buttons in the popup to revert your changes.
-
-## License
-
-MIT License
