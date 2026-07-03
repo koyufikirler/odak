@@ -19,13 +19,13 @@ ODAK is a browser extension that helps you focus by allowing you to easily hide 
    - Chrome: `chrome://extensions/`
    - Edge: `edge://extensions/`
 3. Enable **Developer mode** in the top right corner.
-4. Click on **Load unpacked** and select the `distraction-hider` directory.
+4. Click on **Load unpacked** and select the `odak` directory.
 
 ### Firefox
 
 1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
 2. Click on **Load Temporary Add-on...**
-3. Select any file inside the `distraction-hider` directory (e.g., `manifest.json`).
+3. Select any file inside the `odak` directory (e.g., `manifest.json`).
 
 ## How to Use
 
