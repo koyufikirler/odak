@@ -489,12 +489,39 @@
 
     actionBarEl = document.createElement('div');
     actionBarEl.id = 'dh-action-bar';
-    actionBarEl.innerHTML = `
-      <span class="dh-count-badge">${strHidden} <span id="dh-hidden-count">${hiddenSelectors.length}</span></span>
-      <button id="dh-undo-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>${strUndo}</button>
-      <button id="dh-restore-btn" ${hiddenSelectors.length === 0 ? 'disabled' : ''}>${strRestore}</button>
-      <button id="dh-cancel-btn" class="dh-cancel-btn">${strDone}</button>
-    `;
+
+    // Count badge
+    const countBadge = document.createElement('span');
+    countBadge.className = 'dh-count-badge';
+    const countLabel = document.createTextNode(strHidden + ' ');
+    const countSpan = document.createElement('span');
+    countSpan.id = 'dh-hidden-count';
+    countSpan.textContent = String(hiddenSelectors.length);
+    countBadge.appendChild(countLabel);
+    countBadge.appendChild(countSpan);
+
+    // Undo button
+    const undoBtn = document.createElement('button');
+    undoBtn.id = 'dh-undo-btn';
+    undoBtn.textContent = strUndo;
+    if (hiddenSelectors.length === 0) undoBtn.disabled = true;
+
+    // Restore button
+    const restoreBtn = document.createElement('button');
+    restoreBtn.id = 'dh-restore-btn';
+    restoreBtn.textContent = strRestore;
+    if (hiddenSelectors.length === 0) restoreBtn.disabled = true;
+
+    // Done / cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.id = 'dh-cancel-btn';
+    cancelBtn.className = 'dh-cancel-btn';
+    cancelBtn.textContent = strDone;
+
+    actionBarEl.appendChild(countBadge);
+    actionBarEl.appendChild(undoBtn);
+    actionBarEl.appendChild(restoreBtn);
+    actionBarEl.appendChild(cancelBtn);
     document.body.appendChild(actionBarEl);
 
     document.getElementById('dh-undo-btn').addEventListener('click', (e) => {
