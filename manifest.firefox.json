@@ -6,7 +6,7 @@
   "default_locale": "en",
   "browser_specific_settings": {
     "gecko": {
-      "id": "medyabumedya@gmail.com",
+      "id": "medyabumedya-android@gmail.com",
       "strict_min_version": "142.0",
       "data_collection_permissions": {
         "required": [
@@ -14,6 +14,9 @@
         ],
         "optional": []
       }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
   },
   "permissions": [
@@ -25,7 +28,9 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": [
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
