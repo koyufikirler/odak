@@ -26,6 +26,17 @@
   cursor: crosshair !important;
 }
 
+#dh-pick-shield {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+  z-index: 2147483645 !important;
+}
+
 /* Full-page particle canvas overlay */
 .dh-particle-canvas {
   position: fixed !important;

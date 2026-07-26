@@ -20,6 +20,7 @@
   let isAnimating = false;
   let hiddenSelectors = [];
   let actionBarEl = null;
+  let pickShieldEl = null;
 
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
@@ -70,10 +71,12 @@
     if (pickModeActive) return;
     pickModeActive = true;
     createActionBar();
+    createPickShield();
     document.body.classList.add(CURSOR_CLASS);
-    document.addEventListener('mouseover', onMouseOver, true);
-    document.addEventListener('mouseout', onMouseOut, true);
-    document.addEventListener('click', onClick, true);
+    pickShieldEl.addEventListener('pointermove', onShieldPointerMove, true);
+    pickShieldEl.addEventListener('pointerleave', onShieldPointerLeave, true);
+    pickShieldEl.addEventListener('pointerdown', onShieldPointerDown, true);
+    pickShieldEl.addEventListener('click', onShieldClick, true);
     document.addEventListener('keydown', onKeyDown, true);
   }
 
@@ -81,39 +84,49 @@
     if (!pickModeActive) return;
     pickModeActive = false;
     clearHighlight();
+    removePickShield();
     removeActionBar();
     document.body.classList.remove(CURSOR_CLASS);
-    document.removeEventListener('mouseover', onMouseOver, true);
-    document.removeEventListener('mouseout', onMouseOut, true);
-    document.removeEventListener('click', onClick, true);
     document.removeEventListener('keydown', onKeyDown, true);
   }
 
   // ── Event Handlers ────────────────────────────────────────────────────────
-  function onMouseOver(e) {
-    const target = getValidTarget(e.target);
+  function getElementUnderPointer(clientX, clientY) {
+    const els = document.elementsFromPoint(clientX, clientY);
+    for (const el of els) {
+      if (el === pickShieldEl) continue;
+      if (el.id === 'dh-action-bar' || (el.closest && el.closest('#dh-action-bar'))) continue;
+      return el;
+    }
+    return null;
+  }
+
+  function onShieldPointerDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+  }
+
+  function onShieldPointerMove(e) {
+    const raw = getElementUnderPointer(e.clientX, e.clientY);
+    const target = getValidTarget(raw);
     if (!target || target === hoveredEl) return;
     clearHighlight();
     hoveredEl = target;
     target.classList.add(HIGHLIGHT_CLASS);
   }
 
-  function onMouseOut(e) {
-    const target = getValidTarget(e.target);
-    if (target && target === hoveredEl) {
-      clearHighlight();
-    }
+  function onShieldPointerLeave() {
+    clearHighlight();
   }
 
-  function onClick(e) {
-    // If clicking the action bar, let the event pass through to its buttons
-    if (e.target.closest && e.target.closest('#dh-action-bar')) return;
-
+  function onShieldClick(e) {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    const target = getValidTarget(e.target);
+    const raw = getElementUnderPointer(e.clientX, e.clientY);
+    const target = getValidTarget(raw);
     if (!target || isAnimating) return;
 
     clearHighlight();
@@ -151,6 +164,19 @@
       hoveredEl = null;
     }
     document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(el => el.classList.remove(HIGHLIGHT_CLASS));
+  }
+
+  function createPickShield() {
+    if (pickShieldEl) return;
+    pickShieldEl = document.createElement('div');
+    pickShieldEl.id = 'dh-pick-shield';
+    (document.documentElement || document.body).appendChild(pickShieldEl);
+  }
+
+  function removePickShield() {
+    if (!pickShieldEl) return;
+    pickShieldEl.remove();
+    pickShieldEl = null;
   }
 
   function hideBySelector(selector) {
