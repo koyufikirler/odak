@@ -9,8 +9,15 @@
     0 0 12px rgba(147, 51, 234, 0.5),
     0 0 24px rgba(56, 189, 248, 0.25) !important;
   border-radius: 4px !important;
-  transition: outline 0.1s ease, box-shadow 0.1s ease !important;
+  transition: outline 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease !important;
   cursor: crosshair !important;
+  filter: blur(1.5px) !important;
+}
+
+/* Make links inside the highlighted area unclickable */
+.dh-highlight a,
+.dh-highlight a * {
+  pointer-events: none !important;
 }
 
 /* Crosshair cursor on body when Pick Mode is active */
