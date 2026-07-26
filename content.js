@@ -21,6 +21,7 @@
   let hiddenSelectors = [];
   let actionBarEl = null;
   let pickShieldEl = null;
+  let scrollUnlockState = null;
 
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
@@ -102,7 +103,7 @@
   }
 
   function onShieldPointerDown(e) {
-    e.preventDefault();
+    if (e.pointerType !== 'touch') e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
   }
@@ -179,9 +180,141 @@
     pickShieldEl = null;
   }
 
+  function captureInlineStyle(el, prop) {
+    return {
+      value: el.style.getPropertyValue(prop),
+      priority: el.style.getPropertyPriority(prop),
+    };
+  }
+
+  function restoreInlineStyle(el, prop, snap) {
+    if (!snap) return;
+    if (snap.value) {
+      el.style.setProperty(prop, snap.value, snap.priority);
+    } else {
+      el.style.removeProperty(prop);
+    }
+  }
+
+  function isScrollLocked() {
+    if (!document.body) return false;
+    const html = document.documentElement;
+    const body = document.body;
+    const htmlCs = getComputedStyle(html);
+    const bodyCs = getComputedStyle(body);
+    const overflowLocked =
+      ['hidden', 'clip'].includes(htmlCs.overflow) ||
+      ['hidden', 'clip'].includes(htmlCs.overflowY) ||
+      ['hidden', 'clip'].includes(bodyCs.overflow) ||
+      ['hidden', 'clip'].includes(bodyCs.overflowY);
+
+    const fixedLocked = bodyCs.position === 'fixed';
+    const scrollable = Math.max(html.scrollHeight, body.scrollHeight) > window.innerHeight + 2;
+    return scrollable && (overflowLocked || fixedLocked);
+  }
+
+  function shouldAttemptScrollUnlock(el) {
+    if (!el || !(el instanceof Element) || !document.body) return false;
+    const cs = getComputedStyle(el);
+    const pos = cs.position;
+    if (!['fixed', 'absolute', 'sticky'].includes(pos)) return false;
+
+    const rect = el.getBoundingClientRect();
+    const viewportArea = Math.max(1, window.innerWidth * window.innerHeight);
+    const areaRatio = (Math.max(0, rect.width) * Math.max(0, rect.height)) / viewportArea;
+
+    const z = Number.parseInt(cs.zIndex, 10);
+    const highZ = Number.isFinite(z) && z >= 1000;
+
+    const role = (el.getAttribute('role') || '').toLowerCase();
+    const modalish = el.getAttribute('aria-modal') === 'true' || role === 'dialog' || role === 'alertdialog';
+
+    return areaRatio > 0.2 || highZ || modalish;
+  }
+
+  function applyScrollUnlock() {
+    if (scrollUnlockState || !document.body) return;
+
+    const html = document.documentElement;
+    const body = document.body;
+    const bodyCs = getComputedStyle(body);
+
+    let restoreY = null;
+    if (bodyCs.position === 'fixed') {
+      const topStr = bodyCs.top || '';
+      const m = topStr.match(/-?\d+(\.\d+)?/);
+      if (m) {
+        const top = Number.parseFloat(m[0]);
+        if (Number.isFinite(top)) restoreY = -top;
+      }
+    }
+
+    scrollUnlockState = {
+      html: {
+        overflow: captureInlineStyle(html, 'overflow'),
+        overflowY: captureInlineStyle(html, 'overflow-y'),
+      },
+      body: {
+        overflow: captureInlineStyle(body, 'overflow'),
+        overflowY: captureInlineStyle(body, 'overflow-y'),
+        position: captureInlineStyle(body, 'position'),
+        top: captureInlineStyle(body, 'top'),
+        left: captureInlineStyle(body, 'left'),
+        right: captureInlineStyle(body, 'right'),
+        width: captureInlineStyle(body, 'width'),
+      },
+      restoreY,
+    };
+
+    html.style.setProperty('overflow', 'auto', 'important');
+    html.style.setProperty('overflow-y', 'auto', 'important');
+    body.style.setProperty('overflow', 'auto', 'important');
+    body.style.setProperty('overflow-y', 'auto', 'important');
+
+    if (bodyCs.position === 'fixed') {
+      body.style.setProperty('position', 'static', 'important');
+      body.style.setProperty('top', 'auto', 'important');
+      body.style.setProperty('left', 'auto', 'important');
+      body.style.setProperty('right', 'auto', 'important');
+      body.style.setProperty('width', 'auto', 'important');
+    }
+
+    if (scrollUnlockState.restoreY !== null && Number.isFinite(scrollUnlockState.restoreY)) {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollUnlockState.restoreY, left: 0, behavior: 'auto' });
+      });
+    }
+  }
+
+  function restoreScrollUnlock() {
+    if (!scrollUnlockState || !document.body) return;
+    const html = document.documentElement;
+    const body = document.body;
+
+    restoreInlineStyle(html, 'overflow', scrollUnlockState.html.overflow);
+    restoreInlineStyle(html, 'overflow-y', scrollUnlockState.html.overflowY);
+
+    restoreInlineStyle(body, 'overflow', scrollUnlockState.body.overflow);
+    restoreInlineStyle(body, 'overflow-y', scrollUnlockState.body.overflowY);
+    restoreInlineStyle(body, 'position', scrollUnlockState.body.position);
+    restoreInlineStyle(body, 'top', scrollUnlockState.body.top);
+    restoreInlineStyle(body, 'left', scrollUnlockState.body.left);
+    restoreInlineStyle(body, 'right', scrollUnlockState.body.right);
+    restoreInlineStyle(body, 'width', scrollUnlockState.body.width);
+
+    scrollUnlockState = null;
+  }
+
+  function maybeUnlockScrollAfterHiding(el) {
+    if (!isScrollLocked()) return;
+    if (!shouldAttemptScrollUnlock(el)) return;
+    applyScrollUnlock();
+  }
+
   function hideBySelector(selector) {
     try {
       document.querySelectorAll(selector).forEach(el => {
+        maybeUnlockScrollAfterHiding(el);
         el.style.setProperty('display', 'none', 'important');
         el.dataset.dhHidden = 'true';
       });
@@ -457,6 +590,7 @@
   // ── Persist & finalize ────────────────────────────────────────────────────
   async function finallyHide(el) {
     el.style.removeProperty('visibility');
+    maybeUnlockScrollAfterHiding(el);
     el.style.setProperty('display', 'none', 'important');
     el.dataset.dhHidden = 'true';
 
@@ -487,6 +621,7 @@
           delete el.dataset.dhHidden;
         });
         updateActionBarCount();
+        if (hiddenSelectors.length === 0) restoreScrollUnlock();
       }
     } catch (e) {}
   }
@@ -500,6 +635,7 @@
       });
       hiddenSelectors = [];
       updateActionBarCount();
+      restoreScrollUnlock();
     } catch (e) {}
   }
 
