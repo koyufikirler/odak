@@ -143,9 +143,35 @@
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+  function pauseMediaInside(el) {
+    try {
+      if (el.tagName === 'VIDEO' || el.tagName === 'AUDIO') {
+        el.pause();
+      }
+      el.querySelectorAll('video, audio').forEach(m => m.pause());
+      
+      const pauseMsg = JSON.stringify({ event: 'command', func: 'pauseVideo', args: '' });
+      if (el.tagName === 'IFRAME') {
+        el.contentWindow.postMessage(pauseMsg, '*');
+      }
+      el.querySelectorAll('iframe').forEach(ifr => {
+        ifr.contentWindow.postMessage(pauseMsg, '*');
+      });
+    } catch (e) {}
+  }
+
   function getValidTarget(el) {
     if (!el || !(el instanceof Element)) return null;
     if (el.closest && el.closest('#dh-action-bar')) return null; // Ignore our action bar
+
+    // Try to capture entire video players (e.g. YouTube) so buttons aren't left behind and layout collapses
+    const ytPlayer = el.closest('ytd-player');
+    if (ytPlayer) {
+      // Find the outermost player wrapper to collapse the reserved space
+      return ytPlayer.closest('#player-full-bleed-container, #player-container-outer, #player') || ytPlayer;
+    }
+    const playerContainer = el.closest('.html5-video-player, .video-js, .plyr');
+    if (playerContainer) return playerContainer;
 
     // Walk up to find a block-level or meaningful element
     let node = el;
@@ -314,6 +340,7 @@
   function hideBySelector(selector) {
     try {
       document.querySelectorAll(selector).forEach(el => {
+        pauseMediaInside(el);
         maybeUnlockScrollAfterHiding(el);
         el.style.setProperty('display', 'none', 'important');
         el.dataset.dhHidden = 'true';
@@ -407,6 +434,7 @@
    */
   function dissolveElement(el) {
     isAnimating = true;
+    pauseMediaInside(el);
 
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
@@ -590,6 +618,7 @@
   // ── Persist & finalize ────────────────────────────────────────────────────
   async function finallyHide(el) {
     el.style.removeProperty('visibility');
+    pauseMediaInside(el);
     maybeUnlockScrollAfterHiding(el);
     el.style.setProperty('display', 'none', 'important');
     el.dataset.dhHidden = 'true';
