@@ -47,36 +47,60 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
           return;
         }
         const url = normalizeUrl(tab.url);
-        const data = await _browser.storage.local.get(url).catch(() => ({}));
-        const elements = data[url] || [];
+        const siteKey = getSiteKey(tab.url);
+        const data = await _browser.storage.local.get([siteKey, url]).catch(() => ({}));
+        let elements = (siteKey && data[siteKey]) || [];
+
+        if (siteKey && elements.length === 0 && (data[url] || []).length > 0) {
+          elements = Array.from(new Set(data[url]));
+          await _browser.storage.local.set({ [siteKey]: elements }).catch(() => {});
+          await _browser.storage.local.remove(url).catch(() => {});
+        }
+
         const pickMode = tab.id != null ? await getPickMode(tab.id) : false;
         sendResponse({ elements, count: elements.length, pickMode, url });
 
       } else if (message.action === 'addHiddenElement') {
         const url = normalizeUrl(message.url);
-        const data = await _browser.storage.local.get(url).catch(() => ({}));
-        const elements = data[url] || [];
+        const siteKey = getSiteKey(message.url);
+        if (!siteKey) {
+          sendResponse({ count: 0 });
+          return;
+        }
+        const data = await _browser.storage.local.get(siteKey).catch(() => ({}));
+        const elements = data[siteKey] || [];
         if (!elements.includes(message.selector)) {
           elements.push(message.selector);
-          await _browser.storage.local.set({ [url]: elements });
+          await _browser.storage.local.set({ [siteKey]: elements });
         }
         await updateBadge(tabId, elements.length);
         sendResponse({ count: elements.length });
 
       } else if (message.action === 'undoLast') {
         const [tab] = await _browser.tabs.query({ active: true, currentWindow: true });
-        const url = normalizeUrl(tab.url);
-        const data = await _browser.storage.local.get(url).catch(() => ({}));
-        let elements = data[url] || [];
+        const siteKey = getSiteKey(tab.url);
+        const data = await _browser.storage.local.get(siteKey).catch(() => ({}));
+        let elements = (siteKey && data[siteKey]) || [];
         const removed = elements.pop();
-        await _browser.storage.local.set({ [url]: elements });
+        if (siteKey) await _browser.storage.local.set({ [siteKey]: elements });
         if (tab?.id) await updateBadge(tab.id, elements.length);
         sendResponse({ removed, count: elements.length });
 
       } else if (message.action === 'restoreAll') {
         const [tab] = await _browser.tabs.query({ active: true, currentWindow: true });
-        const url = normalizeUrl(tab.url);
-        await _browser.storage.local.remove(url);
+        const origin = normalizeOrigin(tab.url);
+        const siteKey = getSiteKey(tab.url);
+
+        const removeKeys = [];
+        if (siteKey) removeKeys.push(siteKey);
+        if (origin) {
+          const all = await _browser.storage.local.get(null).catch(() => ({}));
+          for (const k of Object.keys(all)) {
+            if (k.startsWith(origin)) removeKeys.push(k);
+          }
+        }
+        if (removeKeys.length > 0) await _browser.storage.local.remove(removeKeys).catch(() => {});
+
         if (tab?.id) await updateBadge(tab.id, 0);
         sendResponse({ ok: true });
 
@@ -122,8 +146,14 @@ async function syncBadgeForTab(tabId) {
     const tab = await _browser.tabs.get(tabId);
     if (!tab?.url || !isInjectableTab(tab)) return;
     const url = normalizeUrl(tab.url);
-    const data = await _browser.storage.local.get(url);
-    const elements = data[url] || [];
+    const siteKey = getSiteKey(tab.url);
+    const data = await _browser.storage.local.get([siteKey, url]).catch(() => ({}));
+    let elements = (siteKey && data[siteKey]) || [];
+    if (siteKey && elements.length === 0 && (data[url] || []).length > 0) {
+      elements = Array.from(new Set(data[url]));
+      await _browser.storage.local.set({ [siteKey]: elements }).catch(() => {});
+      await _browser.storage.local.remove(url).catch(() => {});
+    }
     await updateBadge(tabId, elements.length);
   } catch (e) {}
 }
@@ -190,6 +220,21 @@ function normalizeUrl(url) {
   } catch {
     return url;
   }
+}
+
+function normalizeOrigin(url) {
+  if (!url) return '';
+  try {
+    const u = new URL(url);
+    return u.origin;
+  } catch {
+    return '';
+  }
+}
+
+function getSiteKey(url) {
+  const origin = normalizeOrigin(url);
+  return origin ? `dh_site:${origin}` : '';
 }
 
 async function updateBadge(tabId, count) {

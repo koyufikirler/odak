@@ -22,6 +22,10 @@
   let actionBarEl = null;
   let pickShieldEl = null;
   let scrollUnlockState = null;
+  let domObserver = null;
+  let rehideTimer = null;
+  let lastSeenUrl = window.location.href;
+  let currentSiteKey = null;
 
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
@@ -32,11 +36,10 @@
   // ── Initialize: restore persisted hidden elements ─────────────────────────
   async function init() {
     try {
-      const url = normalizeUrl(window.location.href);
-      const data = await _browser.storage.local.get(url);
-      const selectors = data[url] || [];
-      hiddenSelectors = [...selectors];
-      selectors.forEach(hideBySelector);
+      await loadRulesForCurrentSite();
+      startDomObserver();
+      startNavigationWatchers();
+      scheduleRehide();
     } catch (e) {
       // Storage not available (e.g. about: pages) — ignore
     }
@@ -49,6 +52,120 @@
   }
 
   init();
+
+  function getSiteKey(url) {
+    try {
+      const u = new URL(url);
+      return `dh_site:${u.origin}`;
+    } catch {
+      return null;
+    }
+  }
+
+  async function loadRulesForCurrentSite() {
+    const siteKey = getSiteKey(window.location.href);
+    if (!siteKey) return;
+    currentSiteKey = siteKey;
+
+    const legacyUrlKey = normalizeUrl(window.location.href);
+    const data = await _browser.storage.local.get([siteKey, legacyUrlKey]).catch(() => ({}));
+    const siteSelectors = data[siteKey] || [];
+    const legacySelectors = data[legacyUrlKey] || [];
+
+    if (siteSelectors.length === 0 && legacySelectors.length > 0) {
+      const merged = Array.from(new Set(legacySelectors));
+      hiddenSelectors = merged;
+      await _browser.storage.local.set({ [siteKey]: merged }).catch(() => {});
+      await _browser.storage.local.remove(legacyUrlKey).catch(() => {});
+      return;
+    }
+
+    hiddenSelectors = [...siteSelectors];
+  }
+
+  function scheduleRehide() {
+    if (rehideTimer) return;
+    rehideTimer = setTimeout(() => {
+      rehideTimer = null;
+      rehideAll();
+    }, 60);
+  }
+
+  function rehideAll() {
+    for (const selector of hiddenSelectors) {
+      hideBySelector(selector);
+    }
+  }
+
+  function startDomObserver() {
+    if (domObserver) domObserver.disconnect();
+
+    domObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        const t = m.target;
+        if (
+          t &&
+          t.nodeType === 1 &&
+          (t.id === 'dh-action-bar' ||
+            t.id === 'dh-pick-shield' ||
+            (t.closest && (t.closest('#dh-action-bar') || t.closest('#dh-pick-shield'))) ||
+            (t.classList && t.classList.contains(CANVAS_CLASS)))
+        ) {
+          continue;
+        }
+        scheduleRehide();
+        break;
+      }
+    });
+
+    const root = document.documentElement || document.body;
+    if (!root) return;
+    domObserver.observe(root, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style', 'hidden', 'aria-hidden'],
+    });
+  }
+
+  function startNavigationWatchers() {
+    if (window.__dhNavPatched) return;
+    window.__dhNavPatched = true;
+
+    const _pushState = history.pushState;
+    const _replaceState = history.replaceState;
+
+    history.pushState = function (...args) {
+      const ret = _pushState.apply(this, args);
+      window.dispatchEvent(new Event('dh-locationchange'));
+      return ret;
+    };
+
+    history.replaceState = function (...args) {
+      const ret = _replaceState.apply(this, args);
+      window.dispatchEvent(new Event('dh-locationchange'));
+      return ret;
+    };
+
+    window.addEventListener('popstate', () => window.dispatchEvent(new Event('dh-locationchange')), true);
+    window.addEventListener('hashchange', () => window.dispatchEvent(new Event('dh-locationchange')), true);
+
+    window.addEventListener(
+      'dh-locationchange',
+      async () => {
+        const url = window.location.href;
+        if (url === lastSeenUrl) return;
+        lastSeenUrl = url;
+
+        const nextSiteKey = getSiteKey(url);
+        if (nextSiteKey && nextSiteKey !== currentSiteKey) {
+          await loadRulesForCurrentSite();
+        }
+        scheduleRehide();
+      },
+      true
+    );
+  }
 
   // ── Message listener (from popup / background) ────────────────────────────
   _browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -359,9 +476,43 @@
 
   // ── CSS Selector Generation ───────────────────────────────────────────────
   function generateSelector(el) {
+    const isReasonableMatch = (sel) => {
+      try {
+        const n = document.querySelectorAll(sel).length;
+        return n >= 1 && n <= 5;
+      } catch {
+        return false;
+      }
+    };
+
     // Try ID first
     if (el.id && /^[a-zA-Z][\w-]*$/.test(el.id)) {
       return `#${el.id}`;
+    }
+
+    const stableAttrs = [
+      'data-testid',
+      'data-test',
+      'data-cy',
+      'data-qa',
+      'data-automation-id',
+      'aria-label',
+      'role',
+      'name',
+    ];
+
+    for (const attr of stableAttrs) {
+      const raw = el.getAttribute && el.getAttribute(attr);
+      if (!raw) continue;
+      const value = raw.trim();
+      if (!value || value.length > 80) continue;
+      if (/\s/.test(value) && attr !== 'aria-label') continue;
+
+      const candidate = `[${attr}="${CSS.escape(value)}"]`;
+      if (isReasonableMatch(candidate)) return candidate;
+
+      const tagCandidate = `${el.tagName.toLowerCase()}${candidate}`;
+      if (isReasonableMatch(tagCandidate)) return tagCandidate;
     }
 
     const parts = [];
@@ -376,10 +527,6 @@
       // Count same-tag siblings
       const siblings = Array.from(parent.children).filter(s => s.tagName === node.tagName);
       let part = tag;
-      if (siblings.length > 1) {
-        const idx = siblings.indexOf(node) + 1;
-        part += `:nth-of-type(${idx})`;
-      }
 
       // Add up to 2 stable class names as hints
       const stableClasses = Array.from(node.classList)
@@ -387,6 +534,9 @@
         .slice(0, 2);
       if (stableClasses.length > 0) {
         part += '.' + stableClasses.map(c => CSS.escape(c)).join('.');
+      } else if (siblings.length > 1) {
+        const idx = siblings.indexOf(node) + 1;
+        part += `:nth-of-type(${idx})`;
       }
 
       parts.unshift(part);
@@ -397,7 +547,20 @@
       node = parent;
     }
 
-    return parts.join(' > ') || el.tagName.toLowerCase();
+    const path = parts.join(' > ');
+    if (path) return path;
+
+    try {
+      const tag = el.tagName.toLowerCase();
+      const parent = el.parentElement;
+      if (!parent) return tag;
+      const siblings = Array.from(parent.children).filter(s => s.tagName === el.tagName);
+      if (siblings.length <= 1) return tag;
+      const idx = siblings.indexOf(el) + 1;
+      return `${tag}:nth-of-type(${idx})`;
+    } catch {
+      return el.tagName.toLowerCase();
+    }
   }
 
   // ── Particle Dissolution ──────────────────────────────────────────────────
