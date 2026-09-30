@@ -133,7 +133,10 @@ function switchView(viewName, shouldCloseDrawer = true) {
 }
 
 function setupNavigation() {
-  settingsBtn.addEventListener('click', openMenu);
+  settingsBtn.addEventListener('click', () => {
+    switchView('about', false);
+    openMenu();
+  });
   closeMenuBtn.addEventListener('click', closeMenu);
   menuOverlay.addEventListener('click', closeMenu);
 
