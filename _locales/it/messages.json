@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Nascosti:"
+  },
+  "settings": {
+    "message": "Impostazioni"
+  },
+  "menuHome": {
+    "message": "Controlli"
+  },
+  "menuAboutUs": {
+    "message": "Chi siamo"
+  },
+  "menuDonate": {
+    "message": "Dona"
+  },
+  "aboutTitle": {
+    "message": "Chi siamo"
+  },
+  "aboutTagline": {
+    "message": "Concentrazione pura, zero distrazioni"
+  },
+  "aboutDesc": {
+    "message": "ODAK ti consente di ripulire qualsiasi pagina web con un fantastico effetto particellare."
+  },
+  "aboutFeature1": {
+    "message": "Dissoluzione istantanea in particelle"
+  },
+  "aboutFeature2": {
+    "message": "100% Privacy, nessun tracciamento"
+  },
+  "aboutFeature3": {
+    "message": "Ultra leggero e veloce"
+  },
+  "aboutVersion": {
+    "message": "Versione"
+  },
+  "donateTitle": {
+    "message": "Supportaci"
+  },
+  "donateSubtitle": {
+    "message": "Aiutaci a mantenere lo strumento gratuito e senza pubblicità"
+  },
+  "donateDesc": {
+    "message": "Se trovi utile questa estensione, considera di supportarne lo sviluppo."
+  },
+  "donateCoffee": {
+    "message": "Offrimi un caffè"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Valuta e recensisci"
+  },
+  "btnBack": {
+    "message": "Indietro"
   }
 }

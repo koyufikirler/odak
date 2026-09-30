@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Gizlenen:"
+  },
+  "settings": {
+    "message": "Ayarlar"
+  },
+  "menuHome": {
+    "message": "Kontroller"
+  },
+  "menuAboutUs": {
+    "message": "Hakkımızda"
+  },
+  "menuDonate": {
+    "message": "Bağış Yap"
+  },
+  "aboutTitle": {
+    "message": "Hakkımızda"
+  },
+  "aboutTagline": {
+    "message": "Tam odaklanma, sıfır dikkat dağınıklığı"
+  },
+  "aboutDesc": {
+    "message": "Dikkat Dağıtıcı Gizleyici, etkileyici parçacık efektiyle sayfaları kolayca sadeleştirmenizi sağlar."
+  },
+  "aboutFeature1": {
+    "message": "Anında parçacık çözünme efekti"
+  },
+  "aboutFeature2": {
+    "message": "%100 Gizlilik, sıfır veri takibi"
+  },
+  "aboutFeature3": {
+    "message": "Ultra hafif ve hızlı"
+  },
+  "aboutVersion": {
+    "message": "Sürüm"
+  },
+  "donateTitle": {
+    "message": "Bize Destek Olun"
+  },
+  "donateSubtitle": {
+    "message": "Ücretsiz ve reklamsız kalmasına destek olun"
+  },
+  "donateDesc": {
+    "message": "Bu eklentiyi faydalı buluyorsanız, geliştirmemize destek olabilirsiniz. Her katkı çok değerli!"
+  },
+  "donateCoffee": {
+    "message": "Bir Kahve Ismarla"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Puan Ver & Yorum Yap"
+  },
+  "btnBack": {
+    "message": "Geri"
   }
 }

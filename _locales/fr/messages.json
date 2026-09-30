@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Masqué:"
+  },
+  "settings": {
+    "message": "Paramètres"
+  },
+  "menuHome": {
+    "message": "Contrôles"
+  },
+  "menuAboutUs": {
+    "message": "À propos"
+  },
+  "menuDonate": {
+    "message": "Faire un don"
+  },
+  "aboutTitle": {
+    "message": "À propos"
+  },
+  "aboutTagline": {
+    "message": "Concentration pure, zéro distraction"
+  },
+  "aboutDesc": {
+    "message": "ODAK vous permet de désencombrer n'importe quelle page web d'un simple clic."
+  },
+  "aboutFeature1": {
+    "message": "Dissolution instantanée en particules"
+  },
+  "aboutFeature2": {
+    "message": "100% Privé, zéro suivi"
+  },
+  "aboutFeature3": {
+    "message": "Ultra-rapide et léger"
+  },
+  "aboutVersion": {
+    "message": "Version"
+  },
+  "donateTitle": {
+    "message": "Nous soutenir"
+  },
+  "donateSubtitle": {
+    "message": "Aidez-nous à garder l'extension gratuite et sans pub"
+  },
+  "donateDesc": {
+    "message": "Si vous appréciez cette extension, envisagez de soutenir son développement futur."
+  },
+  "donateCoffee": {
+    "message": "Offrir un café"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Laisser un avis"
+  },
+  "btnBack": {
+    "message": "Retour"
   }
 }

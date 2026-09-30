@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "非表示:"
+  },
+  "settings": {
+    "message": "設定"
+  },
+  "menuHome": {
+    "message": "メイン"
+  },
+  "menuAboutUs": {
+    "message": "私たちについて"
+  },
+  "menuDonate": {
+    "message": "寄付・支援"
+  },
+  "aboutTitle": {
+    "message": "私たちについて"
+  },
+  "aboutTagline": {
+    "message": "集中を邪魔しないクリーンなWeb"
+  },
+  "aboutDesc": {
+    "message": "ODAKはウェブ上の不要な要素を素早く消去し、集中を維持するための拡張機能です。"
+  },
+  "aboutFeature1": {
+    "message": "瞬時のパーティクル消滅"
+  },
+  "aboutFeature2": {
+    "message": "100% プライバシー保護・追跡なし"
+  },
+  "aboutFeature3": {
+    "message": "超軽量かつ高速"
+  },
+  "aboutVersion": {
+    "message": "バージョン"
+  },
+  "donateTitle": {
+    "message": "開発者を支援"
+  },
+  "donateSubtitle": {
+    "message": "無料＆広告無しの維持にご協力ください"
+  },
+  "donateDesc": {
+    "message": "このツールが役立った場合は、ぜひ今後の開発をサポートしてください。"
+  },
+  "donateCoffee": {
+    "message": "Buy Me a Coffee"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "評価とレビュー"
+  },
+  "btnBack": {
+    "message": "戻る"
   }
 }

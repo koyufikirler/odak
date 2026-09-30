@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Verborgen:"
+  },
+  "settings": {
+    "message": "Einstellungen"
+  },
+  "menuHome": {
+    "message": "Steuerung"
+  },
+  "menuAboutUs": {
+    "message": "Über uns"
+  },
+  "menuDonate": {
+    "message": "Spenden"
+  },
+  "aboutTitle": {
+    "message": "Über uns"
+  },
+  "aboutTagline": {
+    "message": "Voller Fokus, keine Ablenkung"
+  },
+  "aboutDesc": {
+    "message": "Distraction Hider befreit jede Webseite von visueller Unruhe mit sanften Partikeleffekten."
+  },
+  "aboutFeature1": {
+    "message": "Sofortige Partikelauflösung"
+  },
+  "aboutFeature2": {
+    "message": "100% Datenschutz, kein Tracking"
+  },
+  "aboutFeature3": {
+    "message": "Ultra-schnell & ressourcenschonend"
+  },
+  "aboutVersion": {
+    "message": "Version"
+  },
+  "donateTitle": {
+    "message": "Unterstützen"
+  },
+  "donateSubtitle": {
+    "message": "Helfen Sie, das Tool kostenlos & werbefrei zu halten"
+  },
+  "donateDesc": {
+    "message": "Wenn Ihnen dieses Tool gefällt, freuen wir uns über Ihre Unterstützung für weitere Funktionen!"
+  },
+  "donateCoffee": {
+    "message": "Buy Me a Coffee"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Bewertung abgeben"
+  },
+  "btnBack": {
+    "message": "Zurück"
   }
 }

@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Gizlədildi:"
+  },
+  "settings": {
+    "message": "Tənzimləmələr"
+  },
+  "menuHome": {
+    "message": "İdarəetmə"
+  },
+  "menuAboutUs": {
+    "message": "Haqqımızda"
+  },
+  "menuDonate": {
+    "message": "Dəstək Ol"
+  },
+  "aboutTitle": {
+    "message": "Haqqımızda"
+  },
+  "aboutTagline": {
+    "message": "Tam diqqət, sıfır yayındırma"
+  },
+  "aboutDesc": {
+    "message": "Diqqət Yayındıranları Gizlədən hər hansı veb səhifəni asanlıqla təmizləməyə kömək edir."
+  },
+  "aboutFeature1": {
+    "message": "Anında hissəcik yox olma effekti"
+  },
+  "aboutFeature2": {
+    "message": "100% Məxfilik, izləmə yoxdur"
+  },
+  "aboutFeature3": {
+    "message": "Ultra yüngül və sürətli"
+  },
+  "aboutVersion": {
+    "message": "Versiya"
+  },
+  "donateTitle": {
+    "message": "Bizə Dəstək Olun"
+  },
+  "donateSubtitle": {
+    "message": "Pulsuz və reklamsız qalmasına kömək edin"
+  },
+  "donateDesc": {
+    "message": "Bu aləti bəyənirsinizsə, inkişafına dəstək ola bilərsiniz."
+  },
+  "donateCoffee": {
+    "message": "Qəhvə İsmarlayın"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Qiymətləndir & Rəy Yaz"
+  },
+  "btnBack": {
+    "message": "Geri"
   }
 }

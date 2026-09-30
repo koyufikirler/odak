@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Жасырылған:"
+  },
+  "settings": {
+    "message": "Баптаулар"
+  },
+  "menuHome": {
+    "message": "Басқару"
+  },
+  "menuAboutUs": {
+    "message": "Біз туралы"
+  },
+  "menuDonate": {
+    "message": "Қолдау көрсету"
+  },
+  "aboutTitle": {
+    "message": "Біз туралы"
+  },
+  "aboutTagline": {
+    "message": "Тек назар аудару, алаңдаусыз"
+  },
+  "aboutDesc": {
+    "message": "Алаңдататын нәрселерді жасырғыш кез келген веб-бетті оңай тазалауға көмектеседі."
+  },
+  "aboutFeature1": {
+    "message": "Элементтердің лезде еруі"
+  },
+  "aboutFeature2": {
+    "message": "100% Құпиялылық, бақылаусыз"
+  },
+  "aboutFeature3": {
+    "message": "Өте жылдам және жеңіл"
+  },
+  "aboutVersion": {
+    "message": "Нұсқа"
+  },
+  "donateTitle": {
+    "message": "Бізді қолдаңыз"
+  },
+  "donateSubtitle": {
+    "message": "Тегін әрі жарнамасыз қалуына көмектесіңіз"
+  },
+  "donateDesc": {
+    "message": "Бұл құрал ұнаса, оның дамуына қолдау көрсете аласыз."
+  },
+  "donateCoffee": {
+    "message": "Кофе алып беріңіз"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Бағалау және пікір"
+  },
+  "btnBack": {
+    "message": "Артқа"
   }
 }

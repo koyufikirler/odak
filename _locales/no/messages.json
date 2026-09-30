@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Skjult:"
+  },
+  "settings": {
+    "message": "Innstillinger"
+  },
+  "menuHome": {
+    "message": "Kontroller"
+  },
+  "menuAboutUs": {
+    "message": "Om oss"
+  },
+  "menuDonate": {
+    "message": "Støtt oss"
+  },
+  "aboutTitle": {
+    "message": "Om oss"
+  },
+  "aboutTagline": {
+    "message": "Rent fokus, ingen distraksjoner"
+  },
+  "aboutDesc": {
+    "message": "ODAK hjelper deg med å fjerne visuelt rot fra enhver nettside."
+  },
+  "aboutFeature1": {
+    "message": "Umiddelbar partikkeloppløsning"
+  },
+  "aboutFeature2": {
+    "message": "100% Privat, ingen sporing"
+  },
+  "aboutFeature3": {
+    "message": "Ultrarask og lett"
+  },
+  "aboutVersion": {
+    "message": "Versjon"
+  },
+  "donateTitle": {
+    "message": "Støtt oss"
+  },
+  "donateSubtitle": {
+    "message": "Hjelp oss å holde verktøyet gratis og uten reklame"
+  },
+  "donateDesc": {
+    "message": "Hvis du liker denne utvidelsen, vurder å støtte den videre utviklingen."
+  },
+  "donateCoffee": {
+    "message": "Kjøp meg en kaffe"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Vurder og anmeld"
+  },
+  "btnBack": {
+    "message": "Tilbake"
   }
 }

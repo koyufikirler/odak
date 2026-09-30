@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Dold:"
+  },
+  "settings": {
+    "message": "Inställningar"
+  },
+  "menuHome": {
+    "message": "Kontroller"
+  },
+  "menuAboutUs": {
+    "message": "Om oss"
+  },
+  "menuDonate": {
+    "message": "Donera"
+  },
+  "aboutTitle": {
+    "message": "Om oss"
+  },
+  "aboutTagline": {
+    "message": "Rent fokus, noll distraktioner"
+  },
+  "aboutDesc": {
+    "message": "ODAK hjälper dig att enkelt ta bort visuellt brus från alla webbsidor."
+  },
+  "aboutFeature1": {
+    "message": "Omedelbar partikelupplösning"
+  },
+  "aboutFeature2": {
+    "message": "100% Privat, ingen spårning"
+  },
+  "aboutFeature3": {
+    "message": "Blixtsnabb och resurssnål"
+  },
+  "aboutVersion": {
+    "message": "Version"
+  },
+  "donateTitle": {
+    "message": "Stöd oss"
+  },
+  "donateSubtitle": {
+    "message": "Hjälp till att hålla verktyget gratis och reklamfritt"
+  },
+  "donateDesc": {
+    "message": "Om du gillar detta tillägg, överväg att stödja dess vidareutveckling."
+  },
+  "donateCoffee": {
+    "message": "Köp en kaffe till mig"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Betygsätt och recensera"
+  },
+  "btnBack": {
+    "message": "Tillbaka"
   }
 }

@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Piilotettu:"
+  },
+  "settings": {
+    "message": "Asetukset"
+  },
+  "menuHome": {
+    "message": "Ohjaus"
+  },
+  "menuAboutUs": {
+    "message": "Tietoa meistä"
+  },
+  "menuDonate": {
+    "message": "Lahjoita"
+  },
+  "aboutTitle": {
+    "message": "Tietoa meistä"
+  },
+  "aboutTagline": {
+    "message": "Puhdasta keskittymistä ilman häiriöitä"
+  },
+  "aboutDesc": {
+    "message": "ODAK auttaa sinua poistamaan visuaalisen hälyn miltä tahansa verkkosivulta."
+  },
+  "aboutFeature1": {
+    "message": "Välitön hiukkasliukeneminen"
+  },
+  "aboutFeature2": {
+    "message": "100% Yksityinen, ei seurantaa"
+  },
+  "aboutFeature3": {
+    "message": "Erittäin nopea ja kevyt"
+  },
+  "aboutVersion": {
+    "message": "Versio"
+  },
+  "donateTitle": {
+    "message": "Tue meitä"
+  },
+  "donateSubtitle": {
+    "message": "Auta pitämään työkalu ilmaisena ja mainoksettomana"
+  },
+  "donateDesc": {
+    "message": "Jos pidät tästä laajennuksesta, harkitse kehityksen tukemista."
+  },
+  "donateCoffee": {
+    "message": "Osta minulle kahvi"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Arvostele laajennus"
+  },
+  "btnBack": {
+    "message": "Takaisin"
   }
 }

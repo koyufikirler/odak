@@ -1,10 +1,11 @@
 /**
- * popup.js — Distraction Hider Popup Logic
+ * popup.js — Distraction Hider Popup Logic & Navigation
  *
  * Communicates with background.js to:
  *  - Toggle Pick Mode on the active tab
  *  - Display hidden element count
  *  - Trigger Undo Last / Restore All via content script
+ *  - Handle Left Drawer Navigation (Settings, About Us, Donate)
  */
 
 'use strict';
@@ -12,23 +13,38 @@
 const _browser = typeof browser !== 'undefined' ? browser : chrome;
 
 // ── DOM references ────────────────────────────────────────────────────────
-const pickCheckbox    = document.getElementById('pick-mode-checkbox');
-const pickCard        = document.getElementById('pick-mode-section');
-const pickStatus      = document.getElementById('pick-mode-status');
-const hintText        = document.getElementById('hint-text');
-const hiddenCount     = document.getElementById('hidden-count');
-const statusBadge     = document.getElementById('status-badge');
-const badgeText       = document.getElementById('badge-text');
-const undoBtn         = document.getElementById('undo-btn');
-const restoreBtn      = document.getElementById('restore-btn');
+const pickCheckbox = document.getElementById('pick-mode-checkbox');
+const pickCard = document.getElementById('pick-mode-section');
+const pickStatus = document.getElementById('pick-mode-status');
+const hintText = document.getElementById('hint-text');
+const hiddenCount = document.getElementById('hidden-count');
+const statusBadge = document.getElementById('status-badge');
+const badgeText = document.getElementById('badge-text');
+const undoBtn = document.getElementById('undo-btn');
+const restoreBtn = document.getElementById('restore-btn');
+
+// Menu & Views
+const settingsBtn = document.getElementById('settings-btn');
+const menuDrawer = document.getElementById('menu-drawer');
+const menuOverlay = document.getElementById('menu-overlay');
+const closeMenuBtn = document.getElementById('close-menu-btn');
+const menuItems = document.querySelectorAll('.menu-item');
+
+const viewMain = document.getElementById('view-main');
+const viewAbout = document.getElementById('view-about');
+const viewDonate = document.getElementById('view-donate');
+const aboutBackBtn = document.getElementById('about-back-btn');
+const donateBackBtn = document.getElementById('donate-back-btn');
+
+let currentView = 'main';
 
 // ── Initialize popup state ────────────────────────────────────────────────
 async function init() {
   // Apply i18n strings
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const msg = _browser.i18n.getMessage(el.getAttribute('data-i18n'));
-    if (msg) el.textContent = msg;
-  });
+  applyI18n();
+
+  // Setup navigation listeners
+  setupNavigation();
 
   try {
     const resp = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
@@ -45,6 +61,102 @@ async function init() {
   } catch (e) {
     setRestrictedUI();
   }
+}
+
+// ── Internationalization helper ───────────────────────────────────────────
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const msg = _browser.i18n.getMessage(key);
+    if (msg) el.textContent = msg;
+  });
+
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    const msg = _browser.i18n.getMessage(key);
+    if (msg) el.setAttribute('title', msg);
+  });
+}
+
+// ── Navigation & Drawer ───────────────────────────────────────────────────
+function openMenu() {
+  menuDrawer.classList.add('open');
+  menuOverlay.classList.add('open');
+}
+
+function closeMenu() {
+  menuDrawer.classList.remove('open');
+  menuOverlay.classList.remove('open');
+}
+
+function switchView(viewName) {
+  currentView = viewName;
+
+  // Hide all views
+  viewMain.classList.remove('active');
+  viewAbout.classList.remove('active');
+  viewDonate.classList.remove('active');
+
+  // Show target view
+  if (viewName === 'about') {
+    viewAbout.classList.add('active');
+  } else if (viewName === 'donate') {
+    viewDonate.classList.add('active');
+  } else {
+    viewMain.classList.add('active');
+  }
+
+  // Update menu active state
+  menuItems.forEach(item => {
+    const target = item.getAttribute('data-view');
+    if (target === viewName) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+
+  closeMenu();
+}
+
+function setupNavigation() {
+  settingsBtn.addEventListener('click', openMenu);
+  closeMenuBtn.addEventListener('click', closeMenu);
+  menuOverlay.addEventListener('click', closeMenu);
+
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const view = item.getAttribute('data-view');
+      switchView(view);
+    });
+  });
+
+  aboutBackBtn.addEventListener('click', () => switchView('main'));
+  donateBackBtn.addEventListener('click', () => switchView('main'));
+
+  // Handle external donate links safely
+  document.querySelectorAll('.btn-donate').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const href = btn.getAttribute('href');
+      if (href && _browser.tabs?.create) {
+        e.preventDefault();
+        _browser.tabs.create({ url: href });
+      }
+    });
+  });
+
+  // Handle Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (menuDrawer.classList.contains('open')) {
+        closeMenu();
+        e.stopPropagation();
+      } else if (currentView !== 'main') {
+        switchView('main');
+        e.stopPropagation();
+      }
+    }
+  });
 }
 
 // ── Toggle Pick Mode ──────────────────────────────────────────────────────
@@ -74,7 +186,7 @@ undoBtn.addEventListener('click', async () => {
     undoBtn.disabled = true;
     const [tab] = await _browser.tabs.query({ active: true, currentWindow: true });
     // Instruct content script to undo last
-    const resp = await _browser.tabs.sendMessage(tab.id, { action: 'undoLast' });
+    await _browser.tabs.sendMessage(tab.id, { action: 'undoLast' });
 
     // Refresh count from background
     const state = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
@@ -131,15 +243,15 @@ function updateCount(count) {
 }
 
 function updateButtons(count) {
-  undoBtn.disabled    = count === 0;
+  undoBtn.disabled = count === 0;
   restoreBtn.disabled = count === 0;
 }
 
 function setRestrictedUI() {
   pickCheckbox.disabled = true;
-  undoBtn.disabled      = true;
-  restoreBtn.disabled   = true;
-  hintText.textContent  = _browser.i18n.getMessage('pickHintRestricted');
+  undoBtn.disabled = true;
+  restoreBtn.disabled = true;
+  hintText.textContent = _browser.i18n.getMessage('pickHintRestricted');
   pickStatus.textContent = _browser.i18n.getMessage('pickStatusRestricted');
 }
 

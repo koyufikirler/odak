@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "مخفي:"
+  },
+  "settings": {
+    "message": "الإعدادات"
+  },
+  "menuHome": {
+    "message": "التحكم"
+  },
+  "menuAboutUs": {
+    "message": "من نحن"
+  },
+  "menuDonate": {
+    "message": "تبرع"
+  },
+  "aboutTitle": {
+    "message": "من نحن"
+  },
+  "aboutTagline": {
+    "message": "تركيز خالص، بدون مشتتات"
+  },
+  "aboutDesc": {
+    "message": "يساعدك ODAK على إزالة الفوضى البصرية من أي صفحة ويب بسهولة."
+  },
+  "aboutFeature1": {
+    "message": "تحلل فوري للجزيئات"
+  },
+  "aboutFeature2": {
+    "message": "100% خصوصية، بدون تتبع"
+  },
+  "aboutFeature3": {
+    "message": "خفيف جدا وسريع للغاية"
+  },
+  "aboutVersion": {
+    "message": "الإصدار"
+  },
+  "donateTitle": {
+    "message": "ادعمنا"
+  },
+  "donateSubtitle": {
+    "message": "ساعد في الحفاظ على الأداة مجانية وبدون إعلانات"
+  },
+  "donateDesc": {
+    "message": "إذا كنت تستمتع باستخدام هذا الامتداد، يرجى النظر في دعم تطويره المستمر."
+  },
+  "donateCoffee": {
+    "message": "اشترِ لي قهوة"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "تقييم ومراجعة"
+  },
+  "btnBack": {
+    "message": "رجوع"
   }
 }

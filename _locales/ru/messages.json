@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Скрыто:"
+  },
+  "settings": {
+    "message": "Настройки"
+  },
+  "menuHome": {
+    "message": "Управление"
+  },
+  "menuAboutUs": {
+    "message": "О нас"
+  },
+  "menuDonate": {
+    "message": "Поддержать"
+  },
+  "aboutTitle": {
+    "message": "О нас"
+  },
+  "aboutTagline": {
+    "message": "Чистый фокус, ноль отвлечений"
+  },
+  "aboutDesc": {
+    "message": "ODAK помогает мгновенно убрать визуальный шум с любой страницы с эффектом распада элементов."
+  },
+  "aboutFeature1": {
+    "message": "Мгновенное растворение элементов"
+  },
+  "aboutFeature2": {
+    "message": "100% приватность, без слежки"
+  },
+  "aboutFeature3": {
+    "message": "Сверхлегкий и быстрый"
+  },
+  "aboutVersion": {
+    "message": "Версия"
+  },
+  "donateTitle": {
+    "message": "Поддержать проект"
+  },
+  "donateSubtitle": {
+    "message": "Помогите сохранить проект бесплатным и без рекламы"
+  },
+  "donateDesc": {
+    "message": "Если вам нравится расширение, поддержите разработку новых функций!"
+  },
+  "donateCoffee": {
+    "message": "Угостить кофе"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Оставить отзыв"
+  },
+  "btnBack": {
+    "message": "Назад"
   }
 }

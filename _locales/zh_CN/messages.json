@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "已隐藏:"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "menuHome": {
+    "message": "控制面板"
+  },
+  "menuAboutUs": {
+    "message": "关于我们"
+  },
+  "menuDonate": {
+    "message": "支持捐赠"
+  },
+  "aboutTitle": {
+    "message": "关于我们"
+  },
+  "aboutTagline": {
+    "message": "纯粹专注，远离干扰"
+  },
+  "aboutDesc": {
+    "message": "ODAK 帮助您通过华丽的粒子消散效果一键清理网页干扰，专注核心内容。"
+  },
+  "aboutFeature1": {
+    "message": "即时粒子消散效果"
+  },
+  "aboutFeature2": {
+    "message": "100% 隐私保护，零追踪"
+  },
+  "aboutFeature3": {
+    "message": "超轻量且疾速"
+  },
+  "aboutVersion": {
+    "message": "版本"
+  },
+  "donateTitle": {
+    "message": "支持我们"
+  },
+  "donateSubtitle": {
+    "message": "助力保持免费与无广告"
+  },
+  "donateDesc": {
+    "message": "如果您喜欢使用本扩展，欢迎赞助支持未来的功能开发！"
+  },
+  "donateCoffee": {
+    "message": "请我喝杯咖啡"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "五星好评"
+  },
+  "btnBack": {
+    "message": "返回"
   }
 }

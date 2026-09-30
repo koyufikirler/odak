@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Hidden:"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "menuHome": {
+    "message": "Controls"
+  },
+  "menuAboutUs": {
+    "message": "About Us"
+  },
+  "menuDonate": {
+    "message": "Donate"
+  },
+  "aboutTitle": {
+    "message": "About Us"
+  },
+  "aboutTagline": {
+    "message": "Pure focus, zero distractions"
+  },
+  "aboutDesc": {
+    "message": "Distraction Hider empowers you to declutter any web page with an effortless click-to-dissolve particle effect."
+  },
+  "aboutFeature1": {
+    "message": "Instant element dissolution"
+  },
+  "aboutFeature2": {
+    "message": "100% Private, zero tracking"
+  },
+  "aboutFeature3": {
+    "message": "Ultra-fast & lightweight"
+  },
+  "aboutVersion": {
+    "message": "Version"
+  },
+  "donateTitle": {
+    "message": "Support Us"
+  },
+  "donateSubtitle": {
+    "message": "Help keep this tool free & ad-free"
+  },
+  "donateDesc": {
+    "message": "If you love using Distraction Hider, consider supporting future development. Every contribution keeps it going!"
+  },
+  "donateCoffee": {
+    "message": "Buy Me a Coffee"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Rate & Review"
+  },
+  "btnBack": {
+    "message": "Back"
   }
 }

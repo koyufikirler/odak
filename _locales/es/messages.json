@@ -52,5 +52,59 @@
   },
   "barHidden": {
     "message": "Oculto:"
+  },
+  "settings": {
+    "message": "Ajustes"
+  },
+  "menuHome": {
+    "message": "Controles"
+  },
+  "menuAboutUs": {
+    "message": "Sobre nosotros"
+  },
+  "menuDonate": {
+    "message": "Donar"
+  },
+  "aboutTitle": {
+    "message": "Sobre nosotros"
+  },
+  "aboutTagline": {
+    "message": "Enfoque puro, cero distracciones"
+  },
+  "aboutDesc": {
+    "message": "ODAK te permite limpiar páginas web al instante con un hermoso efecto de partículas."
+  },
+  "aboutFeature1": {
+    "message": "Disolución instantánea de partículas"
+  },
+  "aboutFeature2": {
+    "message": "100% Privado, sin rastreo"
+  },
+  "aboutFeature3": {
+    "message": "Ultrarrápido y ligero"
+  },
+  "aboutVersion": {
+    "message": "Versión"
+  },
+  "donateTitle": {
+    "message": "Apóyanos"
+  },
+  "donateSubtitle": {
+    "message": "Ayuda a mantener la herramienta gratuita y sin anuncios"
+  },
+  "donateDesc": {
+    "message": "Si te resulta útil esta extensión, considera apoyar el desarrollo continuo."
+  },
+  "donateCoffee": {
+    "message": "Cómprame un café"
+  },
+  "donateSponsors": {
+    "message": "GitHub Sponsors"
+  },
+  "donateReview": {
+    "message": "Calificar y opinar"
+  },
+  "btnBack": {
+    "message": "Volver"
   }
 }
