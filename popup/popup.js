@@ -5,7 +5,7 @@
  *  - Toggle Pick Mode on the active tab
  *  - Display hidden element count
  *  - Trigger Undo Last / Restore All via content script
- *  - Handle Left Drawer Navigation (Settings, About Us, Donate)
+ *  - Handle Navigation (Settings Drawer & Subview Tabs)
  */
 
 'use strict';
@@ -13,28 +13,29 @@
 const _browser = typeof browser !== 'undefined' ? browser : chrome;
 
 // ── DOM references ────────────────────────────────────────────────────────
-const pickCheckbox = document.getElementById('pick-mode-checkbox');
-const pickCard = document.getElementById('pick-mode-section');
-const pickStatus = document.getElementById('pick-mode-status');
-const hintText = document.getElementById('hint-text');
-const hiddenCount = document.getElementById('hidden-count');
-const statusBadge = document.getElementById('status-badge');
-const badgeText = document.getElementById('badge-text');
-const undoBtn = document.getElementById('undo-btn');
-const restoreBtn = document.getElementById('restore-btn');
+const pickCheckbox     = document.getElementById('pick-mode-checkbox');
+const pickCard         = document.getElementById('pick-mode-section');
+const pickStatus       = document.getElementById('pick-mode-status');
+const hintText         = document.getElementById('hint-text');
+const hiddenCount      = document.getElementById('hidden-count');
+const statusBadge      = document.getElementById('status-badge');
+const badgeText        = document.getElementById('badge-text');
+const undoBtn          = document.getElementById('undo-btn');
+const restoreBtn       = document.getElementById('restore-btn');
 
-// Menu & Views
-const settingsBtn = document.getElementById('settings-btn');
-const menuDrawer = document.getElementById('menu-drawer');
-const menuOverlay = document.getElementById('menu-overlay');
-const closeMenuBtn = document.getElementById('close-menu-btn');
-const menuItems = document.querySelectorAll('.menu-item');
+// Menu, Tabs & Views
+const settingsBtn      = document.getElementById('settings-btn');
+const menuDrawer       = document.getElementById('menu-drawer');
+const menuOverlay      = document.getElementById('menu-overlay');
+const closeMenuBtn     = document.getElementById('close-menu-btn');
+const menuItems        = document.querySelectorAll('.menu-item');
+const subviewTabs      = document.querySelectorAll('.subview-tab');
 
-const viewMain = document.getElementById('view-main');
-const viewAbout = document.getElementById('view-about');
-const viewDonate = document.getElementById('view-donate');
-const aboutBackBtn = document.getElementById('about-back-btn');
-const donateBackBtn = document.getElementById('donate-back-btn');
+const viewMain         = document.getElementById('view-main');
+const viewAbout        = document.getElementById('view-about');
+const viewDonate       = document.getElementById('view-donate');
+const aboutBackBtn     = document.getElementById('about-back-btn');
+const donateBackBtn    = document.getElementById('donate-back-btn');
 
 let currentView = 'main';
 
@@ -89,7 +90,7 @@ function closeMenu() {
   menuOverlay.classList.remove('open');
 }
 
-function switchView(viewName) {
+function switchView(viewName, shouldCloseDrawer = true) {
   currentView = viewName;
 
   // Hide all views
@@ -106,7 +107,7 @@ function switchView(viewName) {
     viewMain.classList.add('active');
   }
 
-  // Update menu active state
+  // Update drawer menu items active state
   menuItems.forEach(item => {
     const target = item.getAttribute('data-view');
     if (target === viewName) {
@@ -116,7 +117,19 @@ function switchView(viewName) {
     }
   });
 
-  closeMenu();
+  // Update subview tab bar items active state
+  document.querySelectorAll('.subview-tab').forEach(tab => {
+    const target = tab.getAttribute('data-view');
+    if (target === viewName) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  if (shouldCloseDrawer) {
+    closeMenu();
+  }
 }
 
 function setupNavigation() {
@@ -124,15 +137,24 @@ function setupNavigation() {
   closeMenuBtn.addEventListener('click', closeMenu);
   menuOverlay.addEventListener('click', closeMenu);
 
+  // Drawer menu items click
   menuItems.forEach(item => {
     item.addEventListener('click', () => {
       const view = item.getAttribute('data-view');
-      switchView(view);
+      switchView(view, true);
     });
   });
 
-  aboutBackBtn.addEventListener('click', () => switchView('main'));
-  donateBackBtn.addEventListener('click', () => switchView('main'));
+  // Subview quick tab switcher click (instant 1-click toggle between About Us and Donate)
+  subviewTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const view = tab.getAttribute('data-view');
+      switchView(view, true);
+    });
+  });
+
+  aboutBackBtn.addEventListener('click', () => switchView('main', true));
+  donateBackBtn.addEventListener('click', () => switchView('main', true));
 
   // Handle external donate links safely
   document.querySelectorAll('.btn-donate').forEach(btn => {
@@ -152,7 +174,7 @@ function setupNavigation() {
         closeMenu();
         e.stopPropagation();
       } else if (currentView !== 'main') {
-        switchView('main');
+        switchView('main', true);
         e.stopPropagation();
       }
     }
@@ -243,15 +265,15 @@ function updateCount(count) {
 }
 
 function updateButtons(count) {
-  undoBtn.disabled = count === 0;
+  undoBtn.disabled    = count === 0;
   restoreBtn.disabled = count === 0;
 }
 
 function setRestrictedUI() {
   pickCheckbox.disabled = true;
-  undoBtn.disabled = true;
-  restoreBtn.disabled = true;
-  hintText.textContent = _browser.i18n.getMessage('pickHintRestricted');
+  undoBtn.disabled      = true;
+  restoreBtn.disabled   = true;
+  hintText.textContent  = _browser.i18n.getMessage('pickHintRestricted');
   pickStatus.textContent = _browser.i18n.getMessage('pickStatusRestricted');
 }
 
