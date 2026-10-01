@@ -37,6 +37,8 @@ const locales = {
     donateDesc: { message: "If you love using Distraction Hider, consider supporting future development. Every contribution keeps it going!" },
     donateCoffee: { message: "Buy Me a Coffee" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Rate & Review" },
     btnBack: { message: "Back" }
   },
@@ -75,6 +77,8 @@ const locales = {
     donateDesc: { message: "Bu eklentiyi faydalı buluyorsanız, geliştirmemize destek olabilirsiniz. Her katkı çok değerli!" },
     donateCoffee: { message: "Bir Kahve Ismarla" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Puan Ver & Yorum Yap" },
     btnBack: { message: "Geri" }
   },
@@ -113,6 +117,8 @@ const locales = {
     donateDesc: { message: "Bu aləti bəyənirsinizsə, inkişafına dəstək ola bilərsiniz." },
     donateCoffee: { message: "Qəhvə İsmarlayın" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Qiymətləndir & Rəy Yaz" },
     btnBack: { message: "Geri" }
   },
@@ -151,6 +157,8 @@ const locales = {
     donateDesc: { message: "Бұл құрал ұнаса, оның дамуына қолдау көрсете аласыз." },
     donateCoffee: { message: "Кофе алып беріңіз" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Бағалау және пікір" },
     btnBack: { message: "Артқа" }
   },
@@ -167,7 +175,6 @@ const locales = {
     pickStatusRestricted: { message: "通常のウェブページに移動してください" },
     statsLabel: { message: "ページ内の非表示数" },
     badgeInactive: { message: "無効" },
-    badgeActive: { message: "有効" },
     badgeActive: { message: "有効" },
     btnUndo: { message: "元に戻す" },
     btnRestore: { message: "すべて復元" },
@@ -190,6 +197,8 @@ const locales = {
     donateDesc: { message: "このツールが役立った場合は、ぜひ今後の開発をサポートしてください。" },
     donateCoffee: { message: "Buy Me a Coffee" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "評価とレビュー" },
     btnBack: { message: "戻る" }
   },
@@ -228,6 +237,8 @@ const locales = {
     donateDesc: { message: "如果您喜欢使用本扩展，欢迎赞助支持未来的功能开发！" },
     donateCoffee: { message: "请我喝杯咖啡" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "五星好评" },
     btnBack: { message: "返回" }
   },
@@ -266,6 +277,8 @@ const locales = {
     donateDesc: { message: "Wenn Ihnen dieses Tool gefällt, freuen wir uns über Ihre Unterstützung für weitere Funktionen!" },
     donateCoffee: { message: "Buy Me a Coffee" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Bewertung abgeben" },
     btnBack: { message: "Zurück" }
   },
@@ -304,6 +317,8 @@ const locales = {
     donateDesc: { message: "Если вам нравится расширение, поддержите разработку новых функций!" },
     donateCoffee: { message: "Угостить кофе" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Оставить отзыв" },
     btnBack: { message: "Назад" }
   },
@@ -342,6 +357,8 @@ const locales = {
     donateDesc: { message: "Si vous appréciez cette extension, envisagez de soutenir son développement futur." },
     donateCoffee: { message: "Offrir un café" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Laisser un avis" },
     btnBack: { message: "Retour" }
   },
@@ -380,6 +397,8 @@ const locales = {
     donateDesc: { message: "Si te resulta útil esta extensión, considera apoyar el desarrollo continuo." },
     donateCoffee: { message: "Cómprame un café" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Calificar y opinar" },
     btnBack: { message: "Volver" }
   },
@@ -418,6 +437,8 @@ const locales = {
     donateDesc: { message: "Hvis du liker denne utvidelsen, vurder å støtte den videre utviklingen." },
     donateCoffee: { message: "Kjøp meg en kaffe" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Vurder og anmeld" },
     btnBack: { message: "Tilbake" }
   },
@@ -456,6 +477,8 @@ const locales = {
     donateDesc: { message: "Jos pidät tästä laajennuksesta, harkitse kehityksen tukemista." },
     donateCoffee: { message: "Osta minulle kahvi" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Arvostele laajennus" },
     btnBack: { message: "Takaisin" }
   },
@@ -494,6 +517,8 @@ const locales = {
     donateDesc: { message: "Om du gillar detta tillägg, överväg att stödja dess vidareutveckling." },
     donateCoffee: { message: "Köp en kaffe till mig" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Betygsätt och recensera" },
     btnBack: { message: "Tillbaka" }
   },
@@ -532,6 +557,8 @@ const locales = {
     donateDesc: { message: "إذا كنت تستمتع باستخدام هذا الامتداد، يرجى النظر في دعم تطويره المستمر." },
     donateCoffee: { message: "اشترِ لي قهوة" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "تقييم ومراجعة" },
     btnBack: { message: "رجوع" }
   },
@@ -570,6 +597,8 @@ const locales = {
     donateDesc: { message: "Se trovi utile questa estensione, considera di supportarne lo sviluppo." },
     donateCoffee: { message: "Offrimi un caffè" },
     donateSponsors: { message: "GitHub Sponsors" },
+    donatePatreon: { message: "Patreon" },
+    donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Valuta e recensisci" },
     btnBack: { message: "Indietro" }
   }

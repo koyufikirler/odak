@@ -101,6 +101,12 @@
   "donateSponsors": {
     "message": "GitHub Sponsors"
   },
+  "donatePatreon": {
+    "message": "Patreon"
+  },
+  "donateOpenCollective": {
+    "message": "Open Collective"
+  },
   "donateReview": {
     "message": "تقييم ومراجعة"
   },
