@@ -1,0 +1,65 @@
+name: Create Extension Release
+
+on:
+  push:
+    tags:
+      - "s*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#s}" >> "$GITHUB_OUTPUT"
+
+      # --- 1. CHROME & EDGE BUILD ---
+      - name: Build Chrome & Edge ZIP
+        run: |
+          mkdir -p build-chrome release
+
+          # Proje dosyalarını kopyala
+          cp -r _locales icons popup background.js content.js content.css build-chrome/
+          cp manifest.json build-chrome/manifest.json
+
+          # Zip oluştur
+          (cd build-chrome && zip -r "${GITHUB_WORKSPACE}/release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip" .)
+
+          # Edge için kopyala
+          cp "release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip" \
+             "release/odak-edge-${{ steps.version.outputs.VERSION }}.zip"
+
+      # --- 2. FIREFOX BUILD (MERGE) ---
+      - name: Build Firefox ZIP
+        run: |
+          mkdir -p build-firefox
+
+          # Proje dosyalarını kopyala
+          cp -r _locales icons popup background.js content.js content.css build-firefox/
+
+          # Chrome tabanlı manifest.json ile manifest.firefox.json birleştirilir
+          jq -s '.[0] * .[1]' manifest.json manifest.firefox.json > build-firefox/manifest.json
+
+          # Zip oluştur
+          (cd build-firefox && zip -r "${GITHUB_WORKSPACE}/release/odak-firefox-${{ steps.version.outputs.VERSION }}.zip" .)
+
+      # --- 3. GITHUB RELEASE YÜKLEME ---
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Sürüm ${{ steps.version.outputs.VERSION }}"
+          body: |
+            ## Yenilikler ve Güncellemeler
+            * ODAK ayarlar bölümü eklendi
+        files: |
+            release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip
+            release/odak-firefox-${{ steps.version.outputs.VERSION }}.zip
+            release/odak-edge-${{ steps.version.outputs.VERSION }}.zip
+        generate_release_notes: false
