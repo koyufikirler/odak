@@ -178,6 +178,14 @@
     } else if (message.action === 'restoreAll') {
       restoreAll();
       sendResponse({ ok: true });
+    } else if (message.action === 'siteDataCleared') {
+      if (!message.origin || normalizeOrigin(window.location.href) === message.origin) {
+        restoreAllLocalOnly();
+      }
+      sendResponse({ ok: true });
+    } else if (message.action === 'allSitesCleared') {
+      restoreAllLocalOnly();
+      sendResponse({ ok: true });
     } else if (message.action === 'getStatus') {
       sendResponse({ pickMode: pickModeActive, count: hiddenSelectors.length });
     }
@@ -471,6 +479,14 @@
       return `${u.origin}${u.pathname}${u.search}`;
     } catch {
       return url;
+    }
+  }
+
+  function normalizeOrigin(url) {
+    try {
+      return new URL(url).origin;
+    } catch {
+      return '';
     }
   }
 
@@ -821,14 +837,18 @@
   async function restoreAll() {
     try {
       await _browser.runtime.sendMessage({ action: 'restoreAll' });
-      document.querySelectorAll('[data-dh-hidden]').forEach(el => {
-        el.style.removeProperty('display');
-        delete el.dataset.dhHidden;
-      });
-      hiddenSelectors = [];
-      updateActionBarCount();
-      restoreScrollUnlock();
+      restoreAllLocalOnly();
     } catch (e) {}
+  }
+
+  function restoreAllLocalOnly() {
+    document.querySelectorAll('[data-dh-hidden]').forEach(el => {
+      el.style.removeProperty('display');
+      delete el.dataset.dhHidden;
+    });
+    hiddenSelectors = [];
+    updateActionBarCount();
+    restoreScrollUnlock();
   }
 
   // ── Floating Action Bar ───────────────────────────────────────────────────

@@ -32,10 +32,17 @@ const menuItems        = document.querySelectorAll('.menu-item');
 const subviewTabs      = document.querySelectorAll('.subview-tab');
 
 const viewMain         = document.getElementById('view-main');
+const viewSites        = document.getElementById('view-sites');
 const viewAbout        = document.getElementById('view-about');
 const viewDonate       = document.getElementById('view-donate');
 const aboutBackBtn     = document.getElementById('about-back-btn');
 const donateBackBtn    = document.getElementById('donate-back-btn');
+const sitesBackBtn     = document.getElementById('sites-back-btn');
+const sitesList        = document.getElementById('sites-list');
+const sitesEmpty       = document.getElementById('sites-empty');
+const sitesTotalCount  = document.getElementById('sites-total-count');
+const clearAllSitesBtn = document.getElementById('clear-all-sites-btn');
+const navSitesBadge    = document.getElementById('nav-sites-badge');
 
 let currentView = 'main';
 
@@ -95,11 +102,15 @@ function switchView(viewName, shouldCloseDrawer = true) {
 
   // Hide all views
   viewMain.classList.remove('active');
+  viewSites.classList.remove('active');
   viewAbout.classList.remove('active');
   viewDonate.classList.remove('active');
 
   // Show target view
-  if (viewName === 'about') {
+  if (viewName === 'sites') {
+    viewSites.classList.add('active');
+    loadSitesData();
+  } else if (viewName === 'about') {
     viewAbout.classList.add('active');
   } else if (viewName === 'donate') {
     viewDonate.classList.add('active');
@@ -158,6 +169,7 @@ function setupNavigation() {
 
   aboutBackBtn.addEventListener('click', () => switchView('main', true));
   donateBackBtn.addEventListener('click', () => switchView('main', true));
+  sitesBackBtn.addEventListener('click', () => switchView('main', true));
 
   // Handle external donate links safely
   document.querySelectorAll('.btn-donate').forEach(btn => {
@@ -280,5 +292,112 @@ function setRestrictedUI() {
   pickStatus.textContent = _browser.i18n.getMessage('pickStatusRestricted');
 }
 
+// ── Sites Data ────────────────────────────────────────────────────────────
+async function loadSitesData() {
+  try {
+    const resp = await _browser.runtime.sendMessage({ action: 'getAllSitesData' });
+    if (!resp) return;
+    renderSites(resp.sites, resp.totalHidden);
+  } catch (e) {
+    renderSites([], 0);
+  }
+}
+
+function renderSites(sites, totalHidden) {
+  sitesTotalCount.textContent = totalHidden;
+  clearAllSitesBtn.disabled = totalHidden === 0;
+
+  // Update nav badge
+  if (totalHidden > 0) {
+    navSitesBadge.textContent = totalHidden;
+    navSitesBadge.style.display = '';
+  } else {
+    navSitesBadge.textContent = '';
+    navSitesBadge.style.display = 'none';
+  }
+
+  // Clear existing site items (keep the empty state element)
+  const existingItems = sitesList.querySelectorAll('.site-item');
+  existingItems.forEach(el => el.remove());
+
+  if (sites.length === 0) {
+    sitesEmpty.style.display = 'flex';
+    return;
+  }
+
+  sitesEmpty.style.display = 'none';
+
+  sites.forEach((site, index) => {
+    const item = document.createElement('div');
+    item.className = 'site-item';
+    item.style.animationDelay = `${index * 0.04}s`;
+
+    // Favicon
+    const favicon = document.createElement('img');
+    favicon.className = 'site-favicon';
+    favicon.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(site.origin)}&sz=32`;
+    favicon.alt = '';
+    favicon.onerror = () => {
+      favicon.style.display = 'none';
+      const fallback = document.createElement('div');
+      fallback.className = 'site-favicon-fallback';
+      fallback.textContent = '🌐';
+      item.insertBefore(fallback, item.firstChild);
+    };
+
+    // Info
+    const info = document.createElement('div');
+    info.className = 'site-info';
+
+    const name = document.createElement('span');
+    name.className = 'site-name';
+    try {
+      const u = new URL(site.origin);
+      name.textContent = u.hostname;
+    } catch {
+      name.textContent = site.origin;
+    }
+
+    const count = document.createElement('span');
+    count.className = 'site-count';
+    count.textContent = `${site.count} hidden`;
+
+    info.appendChild(name);
+    info.appendChild(count);
+
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'site-delete-btn';
+    deleteBtn.setAttribute('aria-label', `Clear ${name.textContent}`);
+    deleteBtn.innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="15" y1="5" x2="5" y2="15"/><line x1="5" y1="5" x2="15" y2="15"/></svg>`;
+    deleteBtn.addEventListener('click', async () => {
+      item.classList.add('removing');
+      await _browser.runtime.sendMessage({ action: 'clearSiteData', origin: site.origin });
+      setTimeout(() => loadSitesData(), 280);
+    });
+
+    item.appendChild(favicon);
+    item.appendChild(info);
+    item.appendChild(deleteBtn);
+    sitesList.appendChild(item);
+  });
+}
+
+clearAllSitesBtn.addEventListener('click', async () => {
+  clearAllSitesBtn.disabled = true;
+  await _browser.runtime.sendMessage({ action: 'clearAllSites' });
+  // Refresh main view counts too
+  try {
+    const state = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
+    if (state) {
+      updateCount(state.count);
+      updateButtons(state.count);
+    }
+  } catch (e) {}
+  renderSites([], 0);
+});
+
 // ── Boot ──────────────────────────────────────────────────────────────────
 init();
+// Pre-load sites badge count
+loadSitesData();

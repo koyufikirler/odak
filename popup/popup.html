@@ -106,6 +106,52 @@
         </footer>
       </main>
 
+      <!-- View: Sites -->
+      <section class="view-panel" id="view-sites">
+        <div class="subview-header">
+          <button class="back-btn" id="sites-back-btn" aria-label="Back">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M13 16L7 10L13 4"></path>
+            </svg>
+            <span data-i18n="btnBack">Back</span>
+          </button>
+          <div class="subview-tab-bar">
+            <button class="subview-tab active" data-view="sites">
+              <span data-i18n="menuSites">Sites</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card subview-card sites-card">
+          <!-- Sites summary header -->
+          <div class="sites-summary">
+            <div class="sites-summary-info">
+              <span class="sites-total-label" data-i18n="sitesTotalHidden">Total hidden</span>
+              <span class="sites-total-value" id="sites-total-count">0</span>
+            </div>
+            <button class="btn btn-danger btn-clear-all" id="clear-all-sites-btn" disabled>
+              <svg class="btn-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 4V3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1m2 0H3m3 0v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <line x1="8" y1="8" x2="8" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="12" y1="8" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span data-i18n="clearAll">Clear All</span>
+            </button>
+          </div>
+
+          <!-- Sites list -->
+          <div class="sites-list" id="sites-list">
+            <!-- Empty state -->
+            <div class="sites-empty" id="sites-empty">
+              <div class="sites-empty-icon">✦</div>
+              <span class="sites-empty-text" data-i18n="sitesEmpty">No hidden items on any site</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- View: About Us -->
       <section class="view-panel" id="view-about">
         <div class="subview-header">
@@ -280,6 +326,20 @@
             </svg>
           </div>
           <span class="menu-item-label" data-i18n="menuHome">Controls</span>
+          <span class="menu-item-chevron">›</span>
+        </button>
+
+        <button class="menu-item" id="nav-sites" data-view="sites">
+          <div class="menu-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <span class="menu-item-label" data-i18n="menuSites">Sites</span>
+          <span class="menu-item-badge sites-badge" id="nav-sites-badge"></span>
           <span class="menu-item-chevron">›</span>
         </button>
 

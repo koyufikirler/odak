@@ -124,6 +124,90 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         sendResponse({ active: next });
 
+      } else if (message.action === 'getAllSitesData') {
+        // Return all sites that have hidden elements
+        // Supports both current per-site keys (dh_site:<origin>) and legacy per-URL keys.
+        const all = await _browser.storage.local.get(null).catch(() => ({}));
+        const selectorsByOrigin = new Map();
+        const legacyKeysToRemove = [];
+
+        for (const [key, value] of Object.entries(all)) {
+          if (!Array.isArray(value) || value.length === 0) continue;
+
+          if (key.startsWith('dh_site:')) {
+            const origin = key.replace('dh_site:', '');
+            const set = selectorsByOrigin.get(origin) || new Set();
+            for (const sel of value) set.add(sel);
+            selectorsByOrigin.set(origin, set);
+            continue;
+          }
+
+          if (key.startsWith('http://') || key.startsWith('https://')) {
+            try {
+              const origin = new URL(key).origin;
+              const set = selectorsByOrigin.get(origin) || new Set();
+              for (const sel of value) set.add(sel);
+              selectorsByOrigin.set(origin, set);
+              legacyKeysToRemove.push(key);
+            } catch {}
+          }
+        }
+
+        if (selectorsByOrigin.size > 0) {
+          const write = {};
+          for (const [origin, set] of selectorsByOrigin.entries()) {
+            write[`dh_site:${origin}`] = Array.from(set);
+          }
+          await _browser.storage.local.set(write).catch(() => {});
+        }
+
+        if (legacyKeysToRemove.length > 0) {
+          await _browser.storage.local.remove(legacyKeysToRemove).catch(() => {});
+        }
+
+        const sites = [];
+        let totalHidden = 0;
+        for (const [origin, set] of selectorsByOrigin.entries()) {
+          const count = set.size;
+          if (count === 0) continue;
+          sites.push({ origin, count });
+          totalHidden += count;
+        }
+
+        sites.sort((a, b) => b.count - a.count);
+        sendResponse({ sites, totalHidden });
+
+      } else if (message.action === 'clearAllSites') {
+        // Remove all hidden element data across all sites
+        const all = await _browser.storage.local.get(null).catch(() => ({}));
+        const removeKeys = Object.keys(all).filter(
+          k => k.startsWith('dh_site:') || k.startsWith('http://') || k.startsWith('https://')
+        );
+        if (removeKeys.length > 0) {
+          await _browser.storage.local.remove(removeKeys).catch(() => {});
+        }
+        await notifyTabsAllSitesCleared();
+        sendResponse({ ok: true });
+
+      } else if (message.action === 'clearSiteData') {
+        // Remove hidden element data for a specific site origin
+        const origin = message.origin;
+        const siteKey = `dh_site:${origin}`;
+        const all = await _browser.storage.local.get(null).catch(() => ({}));
+        const removeKeys = [siteKey];
+        for (const k of Object.keys(all)) {
+          if (
+            (k.startsWith('http://') || k.startsWith('https://')) &&
+            k.startsWith(origin) &&
+            Array.isArray(all[k])
+          ) {
+            removeKeys.push(k);
+          }
+        }
+        await _browser.storage.local.remove(removeKeys).catch(() => {});
+        await notifyTabsSiteCleared(origin);
+        sendResponse({ ok: true });
+
       } else {
         sendResponse({ ok: false, error: 'Unknown action' });
       }
@@ -155,6 +239,34 @@ async function syncBadgeForTab(tabId) {
       await _browser.storage.local.remove(url).catch(() => {});
     }
     await updateBadge(tabId, elements.length);
+  } catch (e) {}
+}
+
+async function notifyTabsSiteCleared(origin) {
+  try {
+    const tabs = await _browser.tabs.query({}).catch(() => []);
+    for (const tab of tabs) {
+      if (!tab?.id || !tab?.url || !isInjectableTab(tab)) continue;
+      const tabOrigin = normalizeOrigin(tab.url);
+      if (tabOrigin !== origin) continue;
+      await updateBadge(tab.id, 0);
+      try {
+        await _browser.tabs.sendMessage(tab.id, { action: 'siteDataCleared', origin });
+      } catch (e) {}
+    }
+  } catch (e) {}
+}
+
+async function notifyTabsAllSitesCleared() {
+  try {
+    const tabs = await _browser.tabs.query({}).catch(() => []);
+    for (const tab of tabs) {
+      if (!tab?.id || !tab?.url || !isInjectableTab(tab)) continue;
+      await updateBadge(tab.id, 0);
+      try {
+        await _browser.tabs.sendMessage(tab.id, { action: 'allSitesCleared' });
+      } catch (e) {}
+    }
   } catch (e) {}
 }
 
