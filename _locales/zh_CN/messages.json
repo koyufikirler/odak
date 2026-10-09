@@ -106,5 +106,23 @@
   },
   "btnBack": {
     "message": "返回"
+  },
+  "menuSites": {
+    "message": "站点"
+  },
+  "sitesTotalHidden": {
+    "message": "总计已隐藏"
+  },
+  "clearAll": {
+    "message": "全部清除"
+  },
+  "sitesEmpty": {
+    "message": "没有任何网站上有隐藏项目"
+  },
+  "siteHiddenCount": {
+    "message": "$1 个已隐藏"
+  },
+  "clearSite": {
+    "message": "清除 $1"
   }
 }

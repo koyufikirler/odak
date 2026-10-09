@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Tilbake"
+  },
+  "menuSites": {
+    "message": "Nettsteder"
+  },
+  "sitesTotalHidden": {
+    "message": "Totalt skjult"
+  },
+  "clearAll": {
+    "message": "Fjern alle"
+  },
+  "sitesEmpty": {
+    "message": "Ingen skjulte elementer på noen nettsteder"
+  },
+  "siteHiddenCount": {
+    "message": "$1 skjult"
+  },
+  "clearSite": {
+    "message": "Fjern $1"
   }
 }

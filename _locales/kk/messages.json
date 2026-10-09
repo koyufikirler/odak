@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Артқа"
+  },
+  "menuSites": {
+    "message": "Сайттар"
+  },
+  "sitesTotalHidden": {
+    "message": "Жалпы жасырылған"
+  },
+  "clearAll": {
+    "message": "Барлығын тазалау"
+  },
+  "sitesEmpty": {
+    "message": "Ешбір сайтта жасырылған элементтер жоқ"
+  },
+  "siteHiddenCount": {
+    "message": "$1 жасырылған"
+  },
+  "clearSite": {
+    "message": "$1 тазалау"
   }
 }

@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "戻る"
+  },
+  "menuSites": {
+    "message": "サイト"
+  },
+  "sitesTotalHidden": {
+    "message": "合計非表示数"
+  },
+  "clearAll": {
+    "message": "すべてクリア"
+  },
+  "sitesEmpty": {
+    "message": "非表示の項目があるサイトはありません"
+  },
+  "siteHiddenCount": {
+    "message": "$1 件非表示"
+  },
+  "clearSite": {
+    "message": "$1 をクリア"
   }
 }

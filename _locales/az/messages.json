@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Geri"
+  },
+  "menuSites": {
+    "message": "Saytlar"
+  },
+  "sitesTotalHidden": {
+    "message": "Ümumi gizlədilən"
+  },
+  "clearAll": {
+    "message": "Hamısını Təmizlə"
+  },
+  "sitesEmpty": {
+    "message": "Heç bir saytda gizlədilmiş element yoxdur"
+  },
+  "siteHiddenCount": {
+    "message": "$1 gizlədilən"
+  },
+  "clearSite": {
+    "message": "$1 təmizlə"
   }
 }

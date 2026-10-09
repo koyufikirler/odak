@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Indietro"
+  },
+  "menuSites": {
+    "message": "Siti"
+  },
+  "sitesTotalHidden": {
+    "message": "Totale nascosti"
+  },
+  "clearAll": {
+    "message": "Cancella tutto"
+  },
+  "sitesEmpty": {
+    "message": "Nessun elemento nascosto su nessun sito"
+  },
+  "siteHiddenCount": {
+    "message": "$1 nascosti"
+  },
+  "clearSite": {
+    "message": "Cancella $1"
   }
 }

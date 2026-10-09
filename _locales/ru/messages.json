@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Назад"
+  },
+  "menuSites": {
+    "message": "Сайты"
+  },
+  "sitesTotalHidden": {
+    "message": "Всего скрыто"
+  },
+  "clearAll": {
+    "message": "Очистить все"
+  },
+  "sitesEmpty": {
+    "message": "Нет скрытых элементов ни на одном сайте"
+  },
+  "siteHiddenCount": {
+    "message": "$1 скрыто"
+  },
+  "clearSite": {
+    "message": "Очистить $1"
   }
 }

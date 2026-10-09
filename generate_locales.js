@@ -40,7 +40,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Rate & Review" },
-    btnBack: { message: "Back" }
+    btnBack: { message: "Back" },
+    menuSites: { message: "Sites" },
+    sitesTotalHidden: { message: "Total hidden" },
+    clearAll: { message: "Clear All" },
+    sitesEmpty: { message: "No hidden items on any site" },
+    siteHiddenCount: { message: "$1 hidden" },
+    clearSite: { message: "Clear $1" }
   },
   tr: {
     extName: { message: "ODAK" },
@@ -80,7 +86,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Puan Ver & Yorum Yap" },
-    btnBack: { message: "Geri" }
+    btnBack: { message: "Geri" },
+    menuSites: { message: "Siteler" },
+    sitesTotalHidden: { message: "Toplam gizlenen" },
+    clearAll: { message: "Tümünü Temizle" },
+    sitesEmpty: { message: "Hiçbir sitede gizlenmiş öğe yok" },
+    siteHiddenCount: { message: "$1 gizlenen" },
+    clearSite: { message: "$1 temizle" }
   },
   az: {
     extName: { message: "ODAK" },
@@ -120,7 +132,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Qiymətləndir & Rəy Yaz" },
-    btnBack: { message: "Geri" }
+    btnBack: { message: "Geri" },
+    menuSites: { message: "Saytlar" },
+    sitesTotalHidden: { message: "Ümumi gizlədilən" },
+    clearAll: { message: "Hamısını Təmizlə" },
+    sitesEmpty: { message: "Heç bir saytda gizlədilmiş element yoxdur" },
+    siteHiddenCount: { message: "$1 gizlədilən" },
+    clearSite: { message: "$1 təmizlə" }
   },
   kk: {
     extName: { message: "ODAK" },
@@ -160,7 +178,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Бағалау және пікір" },
-    btnBack: { message: "Артқа" }
+    btnBack: { message: "Артқа" },
+    menuSites: { message: "Сайттар" },
+    sitesTotalHidden: { message: "Жалпы жасырылған" },
+    clearAll: { message: "Барлығын тазалау" },
+    sitesEmpty: { message: "Ешбір сайтта жасырылған элементтер жоқ" },
+    siteHiddenCount: { message: "$1 жасырылған" },
+    clearSite: { message: "$1 тазалау" }
   },
   ja: {
     extName: { message: "ODAK" },
@@ -200,7 +224,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "評価とレビュー" },
-    btnBack: { message: "戻る" }
+    btnBack: { message: "戻る" },
+    menuSites: { message: "サイト" },
+    sitesTotalHidden: { message: "合計非表示数" },
+    clearAll: { message: "すべてクリア" },
+    sitesEmpty: { message: "非表示の項目があるサイトはありません" },
+    siteHiddenCount: { message: "$1 件非表示" },
+    clearSite: { message: "$1 をクリア" }
   },
   zh_CN: {
     extName: { message: "ODAK" },
@@ -240,7 +270,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "五星好评" },
-    btnBack: { message: "返回" }
+    btnBack: { message: "返回" },
+    menuSites: { message: "站点" },
+    sitesTotalHidden: { message: "总计已隐藏" },
+    clearAll: { message: "全部清除" },
+    sitesEmpty: { message: "没有任何网站上有隐藏项目" },
+    siteHiddenCount: { message: "$1 个已隐藏" },
+    clearSite: { message: "清除 $1" }
   },
   de: {
     extName: { message: "ODAK" },
@@ -280,7 +316,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Bewertung abgeben" },
-    btnBack: { message: "Zurück" }
+    btnBack: { message: "Zurück" },
+    menuSites: { message: "Websites" },
+    sitesTotalHidden: { message: "Insgesamt ausgeblendet" },
+    clearAll: { message: "Alle löschen" },
+    sitesEmpty: { message: "Keine ausgeblendeten Elemente auf Websites" },
+    siteHiddenCount: { message: "$1 ausgeblendet" },
+    clearSite: { message: "$1 löschen" }
   },
   ru: {
     extName: { message: "ODAK" },
@@ -320,7 +362,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Оставить отзыв" },
-    btnBack: { message: "Назад" }
+    btnBack: { message: "Назад" },
+    menuSites: { message: "Сайты" },
+    sitesTotalHidden: { message: "Всего скрыто" },
+    clearAll: { message: "Очистить все" },
+    sitesEmpty: { message: "Нет скрытых элементов ни на одном сайте" },
+    siteHiddenCount: { message: "$1 скрыто" },
+    clearSite: { message: "Очистить $1" }
   },
   fr: {
     extName: { message: "ODAK" },
@@ -360,7 +408,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Laisser un avis" },
-    btnBack: { message: "Retour" }
+    btnBack: { message: "Retour" },
+    menuSites: { message: "Sites" },
+    sitesTotalHidden: { message: "Total masqué" },
+    clearAll: { message: "Tout effacer" },
+    sitesEmpty: { message: "Aucun élément masqué sur aucun site" },
+    siteHiddenCount: { message: "$1 masqué(s)" },
+    clearSite: { message: "Effacer $1" }
   },
   es: {
     extName: { message: "ODAK" },
@@ -400,7 +454,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Calificar y opinar" },
-    btnBack: { message: "Volver" }
+    btnBack: { message: "Volver" },
+    menuSites: { message: "Sitios" },
+    sitesTotalHidden: { message: "Total ocultos" },
+    clearAll: { message: "Borrar todo" },
+    sitesEmpty: { message: "No hay elementos ocultos en ningún sitio" },
+    siteHiddenCount: { message: "$1 oculto(s)" },
+    clearSite: { message: "Borrar $1" }
   },
   no: {
     extName: { message: "ODAK" },
@@ -440,7 +500,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Vurder og anmeld" },
-    btnBack: { message: "Tilbake" }
+    btnBack: { message: "Tilbake" },
+    menuSites: { message: "Nettsteder" },
+    sitesTotalHidden: { message: "Totalt skjult" },
+    clearAll: { message: "Fjern alle" },
+    sitesEmpty: { message: "Ingen skjulte elementer på noen nettsteder" },
+    siteHiddenCount: { message: "$1 skjult" },
+    clearSite: { message: "Fjern $1" }
   },
   fi: {
     extName: { message: "ODAK" },
@@ -480,7 +546,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Arvostele laajennus" },
-    btnBack: { message: "Takaisin" }
+    btnBack: { message: "Takaisin" },
+    menuSites: { message: "Sivustot" },
+    sitesTotalHidden: { message: "Yhteensä piilotettu" },
+    clearAll: { message: "Tyhjennä kaikki" },
+    sitesEmpty: { message: "Ei piilotettuja kohteita millään sivustolla" },
+    siteHiddenCount: { message: "$1 piilotettu" },
+    clearSite: { message: "Tyhjennä $1" }
   },
   sv: {
     extName: { message: "ODAK" },
@@ -520,7 +592,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Betygsätt och recensera" },
-    btnBack: { message: "Tillbaka" }
+    btnBack: { message: "Tillbaka" },
+    menuSites: { message: "Webbplatser" },
+    sitesTotalHidden: { message: "Totalt dolda" },
+    clearAll: { message: "Rensa alla" },
+    sitesEmpty: { message: "Inga dolda element på någon webbplats" },
+    siteHiddenCount: { message: "$1 dolda" },
+    clearSite: { message: "Rensa $1" }
   },
   ar: {
     extName: { message: "ODAK" },
@@ -560,7 +638,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "تقييم ومراجعة" },
-    btnBack: { message: "رجوع" }
+    btnBack: { message: "رجوع" },
+    menuSites: { message: "المواقع" },
+    sitesTotalHidden: { message: "إجمالي المخفي" },
+    clearAll: { message: "مسح الكل" },
+    sitesEmpty: { message: "لا توجد عناصر مخفية في أي موقع" },
+    siteHiddenCount: { message: "$1 مخفي" },
+    clearSite: { message: "مسح $1" }
   },
   it: {
     extName: { message: "ODAK" },
@@ -600,7 +684,13 @@ const locales = {
     donatePatreon: { message: "Patreon" },
     donateOpenCollective: { message: "Open Collective" },
     donateReview: { message: "Valuta e recensisci" },
-    btnBack: { message: "Indietro" }
+    btnBack: { message: "Indietro" },
+    menuSites: { message: "Siti" },
+    sitesTotalHidden: { message: "Totale nascosti" },
+    clearAll: { message: "Cancella tutto" },
+    sitesEmpty: { message: "Nessun elemento nascosto su nessun sito" },
+    siteHiddenCount: { message: "$1 nascosti" },
+    clearSite: { message: "Cancella $1" }
   }
 };
 

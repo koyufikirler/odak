@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Zurück"
+  },
+  "menuSites": {
+    "message": "Websites"
+  },
+  "sitesTotalHidden": {
+    "message": "Insgesamt ausgeblendet"
+  },
+  "clearAll": {
+    "message": "Alle löschen"
+  },
+  "sitesEmpty": {
+    "message": "Keine ausgeblendeten Elemente auf Websites"
+  },
+  "siteHiddenCount": {
+    "message": "$1 ausgeblendet"
+  },
+  "clearSite": {
+    "message": "$1 löschen"
   }
 }

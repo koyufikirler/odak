@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Back"
+  },
+  "menuSites": {
+    "message": "Sites"
+  },
+  "sitesTotalHidden": {
+    "message": "Total hidden"
+  },
+  "clearAll": {
+    "message": "Clear All"
+  },
+  "sitesEmpty": {
+    "message": "No hidden items on any site"
+  },
+  "siteHiddenCount": {
+    "message": "$1 hidden"
+  },
+  "clearSite": {
+    "message": "Clear $1"
   }
 }

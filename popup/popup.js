@@ -360,7 +360,8 @@ function renderSites(sites, totalHidden) {
 
     const count = document.createElement('span');
     count.className = 'site-count';
-    count.textContent = `${site.count} hidden`;
+    const hiddenCountMsg = _browser.i18n.getMessage('siteHiddenCount', [String(site.count)]);
+    count.textContent = hiddenCountMsg || `${site.count} hidden`;
 
     info.appendChild(name);
     info.appendChild(count);
@@ -368,7 +369,9 @@ function renderSites(sites, totalHidden) {
     // Delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'site-delete-btn';
-    deleteBtn.setAttribute('aria-label', `Clear ${name.textContent}`);
+    const clearSiteMsg = _browser.i18n.getMessage('clearSite', [name.textContent]) || `Clear ${name.textContent}`;
+    deleteBtn.setAttribute('aria-label', clearSiteMsg);
+    deleteBtn.setAttribute('title', clearSiteMsg);
     deleteBtn.innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="15" y1="5" x2="5" y2="15"/><line x1="5" y1="5" x2="15" y2="15"/></svg>`;
     deleteBtn.addEventListener('click', async () => {
       item.classList.add('removing');

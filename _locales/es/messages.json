@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "Volver"
+  },
+  "menuSites": {
+    "message": "Sitios"
+  },
+  "sitesTotalHidden": {
+    "message": "Total ocultos"
+  },
+  "clearAll": {
+    "message": "Borrar todo"
+  },
+  "sitesEmpty": {
+    "message": "No hay elementos ocultos en ningún sitio"
+  },
+  "siteHiddenCount": {
+    "message": "$1 oculto(s)"
+  },
+  "clearSite": {
+    "message": "Borrar $1"
   }
 }

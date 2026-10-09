@@ -112,5 +112,23 @@
   },
   "btnBack": {
     "message": "رجوع"
+  },
+  "menuSites": {
+    "message": "المواقع"
+  },
+  "sitesTotalHidden": {
+    "message": "إجمالي المخفي"
+  },
+  "clearAll": {
+    "message": "مسح الكل"
+  },
+  "sitesEmpty": {
+    "message": "لا توجد عناصر مخفية في أي موقع"
+  },
+  "siteHiddenCount": {
+    "message": "$1 مخفي"
+  },
+  "clearSite": {
+    "message": "مسح $1"
   }
 }
