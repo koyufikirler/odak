@@ -58,8 +58,8 @@ jobs:
           body: |
             ## Yenilikler ve Güncellemeler
             * ODAK ayarlar bölümü eklendi
-        files: |
+          files: |
             release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip
             release/odak-firefox-${{ steps.version.outputs.VERSION }}.zip
             release/odak-edge-${{ steps.version.outputs.VERSION }}.zip
-        generate_release_notes: false
+          generate_release_notes: false
