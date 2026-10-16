@@ -54,7 +54,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Sürüm ${{ steps.version.outputs.VERSION }}"
+          name: "s${{ steps.version.outputs.VERSION }}"
           body: |
             ## Yenilikler ve Güncellemeler
             * ODAK tuşlar sekmesi eklendi ve yeni kısayollar eklentiye kısayollar verilebilecek.
