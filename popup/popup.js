@@ -13,42 +13,42 @@
 const _browser = typeof browser !== 'undefined' ? browser : chrome;
 
 // ── DOM references ────────────────────────────────────────────────────────
-const pickCheckbox     = document.getElementById('pick-mode-checkbox');
-const pickCard         = document.getElementById('pick-mode-section');
-const pickStatus       = document.getElementById('pick-mode-status');
-const hintText         = document.getElementById('hint-text');
-const hiddenCount      = document.getElementById('hidden-count');
-const statusBadge      = document.getElementById('status-badge');
-const badgeText        = document.getElementById('badge-text');
-const undoBtn          = document.getElementById('undo-btn');
-const restoreBtn       = document.getElementById('restore-btn');
+const pickCheckbox = document.getElementById('pick-mode-checkbox');
+const pickCard = document.getElementById('pick-mode-section');
+const pickStatus = document.getElementById('pick-mode-status');
+const hintText = document.getElementById('hint-text');
+const hiddenCount = document.getElementById('hidden-count');
+const statusBadge = document.getElementById('status-badge');
+const badgeText = document.getElementById('badge-text');
+const undoBtn = document.getElementById('undo-btn');
+const restoreBtn = document.getElementById('restore-btn');
 
 // Menu, Tabs & Views
-const settingsBtn      = document.getElementById('settings-btn');
-const menuDrawer       = document.getElementById('menu-drawer');
-const menuOverlay      = document.getElementById('menu-overlay');
-const closeMenuBtn     = document.getElementById('close-menu-btn');
-const menuItems        = document.querySelectorAll('.menu-item');
-const subviewTabs      = document.querySelectorAll('.subview-tab');
+const settingsBtn = document.getElementById('settings-btn');
+const menuDrawer = document.getElementById('menu-drawer');
+const menuOverlay = document.getElementById('menu-overlay');
+const closeMenuBtn = document.getElementById('close-menu-btn');
+const menuItems = document.querySelectorAll('.menu-item');
+const subviewTabs = document.querySelectorAll('.subview-tab');
 
-const viewMain         = document.getElementById('view-main');
-const viewSites        = document.getElementById('view-sites');
-const viewKeys         = document.getElementById('view-keys');
-const viewAbout        = document.getElementById('view-about');
-const viewDonate       = document.getElementById('view-donate');
-const aboutBackBtn     = document.getElementById('about-back-btn');
-const donateBackBtn    = document.getElementById('donate-back-btn');
-const sitesBackBtn     = document.getElementById('sites-back-btn');
-const keysBackBtn      = document.getElementById('keys-back-btn');
-const shortcutList     = document.getElementById('shortcut-list');
-const keysResetBtn     = document.getElementById('keys-reset-btn');
-const keysStatus       = document.getElementById('keys-status');
-const footerText       = document.getElementById('footer-text');
-const sitesList        = document.getElementById('sites-list');
-const sitesEmpty       = document.getElementById('sites-empty');
-const sitesTotalCount  = document.getElementById('sites-total-count');
+const viewMain = document.getElementById('view-main');
+const viewSites = document.getElementById('view-sites');
+const viewKeys = document.getElementById('view-keys');
+const viewAbout = document.getElementById('view-about');
+const viewDonate = document.getElementById('view-donate');
+const aboutBackBtn = document.getElementById('about-back-btn');
+const donateBackBtn = document.getElementById('donate-back-btn');
+const sitesBackBtn = document.getElementById('sites-back-btn');
+const keysBackBtn = document.getElementById('keys-back-btn');
+const shortcutList = document.getElementById('shortcut-list');
+const keysResetBtn = document.getElementById('keys-reset-btn');
+const keysStatus = document.getElementById('keys-status');
+const footerText = document.getElementById('footer-text');
+const sitesList = document.getElementById('sites-list');
+const sitesEmpty = document.getElementById('sites-empty');
+const sitesTotalCount = document.getElementById('sites-total-count');
 const clearAllSitesBtn = document.getElementById('clear-all-sites-btn');
-const navSitesBadge    = document.getElementById('nav-sites-badge');
+const navSitesBadge = document.getElementById('nav-sites-badge');
 
 let currentView = 'main';
 
@@ -77,6 +77,9 @@ let recordingShortcut = null;
 async function init() {
   // Apply i18n strings
   applyI18n();
+
+  // Inject version from manifest
+  applyVersion();
 
   // Setup navigation listeners
   setupNavigation();
@@ -112,6 +115,15 @@ function applyI18n() {
     const msg = _browser.i18n.getMessage(key);
     if (msg) el.setAttribute('title', msg);
   });
+}
+
+// ── Version injection ─────────────────────────────────────────────────────
+function applyVersion() {
+  const version = _browser.runtime.getManifest().version;
+  const aboutEl = document.getElementById('about-version-number');
+  const menuEl = document.getElementById('menu-version');
+  if (aboutEl) aboutEl.textContent = version;
+  if (menuEl) menuEl.textContent = `ODAK s${version}`;
 }
 
 // ── Navigation & Drawer ───────────────────────────────────────────────────
@@ -433,15 +445,15 @@ function updateCount(count) {
 }
 
 function updateButtons(count) {
-  undoBtn.disabled    = count === 0;
+  undoBtn.disabled = count === 0;
   restoreBtn.disabled = count === 0;
 }
 
 function setRestrictedUI() {
   pickCheckbox.disabled = true;
-  undoBtn.disabled      = true;
-  restoreBtn.disabled   = true;
-  hintText.textContent  = _browser.i18n.getMessage('pickHintRestricted');
+  undoBtn.disabled = true;
+  restoreBtn.disabled = true;
+  hintText.textContent = _browser.i18n.getMessage('pickHintRestricted');
   pickStatus.textContent = _browser.i18n.getMessage('pickStatusRestricted');
 }
 
@@ -549,7 +561,7 @@ clearAllSitesBtn.addEventListener('click', async () => {
       updateCount(state.count);
       updateButtons(state.count);
     }
-  } catch (e) {}
+  } catch (e) { }
   renderSites([], 0);
 });
 
