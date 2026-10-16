@@ -942,6 +942,16 @@ body {
   font-weight: 500;
 }
 
+.meta-author:link,
+.meta-author:visited {
+  color: var(--purple-light);
+  text-decoration: none;
+}
+
+.meta-author:hover {
+  text-decoration: underline;
+}
+
 /* Donate View */
 .donate-hero {
   text-align: center;
