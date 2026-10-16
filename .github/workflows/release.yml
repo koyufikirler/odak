@@ -36,7 +36,7 @@ jobs:
           cp "release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip" \
              "release/odak-edge-${{ steps.version.outputs.VERSION }}.zip"
 
-      # --- 2. FIREFOX BUILD (MERGE) ---
+      # --- 2. FIREFOX BUILD (MERGE & OVERRIDE) ---
       - name: Build Firefox ZIP
         run: |
           mkdir -p build-firefox
@@ -44,8 +44,8 @@ jobs:
           # Proje dosyalarını kopyala
           cp -r _locales icons popup background.js content.js content.css build-firefox/
 
-          # Chrome tabanlı manifest.json ile manifest.firefox.json birleştirilir
-          jq -s '.[0] * .[1]' manifest.json manifest.firefox.json > build-firefox/manifest.json
+          # Manifestleri birleştir ve background objesini Firefox'unkiyle tamamen değiştir
+          jq -s '.[0] as $base | .[1] as $override | $base * $override | .background = $override.background' manifest.json manifest.firefox.json > build-firefox/manifest.json
 
           # Zip oluştur
           (cd build-firefox && zip -r "${GITHUB_WORKSPACE}/release/odak-firefox-${{ steps.version.outputs.VERSION }}.zip" .)
@@ -57,7 +57,7 @@ jobs:
           name: "Sürüm ${{ steps.version.outputs.VERSION }}"
           body: |
             ## Yenilikler ve Güncellemeler
-            * ODAK ayarlar bölümü eklendi
+            * ODAK tuşlar sekmesi eklendi ve yeni kısayollar eklentiye kısayollar verilebilecek.
           files: |
             release/odak-chrome-${{ steps.version.outputs.VERSION }}.zip
             release/odak-firefox-${{ steps.version.outputs.VERSION }}.zip
