@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Açarlar"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Klaviatura qısa yolları"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Qısayolu vurun, sonra istifadə etmək istədiyiniz düymələri basın."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Sıfırla"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Qısayollar veb səhifələrdə işləyir. Sahəyə yazarkən işləmir."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Açar kombinasiyasına basın..."
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Həmin qısayol artıq istifadədədir."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Qısayol yadda saxlanıldı."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Varsayılan qısayolları bərpa etdi."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Seçmə Rejimini Aç/Bağla"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Seçmə Rejimindən Çıx"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Sonuncu Geri Al"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Hamısını Bərpa Et"
   },
   "extName": {
     "message": "ODAK"

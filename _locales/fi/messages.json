@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Näppäimet"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Pikanäppäimet"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Napsauta pikanäppäintä ja paina sitten haluamiasi näppäimiä."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Nollaa"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Pikanäppäimet toimivat verkkosivuilla. Ne eivät toimi, kun kirjoitat kenttään."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Paina näppäinyhdistelmää…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Pikanäppäin on jo käytössä."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Pikanäppäin tallennettu."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Oletuspikanäppäimet palautettu."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Valintatilan vaihto"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Poistu valintatilasta"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Kumoa edellinen"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Palauta kaikki"
   },
   "extName": {
     "message": "ODAK"

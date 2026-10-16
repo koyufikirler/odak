@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Touches"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Raccourcis clavier"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Cliquez sur un raccourci, puis appuyez sur les touches que vous souhaitez utiliser."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Réinitialiser"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Les raccourcis fonctionnent sur les pages web. Ils ne s'exécutent pas lorsque vous saisissez du texte dans un champ."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Appuyez sur une combinaison de touches…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Ce raccourci est déjà utilisé."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Raccourci enregistré."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Raccourcis par défaut restaurés."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Activer/Désactiver le mode de sélection"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Quitter le mode de sélection"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Annuler la dernière action"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Restaurer toutes les actions"
   },
   "extName": {
     "message": "ODAK"

@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Tangenter"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Kortkommandon"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Klicka på en kortkommando och tryck sedan på de tangenter du vill använda."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Återställ"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Genvägar fungerar på webbsidor. De körs inte medan du skriver i ett fält."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Tryck på en tangentkombination…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Den kortkommandot används redan."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Genvägen sparad."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Standardgenvägar återställda."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Växla plockningsläge"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Avsluta plockningsläge"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Ångra senast"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Återställ allt"
   },
   "extName": {
     "message": "ODAK"

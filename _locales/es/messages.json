@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Teclas"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Atajos de teclado"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Haz clic en un atajo y luego presiona las teclas que quieras usar."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Restablecer"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Los atajos funcionan en páginas web. No se ejecutan mientras escribes en un campo."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Presiona una combinación de teclas…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Ese atajo ya está en uso."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Atajo guardado."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Atajos predeterminados restaurados."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Alternar modo de selección"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Salir del modo de selección"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Deshacer la última acción"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Restaurar todo"
   },
   "extName": {
     "message": "ODAK"

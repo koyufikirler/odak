@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "키"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "키보드 단축키"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "단축키를 클릭한 다음 사용할 키를 누르세요."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "초기화"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "단축키는 웹페이지에서 작동합니다. 입력란에 입력하는 동안에는 실행되지 않습니다."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "키 조합을 누르세요…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "해당 단축키가 이미 사용 중입니다."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "단축키가 저장되었습니다."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "기본 단축키가 복원되었습니다."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "선택 모드 전환"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "선택 모드 종료"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "마지막 실행 취소"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "모두 복원"
   },
   "extName": {
     "message": "ODAK"

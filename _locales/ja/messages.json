@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "キー"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "キーボードショートカット"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "ショートカットをクリックしてから、使用したいキーを押してください。"
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "リセット"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "ショートカットはウェブページでのみ機能します。入力フィールドへの入力中は実行されません。"
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "キーの組み合わせを押してください…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "そのショートカットは既に使用されています。"
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "ショートカットが保存されました。"
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "デフォルトのショートカットが復元されました。"
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "ピックモードの切り替え"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "ピックモードの終了"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "最後の操作を元に戻す"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "すべて元に戻す"
   },
   "extName": {
     "message": "ODAK"

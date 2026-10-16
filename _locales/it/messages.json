@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Tasti"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Scorciatoie da tastiera"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Fai clic su una scorciatoia, quindi premi i tasti che desideri utilizzare."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Ripristina"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Le scorciatoie funzionano sulle pagine web. Non vengono eseguite mentre digiti in un campo."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Premi una combinazione di tasti…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Questa scorciatoia è già in uso."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Scorciatoia salvata."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Scorciatoie predefinite ripristinate."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Attiva/disattiva la modalità di selezione"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Esci dalla modalità di selezione"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Annulla ultima azione"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Ripristina tutto"
   },
   "extName": {
     "message": "ODAK"

@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Tasten"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Tastenkombinationen"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Klicken Sie auf eine Verknüpfung und drücken Sie dann die gewünschten Tasten."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Zurücksetzen"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Tastenkombinationen funktionieren auf Webseiten. Sie sind nicht aktiv, während Sie in ein Feld schreiben."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Tastenkombination drücken..."
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Diese Tastenkombination wird bereits verwendet."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Tastenkombination gespeichert."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Standard-Tastenkombinationen wiederhergestellt."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Auswahlmodus umschalten"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Auswahlmodus verlassen"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Letzte Aktion rückgängig machen"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Alle wiederherstellen"
   },
   "extName": {
     "message": "ODAK"

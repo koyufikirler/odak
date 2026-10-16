@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Клавиши"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Сочетания клавиш"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Щелкните сочетание клавиш, затем нажмите нужные клавиши."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Сброс"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Сочетания клавиш работают на веб-страницах. Они не запускаются во время ввода текста в поле."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Нажмите комбинацию клавиш…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Это сочетание клавиш уже используется."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Сочетание клавиш сохранено."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Сокращенные сочетания клавиш восстановлены."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Переключить режим выбора"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Выход из режима выбора"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Отменить последнее действие"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Восстановить все"
   },
   "extName": {
     "message": "ODAK"

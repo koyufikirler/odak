@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "快捷键"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "键盘快捷键"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "点击一个快捷键，然后按下你想使用的键。"
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "重置"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "快捷键在网页上有效。在文本框中输入内容时，快捷键不会运行。"
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "按下组合键…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "该快捷键已被使用。"
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "快捷键已保存。"
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "默认快捷键已恢复。"
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "切换拾取模式"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "退出拾取模式"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "撤销上次操作"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "全部恢复"
   },
   "extName": {
     "message": "ODAK"

@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "Taster"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "Tastatursnarveier"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "Klikk på en snarvei, og trykk deretter på tastene du vil bruke."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "Tilbakestill"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "Snarveier fungerer på nettsider. De kjører ikke mens du skriver i et felt."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Trykk på en tastekombinasjon…"
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "Den snarveien er allerede i bruk."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "Snarvei lagret."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "Standard snarveier gjenopprettet."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "Veksle valgmodus"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "Avslutt valgmodus"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "Angre siste"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "Gjenopprett alle"
   },
   "extName": {
     "message": "ODAK"

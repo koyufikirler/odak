@@ -1,42 +1,42 @@
 {
   "menuKeys": {
-    "message": "Keys"
+    "message": "المفاتيح"
   },
   "keysTitle": {
-    "message": "Keyboard shortcuts"
+    "message": "اختصارات لوحة المفاتيح"
   },
   "keysDescription": {
-    "message": "Click a shortcut, then press the keys you want to use."
+    "message": "انقر على اختصار، ثم اضغط على المفاتيح التي تريد استخدامها."
   },
   "keysReset": {
-    "message": "Reset"
+    "message": "إعادة تعيين"
   },
   "keysNote": {
-    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+    "message": "تعمل الاختصارات على صفحات الويب. لا يتم تشغيلها أثناء الكتابة في حقل."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "اضغط على مجموعة مفاتيح..."
   },
   "keysConflict": {
-    "message": "That shortcut is already in use."
+    "message": "هذا الاختصار قيد الاستخدام بالفعل."
   },
   "keysSaved": {
-    "message": "Shortcut saved."
+    "message": "تم حفظ الاختصار."
   },
   "keysResetSuccess": {
-    "message": "Default shortcuts restored."
+    "message": "تمت استعادة الاختصارات الافتراضية."
   },
   "shortcutTogglePickMode": {
-    "message": "Toggle Pick Mode"
+    "message": "تبديل وضع الاختيار"
   },
   "shortcutExitPickMode": {
-    "message": "Exit Pick Mode"
+    "message": "الخروج من وضع الاختيار"
   },
   "shortcutUndoLast": {
-    "message": "Undo Last"
+    "message": "التراجع عن آخر إجراء"
   },
   "shortcutRestoreAll": {
-    "message": "Restore All"
+    "message": "استعادة الكل"
   },
   "extName": {
     "message": "ODAK"
