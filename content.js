@@ -26,6 +26,19 @@
   let rehideTimer = null;
   let lastSeenUrl = window.location.href;
   let currentSiteKey = null;
+  const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
+  // Use the platform's conventional modifier for the primary shortcuts:
+  //   macOS  -> Command (⌘ / Meta)
+  //   Windows/Linux -> Control (Ctrl)
+  const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+  const PRIMARY_MODIFIER = IS_MAC ? 'Meta' : 'Control';
+  const DEFAULT_SHORTCUTS = {
+    togglePickMode: `${PRIMARY_MODIFIER}+Shift+P`,
+    exitPickMode: 'Escape',
+    undoLast: `${PRIMARY_MODIFIER}+Shift+Z`,
+    restoreAll: `${PRIMARY_MODIFIER}+Shift+R`,
+  };
+  let keyboardShortcuts = { ...DEFAULT_SHORTCUTS };
 
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
@@ -40,6 +53,8 @@
       startDomObserver();
       startNavigationWatchers();
       scheduleRehide();
+      await loadKeyboardShortcuts();
+      document.addEventListener('keydown', onShortcutKeyDown, true);
     } catch (e) {
       // Storage not available (e.g. about: pages) — ignore
     }
@@ -50,6 +65,21 @@
       if (resp?.active) enablePickMode();
     } catch (e) {}
   }
+
+  async function loadKeyboardShortcuts() {
+    const stored = await _browser.storage.local.get(SHORTCUT_STORAGE_KEY).catch(() => ({}));
+    keyboardShortcuts = { ...DEFAULT_SHORTCUTS, ...(stored[SHORTCUT_STORAGE_KEY] || {}) };
+  }
+
+  _browser.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes[SHORTCUT_STORAGE_KEY]) {
+      keyboardShortcuts = {
+        ...DEFAULT_SHORTCUTS,
+        ...(changes[SHORTCUT_STORAGE_KEY].newValue || {}),
+      };
+      updateActionBarShortcutLabel();
+    }
+  });
 
   init();
 
@@ -203,7 +233,6 @@
     pickShieldEl.addEventListener('pointerleave', onShieldPointerLeave, true);
     pickShieldEl.addEventListener('pointerdown', onShieldPointerDown, true);
     pickShieldEl.addEventListener('click', onShieldClick, true);
-    document.addEventListener('keydown', onKeyDown, true);
   }
 
   function disablePickMode() {
@@ -213,7 +242,6 @@
     removePickShield();
     removeActionBar();
     document.body.classList.remove(CURSOR_CLASS);
-    document.removeEventListener('keydown', onKeyDown, true);
   }
 
   // ── Event Handlers ────────────────────────────────────────────────────────
@@ -259,12 +287,63 @@
     dissolveElement(target);
   }
 
-  function onKeyDown(e) {
-    if (e.key === 'Escape') {
-      disablePickMode();
-      // Notify background to sync state
-      _browser.runtime.sendMessage({ action: 'setPickMode', active: false }).catch(() => {});
+  function shortcutFromEvent(event) {
+    const parts = [];
+    if (event.ctrlKey) parts.push('Control');
+    if (event.altKey) parts.push('Alt');
+    if (event.shiftKey) parts.push('Shift');
+    if (event.metaKey) parts.push('Meta');
+
+    let key = event.key;
+    if (key === ' ') key = 'Space';
+    if (key.length === 1) key = key.toUpperCase();
+    return [...parts, key].join('+');
+  }
+
+  function isTypingTarget(target) {
+    return target instanceof Element && (
+      target.matches('input, textarea, select, [contenteditable="true"]') ||
+      Boolean(target.closest('[contenteditable="true"]'))
+    );
+  }
+
+  function onShortcutKeyDown(event) {
+    if (isTypingTarget(event.target)) return;
+    const pressed = shortcutFromEvent(event);
+    const action = Object.entries(keyboardShortcuts).find(([, shortcut]) => shortcut === pressed)?.[0];
+    if (!action) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (action === 'togglePickMode') {
+      setPickModeFromShortcut(!pickModeActive);
+    } else if (action === 'exitPickMode' && pickModeActive) {
+      setPickModeFromShortcut(false);
+    } else if (action === 'undoLast') {
+      undoLast();
+    } else if (action === 'restoreAll') {
+      restoreAll();
     }
+  }
+
+  function setPickModeFromShortcut(active) {
+    active ? enablePickMode() : disablePickMode();
+    _browser.runtime.sendMessage({ action: 'setPickMode', active }).catch(() => {});
+  }
+
+  function formatShortcut(shortcut) {
+    return shortcut
+      .split('+')
+      .map(part => ({ Control: 'Ctrl', Meta: '⌘' }[part] || part))
+      .join(' + ');
+  }
+
+  function updateActionBarShortcutLabel() {
+    const cancelBtn = document.getElementById('dh-cancel-btn');
+    if (!cancelBtn) return;
+    const done = _browser.i18n.getMessage('btnDonePlain') || 'Done';
+    cancelBtn.textContent = `${done} (${formatShortcut(keyboardShortcuts.exitPickMode)})`;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

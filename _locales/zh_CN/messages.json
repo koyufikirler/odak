@@ -1,4 +1,43 @@
 {
+  "menuKeys": {
+    "message": "Keys"
+  },
+  "keysTitle": {
+    "message": "Keyboard shortcuts"
+  },
+  "keysDescription": {
+    "message": "Click a shortcut, then press the keys you want to use."
+  },
+  "keysReset": {
+    "message": "Reset"
+  },
+  "keysNote": {
+    "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
+  },
+  "keysRecording": {
+    "message": "Press a key combination…"
+  },
+  "keysConflict": {
+    "message": "That shortcut is already in use."
+  },
+  "keysSaved": {
+    "message": "Shortcut saved."
+  },
+  "keysResetSuccess": {
+    "message": "Default shortcuts restored."
+  },
+  "shortcutTogglePickMode": {
+    "message": "Toggle Pick Mode"
+  },
+  "shortcutExitPickMode": {
+    "message": "Exit Pick Mode"
+  },
+  "shortcutUndoLast": {
+    "message": "Undo Last"
+  },
+  "shortcutRestoreAll": {
+    "message": "Restore All"
+  },
   "extName": {
     "message": "ODAK"
   },
@@ -100,6 +139,12 @@
   },
   "donateSponsors": {
     "message": "GitHub Sponsors"
+  },
+  "donatePatreon": {
+    "message": "Patreon"
+  },
+  "donateOpenCollective": {
+    "message": "Open Collective"
   },
   "donateReview": {
     "message": "五星好评"

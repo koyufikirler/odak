@@ -102,7 +102,7 @@
 
         <!-- Footer -->
         <footer class="popup-footer">
-          <span data-i18n="footerText">Press Esc to exit Pick Mode</span>
+          <span id="footer-text" data-i18n="footerText">Press Esc to exit Pick Mode</span>
         </footer>
       </main>
 
@@ -149,6 +149,38 @@
               <span class="sites-empty-text" data-i18n="sitesEmpty">No hidden items on any site</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- View: Keys -->
+      <section class="view-panel" id="view-keys">
+        <div class="subview-header">
+          <button class="back-btn" id="keys-back-btn" aria-label="Back">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M13 16L7 10L13 4"></path>
+            </svg>
+            <span data-i18n="btnBack">Back</span>
+          </button>
+          <div class="subview-tab-bar">
+            <button class="subview-tab active" data-view="keys">
+              <span data-i18n="menuKeys">Keys</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card subview-card keys-card">
+          <div class="keys-heading">
+            <div>
+              <h3 data-i18n="keysTitle">Keyboard shortcuts</h3>
+              <p data-i18n="keysDescription">Click a shortcut, then press the keys you want to use.</p>
+            </div>
+            <button class="keys-reset-btn" id="keys-reset-btn" type="button" data-i18n="keysReset">Reset</button>
+          </div>
+
+          <div class="shortcut-list" id="shortcut-list" aria-live="polite"></div>
+          <p class="keys-note" data-i18n="keysNote">Shortcuts work on webpages. They do not run while you are typing in a field.</p>
+          <p class="keys-status" id="keys-status" role="status"></p>
         </div>
       </section>
 
@@ -340,6 +372,18 @@
           </div>
           <span class="menu-item-label" data-i18n="menuSites">Sites</span>
           <span class="menu-item-badge sites-badge" id="nav-sites-badge"></span>
+          <span class="menu-item-chevron">›</span>
+        </button>
+
+        <button class="menu-item" id="nav-keys" data-view="keys">
+          <div class="menu-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="M7 9h.01M10 9h.01M13 9h.01M16 9h.01M8 13h8"></path>
+            </svg>
+          </div>
+          <span class="menu-item-label" data-i18n="menuKeys">Keys</span>
           <span class="menu-item-chevron">›</span>
         </button>
 

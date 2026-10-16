@@ -699,10 +699,27 @@ if (!fs.existsSync(localesDir)) {
   fs.mkdirSync(localesDir);
 }
 
+// New UI strings fall back to English until a locale-specific translation is added.
+const sharedMessages = {
+  menuKeys: { message: "Keys" },
+  keysTitle: { message: "Keyboard shortcuts" },
+  keysDescription: { message: "Click a shortcut, then press the keys you want to use." },
+  keysReset: { message: "Reset" },
+  keysNote: { message: "Shortcuts work on webpages. They do not run while you are typing in a field." },
+  keysRecording: { message: "Press a key combination…" },
+  keysConflict: { message: "That shortcut is already in use." },
+  keysSaved: { message: "Shortcut saved." },
+  keysResetSuccess: { message: "Default shortcuts restored." },
+  shortcutTogglePickMode: { message: "Toggle Pick Mode" },
+  shortcutExitPickMode: { message: "Exit Pick Mode" },
+  shortcutUndoLast: { message: "Undo Last" },
+  shortcutRestoreAll: { message: "Restore All" }
+};
+
 for (const [lang, msgs] of Object.entries(locales)) {
   const dir = path.join(localesDir, lang);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-  fs.writeFileSync(path.join(dir, 'messages.json'), JSON.stringify(msgs, null, 2));
+  fs.writeFileSync(path.join(dir, 'messages.json'), JSON.stringify({ ...sharedMessages, ...msgs }, null, 2));
 }
 
 console.log('Successfully generated locales!');

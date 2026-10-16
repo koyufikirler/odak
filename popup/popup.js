@@ -33,11 +33,17 @@ const subviewTabs      = document.querySelectorAll('.subview-tab');
 
 const viewMain         = document.getElementById('view-main');
 const viewSites        = document.getElementById('view-sites');
+const viewKeys         = document.getElementById('view-keys');
 const viewAbout        = document.getElementById('view-about');
 const viewDonate       = document.getElementById('view-donate');
 const aboutBackBtn     = document.getElementById('about-back-btn');
 const donateBackBtn    = document.getElementById('donate-back-btn');
 const sitesBackBtn     = document.getElementById('sites-back-btn');
+const keysBackBtn      = document.getElementById('keys-back-btn');
+const shortcutList     = document.getElementById('shortcut-list');
+const keysResetBtn     = document.getElementById('keys-reset-btn');
+const keysStatus       = document.getElementById('keys-status');
+const footerText       = document.getElementById('footer-text');
 const sitesList        = document.getElementById('sites-list');
 const sitesEmpty       = document.getElementById('sites-empty');
 const sitesTotalCount  = document.getElementById('sites-total-count');
@@ -46,6 +52,27 @@ const navSitesBadge    = document.getElementById('nav-sites-badge');
 
 let currentView = 'main';
 
+const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
+// Use the platform's conventional modifier for the primary shortcuts:
+//   macOS  -> Command (⌘ / Meta)
+//   Windows/Linux -> Control (Ctrl)
+const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+const PRIMARY_MODIFIER = IS_MAC ? 'Meta' : 'Control';
+const DEFAULT_SHORTCUTS = {
+  togglePickMode: `${PRIMARY_MODIFIER}+Shift+P`,
+  exitPickMode: 'Escape',
+  undoLast: `${PRIMARY_MODIFIER}+Shift+Z`,
+  restoreAll: `${PRIMARY_MODIFIER}+Shift+R`,
+};
+const SHORTCUTS = [
+  { id: 'togglePickMode', labelKey: 'shortcutTogglePickMode', fallback: 'Toggle Pick Mode' },
+  { id: 'exitPickMode', labelKey: 'shortcutExitPickMode', fallback: 'Exit Pick Mode' },
+  { id: 'undoLast', labelKey: 'shortcutUndoLast', fallback: 'Undo Last' },
+  { id: 'restoreAll', labelKey: 'shortcutRestoreAll', fallback: 'Restore All' },
+];
+let shortcuts = { ...DEFAULT_SHORTCUTS };
+let recordingShortcut = null;
+
 // ── Initialize popup state ────────────────────────────────────────────────
 async function init() {
   // Apply i18n strings
@@ -53,6 +80,7 @@ async function init() {
 
   // Setup navigation listeners
   setupNavigation();
+  await loadShortcuts();
 
   try {
     const resp = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
@@ -103,6 +131,7 @@ function switchView(viewName, shouldCloseDrawer = true) {
   // Hide all views
   viewMain.classList.remove('active');
   viewSites.classList.remove('active');
+  viewKeys.classList.remove('active');
   viewAbout.classList.remove('active');
   viewDonate.classList.remove('active');
 
@@ -110,6 +139,9 @@ function switchView(viewName, shouldCloseDrawer = true) {
   if (viewName === 'sites') {
     viewSites.classList.add('active');
     loadSitesData();
+  } else if (viewName === 'keys') {
+    viewKeys.classList.add('active');
+    renderShortcuts();
   } else if (viewName === 'about') {
     viewAbout.classList.add('active');
   } else if (viewName === 'donate') {
@@ -170,6 +202,15 @@ function setupNavigation() {
   aboutBackBtn.addEventListener('click', () => switchView('main', true));
   donateBackBtn.addEventListener('click', () => switchView('main', true));
   sitesBackBtn.addEventListener('click', () => switchView('main', true));
+  keysBackBtn.addEventListener('click', () => switchView('main', true));
+
+  keysResetBtn.addEventListener('click', async () => {
+    shortcuts = { ...DEFAULT_SHORTCUTS };
+    await saveShortcuts();
+    renderShortcuts();
+    updateFooterShortcut();
+    setKeysStatus(message('keysResetSuccess', 'Default shortcuts restored.'));
+  });
 
   // Handle external donate links safely
   document.querySelectorAll('.btn-donate').forEach(btn => {
@@ -194,6 +235,118 @@ function setupNavigation() {
       }
     }
   });
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────
+async function loadShortcuts() {
+  try {
+    const stored = await _browser.storage.local.get(SHORTCUT_STORAGE_KEY);
+    shortcuts = { ...DEFAULT_SHORTCUTS, ...(stored[SHORTCUT_STORAGE_KEY] || {}) };
+  } catch (e) {
+    shortcuts = { ...DEFAULT_SHORTCUTS };
+  }
+  renderShortcuts();
+  updateFooterShortcut();
+}
+
+async function saveShortcuts() {
+  await _browser.storage.local.set({ [SHORTCUT_STORAGE_KEY]: shortcuts });
+}
+
+function renderShortcuts() {
+  if (!shortcutList) return;
+  shortcutList.textContent = '';
+
+  SHORTCUTS.forEach(shortcut => {
+    const row = document.createElement('div');
+    row.className = 'shortcut-row';
+
+    const label = document.createElement('span');
+    label.className = 'shortcut-label';
+    label.textContent = message(shortcut.labelKey, shortcut.fallback);
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'shortcut-key';
+    button.dataset.shortcutId = shortcut.id;
+    button.textContent = recordingShortcut === shortcut.id
+      ? message('keysRecording', 'Press a key combination…')
+      : formatShortcut(shortcuts[shortcut.id]);
+    button.setAttribute('aria-label', `${label.textContent}: ${button.textContent}`);
+    button.addEventListener('click', () => startRecordingShortcut(shortcut.id));
+
+    row.append(label, button);
+    shortcutList.appendChild(row);
+  });
+}
+
+function startRecordingShortcut(shortcutId) {
+  recordingShortcut = shortcutId;
+  setKeysStatus(message('keysRecording', 'Press a key combination…'));
+  renderShortcuts();
+  const button = shortcutList.querySelector(`[data-shortcut-id="${shortcutId}"]`);
+  button?.focus();
+}
+
+function setKeysStatus(text, isError = false) {
+  keysStatus.textContent = text;
+  keysStatus.classList.toggle('error', isError);
+}
+
+function message(key, fallback) {
+  return _browser.i18n.getMessage(key) || fallback;
+}
+
+function formatShortcut(shortcut) {
+  return shortcut
+    .split('+')
+    .map(part => ({ Control: 'Ctrl', Meta: '⌘', ' ': 'Space' }[part] || part))
+    .join(' + ');
+}
+
+function shortcutFromEvent(event) {
+  const modifierKeys = new Set(['Control', 'Alt', 'Shift', 'Meta']);
+  if (modifierKeys.has(event.key)) return null;
+
+  const parts = [];
+  if (event.ctrlKey) parts.push('Control');
+  if (event.altKey) parts.push('Alt');
+  if (event.shiftKey) parts.push('Shift');
+  if (event.metaKey) parts.push('Meta');
+
+  let key = event.key;
+  if (key === ' ') key = 'Space';
+  if (key.length === 1) key = key.toUpperCase();
+  return [...parts, key].join('+');
+}
+
+document.addEventListener('keydown', async event => {
+  if (!recordingShortcut) return;
+
+  const shortcut = shortcutFromEvent(event);
+  if (!shortcut) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const duplicate = Object.entries(shortcuts).find(([id, value]) => id !== recordingShortcut && value === shortcut);
+  if (duplicate) {
+    setKeysStatus(message('keysConflict', 'That shortcut is already in use.'), true);
+    return;
+  }
+
+  shortcuts[recordingShortcut] = shortcut;
+  recordingShortcut = null;
+  await saveShortcuts();
+  renderShortcuts();
+  updateFooterShortcut();
+  setKeysStatus(message('keysSaved', 'Shortcut saved.'));
+}, true);
+
+function updateFooterShortcut() {
+  if (!footerText) return;
+  const shortcut = formatShortcut(shortcuts.exitPickMode);
+  const fallback = `Press ${shortcut} to exit Pick Mode`;
+  footerText.textContent = _browser.i18n.getMessage('footerTextShortcut', [shortcut]) || fallback;
 }
 
 // ── Toggle Pick Mode ──────────────────────────────────────────────────────
