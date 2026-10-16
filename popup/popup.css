@@ -884,6 +884,16 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.about-app-name:link,
+.about-app-name:visited {
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+}
+
+.about-app-name:hover {
+  text-decoration: underline;
+}
+
 .about-tagline {
   font-size: 11px;
   color: var(--text-secondary);
