@@ -342,7 +342,7 @@
   function updateActionBarShortcutLabel() {
     const cancelBtn = document.getElementById('dh-cancel-btn');
     if (!cancelBtn) return;
-    const done = _browser.i18n.getMessage('btnDonePlain') || 'Done';
+    const done = (_browser.i18n || {}).getMessage('btnDonePlain') || 'Done';
     cancelBtn.textContent = `${done} (${formatShortcut(keyboardShortcuts.exitPickMode)})`;
   }
 
@@ -935,10 +935,11 @@
     if (actionBarEl) return;
     
     // Fetch localized strings (fallback to English if not available)
-    const strHidden = _browser.i18n.getMessage('barHidden') || 'Hidden:';
-    const strUndo = _browser.i18n.getMessage('btnUndo') || 'Undo Last';
-    const strRestore = _browser.i18n.getMessage('btnRestore') || 'Restore All';
-    const strDone = _browser.i18n.getMessage('btnDone') || 'Done (Esc)';
+    const i18n = _browser.i18n || {};
+    const strHidden = i18n.getMessage('barHidden') || 'Hidden:';
+    const strUndo = i18n.getMessage('btnUndo') || 'Undo Last';
+    const strRestore = i18n.getMessage('btnRestore') || 'Restore All';
+    const strDone = i18n.getMessage('btnDone') || 'Done (Esc)';
 
     actionBarEl = document.createElement('div');
     actionBarEl.id = 'dh-action-bar';
