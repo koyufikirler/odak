@@ -89,6 +89,9 @@
   "footerText": {
     "message": "اضغط على Esc للخروج من وضع الاختيار"
   },
+  "footerTextShortcut": {
+    "message": "اضغط على $1 للخروج من وضع الاختيار"
+  },
   "barHidden": {
     "message": "مخفي:"
   },

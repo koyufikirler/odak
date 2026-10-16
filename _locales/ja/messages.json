@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Escキーを押して選択モードを終了"
   },
+  "footerTextShortcut": {
+    "message": "選択モードを終了するには $1 を押してください"
+  },
   "barHidden": {
     "message": "非表示:"
   },

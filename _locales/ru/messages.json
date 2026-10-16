@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Нажмите Esc, чтобы выйти из режима выбора"
   },
+  "footerTextShortcut": {
+    "message": "Нажмите $1, чтобы выйти из режима выбора"
+  },
   "barHidden": {
     "message": "Скрыто:"
   },

@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Paina Esc poistuaksesi valintatilasta"
   },
+  "footerTextShortcut": {
+    "message": "Paina $1 poistuaksesi valintatilasta"
+  },
   "barHidden": {
     "message": "Piilotettu:"
   },

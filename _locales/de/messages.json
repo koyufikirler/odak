@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Drücken Sie Esc, um den Auswahlmodus zu beenden"
   },
+  "footerTextShortcut": {
+    "message": "Drücken Sie $1, um den Auswahlmodus zu beenden"
+  },
   "barHidden": {
     "message": "Verborgen:"
   },

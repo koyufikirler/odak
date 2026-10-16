@@ -89,6 +89,9 @@
   "footerText": {
     "message": "按 Esc 退出选择模式"
   },
+  "footerTextShortcut": {
+    "message": "按 $1 退出选择模式"
+  },
   "barHidden": {
     "message": "已隐藏:"
   },

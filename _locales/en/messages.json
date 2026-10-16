@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Press Esc to exit Pick Mode"
   },
+  "footerTextShortcut": {
+    "message": "Press $1 to exit Pick Mode"
+  },
   "barHidden": {
     "message": "Hidden:"
   },

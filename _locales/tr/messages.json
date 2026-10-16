@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Seçim Modundan çıkmak için Esc'ye basın"
   },
+  "footerTextShortcut": {
+    "message": "Seçim Modundan çıkmak için $1 basın"
+  },
   "barHidden": {
     "message": "Gizlenen:"
   },

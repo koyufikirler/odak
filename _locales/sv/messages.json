@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Tryck på Esc för att avsluta väljarläget"
   },
+  "footerTextShortcut": {
+    "message": "Tryck på $1 för att avslutte väljarläget"
+  },
   "barHidden": {
     "message": "Dold:"
   },

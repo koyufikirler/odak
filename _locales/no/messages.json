@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Trykk Esc for å avslutte valgmodus"
   },
+  "footerTextShortcut": {
+    "message": "Trykk på $1 for å avslutte valgmodus"
+  },
   "barHidden": {
     "message": "Skjult:"
   },

@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Seçim Rejimindən çıxmaq üçün Esc basın"
   },
+  "footerTextShortcut": {
+    "message": "Seçim Rejimindən çıxmaq üçün $1 basın"
+  },
   "barHidden": {
     "message": "Gizlədildi:"
   },

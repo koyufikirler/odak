@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Presiona Esc para salir del modo selección"
   },
+  "footerTextShortcut": {
+    "message": "Presiona $1 para salir del modo selección"
+  },
   "barHidden": {
     "message": "Oculto:"
   },

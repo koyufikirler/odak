@@ -89,6 +89,9 @@
   "footerText": {
     "message": "Таңдау режимінен шығу үшін Esc басыңыз"
   },
+  "footerTextShortcut": {
+    "message": "Таңдау режимінен шығу үшін $1 басыңыz"
+  },
   "barHidden": {
     "message": "Жасырылған:"
   },
