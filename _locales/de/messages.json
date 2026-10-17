@@ -15,7 +15,7 @@
     "message": "Tastenkombinationen funktionieren auf Webseiten. Sie sind nicht aktiv, während Sie in ein Feld schreiben."
   },
   "keysRecording": {
-    "message": "Tastenkombination drücken..."
+    "message": "Drücken Sie die Tasten."
   },
   "keysConflict": {
     "message": "Diese Tastenkombination wird bereits verwendet."

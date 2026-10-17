@@ -15,7 +15,7 @@
     "message": "단축키는 웹페이지에서 작동합니다. 입력란에 입력하는 동안에는 실행되지 않습니다."
   },
   "keysRecording": {
-    "message": "키 조합을 누르세요…"
+    "message": "키를 누르세요."
   },
   "keysConflict": {
     "message": "해당 단축키가 이미 사용 중입니다."

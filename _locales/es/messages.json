@@ -15,7 +15,7 @@
     "message": "Los atajos funcionan en páginas web. No se ejecutan mientras escribes en un campo."
   },
   "keysRecording": {
-    "message": "Presiona una combinación de teclas…"
+    "message": "Pulsa las teclas."
   },
   "keysConflict": {
     "message": "Ese atajo ya está en uso."

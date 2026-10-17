@@ -15,7 +15,7 @@
     "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
   },
   "keysRecording": {
-    "message": "Press a key combination…"
+    "message": "Press the keys."
   },
   "keysConflict": {
     "message": "That shortcut is already in use."

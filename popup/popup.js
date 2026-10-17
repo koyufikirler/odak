@@ -58,11 +58,24 @@ const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
 //   Windows/Linux -> Control (Ctrl)
 const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
 const PRIMARY_MODIFIER = IS_MAC ? 'Meta' : 'Control';
+
+// Shortcuts are stored as strings like "Control+Alt+Shift+Meta+K". Modifiers are
+// always listed in this order so that strings recorded from a KeyboardEvent and
+// the hard-coded defaults compare equal.
+const MODIFIER_ORDER = ['Control', 'Alt', 'Shift', 'Meta'];
+function normalizeShortcut(shortcut) {
+  if (!shortcut) return shortcut;
+  const parts = shortcut.split('+');
+  const modifiers = MODIFIER_ORDER.filter(mod => parts.includes(mod));
+  const keys = parts.filter(part => !MODIFIER_ORDER.includes(part));
+  return [...modifiers, ...keys].join('+');
+}
+
 const DEFAULT_SHORTCUTS = {
-  togglePickMode: `${PRIMARY_MODIFIER}+Shift+P`,
+  togglePickMode: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+P`),
   exitPickMode: 'Escape',
-  undoLast: `${PRIMARY_MODIFIER}+Shift+Z`,
-  restoreAll: `${PRIMARY_MODIFIER}+Shift+R`,
+  undoLast: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+Z`),
+  restoreAll: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+R`),
 };
 const SHORTCUTS = [
   { id: 'togglePickMode', labelKey: 'shortcutTogglePickMode', fallback: 'Toggle Pick Mode' },
@@ -253,7 +266,12 @@ function setupNavigation() {
 async function loadShortcuts() {
   try {
     const stored = await _browser.storage.local.get(SHORTCUT_STORAGE_KEY);
-    shortcuts = { ...DEFAULT_SHORTCUTS, ...(stored[SHORTCUT_STORAGE_KEY] || {}) };
+    const saved = stored[SHORTCUT_STORAGE_KEY] || {};
+    const normalized = {};
+    for (const [id, value] of Object.entries(saved)) {
+      if (value) normalized[id] = normalizeShortcut(value);
+    }
+    shortcuts = { ...DEFAULT_SHORTCUTS, ...normalized };
   } catch (e) {
     shortcuts = { ...DEFAULT_SHORTCUTS };
   }
@@ -262,7 +280,11 @@ async function loadShortcuts() {
 }
 
 async function saveShortcuts() {
-  await _browser.storage.local.set({ [SHORTCUT_STORAGE_KEY]: shortcuts });
+  try {
+    await _browser.storage.local.set({ [SHORTCUT_STORAGE_KEY]: shortcuts });
+  } catch (e) {
+    // Extension context invalidated (popup lingering after a reload) — ignore
+  }
 }
 
 function renderShortcuts() {
@@ -300,6 +322,13 @@ function startRecordingShortcut(shortcutId) {
   button?.focus();
 }
 
+function cancelRecordingShortcut() {
+  if (!recordingShortcut) return;
+  recordingShortcut = null;
+  renderShortcuts();
+  setKeysStatus('');
+}
+
 function setKeysStatus(text, isError = false) {
   keysStatus.textContent = text;
   keysStatus.classList.toggle('error', isError);
@@ -312,25 +341,57 @@ function message(key, fallback) {
 function formatShortcut(shortcut) {
   return shortcut
     .split('+')
-    .map(part => ({ Control: 'Ctrl', Meta: '⌘', ' ': 'Space' }[part] || part))
+    .map(part => (IS_MAC
+      ? { Control: '⌃', Alt: '⌥', Shift: '⇧', Meta: '⌘' }[part]
+      : { Control: 'Ctrl' }[part]) || (part === ' ' ? 'Space' : part))
     .join(' + ');
 }
 
-function shortcutFromEvent(event) {
-  const modifierKeys = new Set(['Control', 'Alt', 'Shift', 'Meta']);
-  if (modifierKeys.has(event.key)) return null;
+// Derive the key label from a KeyboardEvent. For letter/digit keys the physical
+// `event.code` is preferred: it is layout-independent and, on macOS, is not
+// affected by the accented character Option produces (e.g. ⌥K -> "˚").
+function keyLabelFromEvent(event) {
+  if (event.code) {
+    if (event.code.startsWith('Key')) return event.code.slice(3);
+    if (event.code.startsWith('Digit')) return event.code.slice(5);
+  }
+  if (event.key === ' ') return 'Space';
+  return event.key.length === 1 ? event.key.toUpperCase() : event.key;
+}
 
+function modifierPartsFromEvent(event) {
   const parts = [];
   if (event.ctrlKey) parts.push('Control');
   if (event.altKey) parts.push('Alt');
   if (event.shiftKey) parts.push('Shift');
   if (event.metaKey) parts.push('Meta');
-
-  let key = event.key;
-  if (key === ' ') key = 'Space';
-  if (key.length === 1) key = key.toUpperCase();
-  return [...parts, key].join('+');
+  return parts;
 }
+
+function shortcutFromEvent(event) {
+  const modifierKeys = new Set(['Control', 'Alt', 'Shift', 'Meta']);
+  if (modifierKeys.has(event.key)) return null;
+  return [...modifierPartsFromEvent(event), keyLabelFromEvent(event)].join('+');
+}
+
+// Clicking anywhere outside the key boxes cancels recording and restores the
+// previous shortcut. `pointerdown` fires before the click, so this also covers
+// clicks on non-focusable areas that would not otherwise blur the button.
+document.addEventListener('pointerdown', event => {
+  if (!recordingShortcut) return;
+  const target = event.target;
+  if (target instanceof Element && target.closest('.shortcut-key')) return;
+  cancelRecordingShortcut();
+}, true);
+
+// Same for keyboard navigation: if recording is active and focus moves to
+// anything other than a key box, give up and restore the previous shortcut.
+document.addEventListener('focusin', event => {
+  if (!recordingShortcut) return;
+  const target = event.target;
+  if (target instanceof Element && target.closest('.shortcut-key')) return;
+  cancelRecordingShortcut();
+});
 
 document.addEventListener('keydown', async event => {
   if (!recordingShortcut) return;
@@ -340,7 +401,7 @@ document.addEventListener('keydown', async event => {
   event.preventDefault();
   event.stopPropagation();
 
-  const duplicate = Object.entries(shortcuts).find(([id, value]) => id !== recordingShortcut && value === shortcut);
+  const duplicate = Object.entries(shortcuts).find(([id, value]) => id !== recordingShortcut && normalizeShortcut(value) === shortcut);
   if (duplicate) {
     setKeysStatus(message('keysConflict', 'That shortcut is already in use.'), true);
     return;

@@ -225,6 +225,24 @@ _browser.tabs.onRemoved.addListener(async (tabId) => {
   await _sessionStorage.remove(key).catch(() => {});
 });
 
+// Tabs that were already open when the extension was installed/updated keep
+// running without content scripts (browsers only inject them on page load), so
+// keyboard shortcuts would silently do nothing there until the page is
+// reloaded or the popup is opened. Inject into those tabs right away.
+async function injectContentScriptIntoOpenTabs() {
+  const tabs = await _browser.tabs.query({}).catch(() => []);
+  for (const tab of tabs) {
+    if (!tab?.id || !isInjectableTab(tab)) continue;
+    try {
+      await ensureContentScript(tab.id);
+    } catch (e) {}
+  }
+}
+
+_browser.runtime.onInstalled.addListener(() => {
+  injectContentScriptIntoOpenTabs();
+});
+
 async function syncBadgeForTab(tabId) {
   try {
     const tab = await _browser.tabs.get(tabId);

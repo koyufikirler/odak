@@ -15,7 +15,7 @@
     "message": "Les raccourcis fonctionnent sur les pages web. Ils ne s'exécutent pas lorsque vous saisissez du texte dans un champ."
   },
   "keysRecording": {
-    "message": "Appuyez sur une combinaison de touches…"
+    "message": "Appuyez sur les touches."
   },
   "keysConflict": {
     "message": "Ce raccourci est déjà utilisé."

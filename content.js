@@ -14,6 +14,45 @@
 
   const _browser = typeof browser !== 'undefined' ? browser : chrome;
 
+  // ── Extension API helpers ─────────────────────────────────────────────────
+  // After the extension is reloaded/updated, this content script keeps running in
+  // the page while its extension context is gone — chrome.* calls then throw
+  // *synchronously* ("Extension context invalidated"), so `.catch()` alone is not
+  // enough. Every call goes through these guards and fails quietly instead.
+  function safeCall(fn, fallback) {
+    try {
+      const result = fn();
+      if (result && typeof result.then === 'function') return result.catch(() => fallback);
+      return Promise.resolve(fallback);
+    } catch (e) {
+      return Promise.resolve(fallback);
+    }
+  }
+
+  function sendToBackground(message) {
+    return safeCall(() => _browser.runtime.sendMessage(message));
+  }
+
+  function storageGet(keys) {
+    return safeCall(() => _browser.storage.local.get(keys), {});
+  }
+
+  function storageSet(items) {
+    return safeCall(() => _browser.storage.local.set(items));
+  }
+
+  function storageRemove(keys) {
+    return safeCall(() => _browser.storage.local.remove(keys));
+  }
+
+  function getMsg(key, fallback = '') {
+    try {
+      return _browser.i18n.getMessage(key) || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   // ── State ────────────────────────────────────────────────────────────────
   let pickModeActive = false;
   let hoveredEl = null;
@@ -32,11 +71,30 @@
   //   Windows/Linux -> Control (Ctrl)
   const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
   const PRIMARY_MODIFIER = IS_MAC ? 'Meta' : 'Control';
+
+  // Shortcuts are stored as strings like "Control+Alt+Shift+Meta+K". Modifiers are
+  // always listed in this order so recorded values and defaults compare equal.
+  const MODIFIER_ORDER = ['Control', 'Alt', 'Shift', 'Meta'];
+  function normalizeShortcut(shortcut) {
+    if (!shortcut) return shortcut;
+    const parts = shortcut.split('+');
+    const modifiers = MODIFIER_ORDER.filter(mod => parts.includes(mod));
+    const keys = parts.filter(part => !MODIFIER_ORDER.includes(part));
+    return [...modifiers, ...keys].join('+');
+  }
+  function normalizeShortcutMap(map) {
+    const out = {};
+    for (const [id, value] of Object.entries(map || {})) {
+      if (value) out[id] = normalizeShortcut(value);
+    }
+    return out;
+  }
+
   const DEFAULT_SHORTCUTS = {
-    togglePickMode: `${PRIMARY_MODIFIER}+Shift+P`,
+    togglePickMode: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+P`),
     exitPickMode: 'Escape',
-    undoLast: `${PRIMARY_MODIFIER}+Shift+Z`,
-    restoreAll: `${PRIMARY_MODIFIER}+Shift+R`,
+    undoLast: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+Z`),
+    restoreAll: normalizeShortcut(`${PRIMARY_MODIFIER}+Shift+R`),
   };
   let keyboardShortcuts = { ...DEFAULT_SHORTCUTS };
 
@@ -54,32 +112,38 @@
       startNavigationWatchers();
       scheduleRehide();
       await loadKeyboardShortcuts();
-      document.addEventListener('keydown', onShortcutKeyDown, true);
     } catch (e) {
       // Storage not available (e.g. about: pages) — ignore
     }
 
     // Sync pick-mode state from background (e.g. if page reloaded while active)
     try {
-      const resp = await _browser.runtime.sendMessage({ action: 'getPickMode' });
+      const resp = await sendToBackground({ action: 'getPickMode' });
       if (resp?.active) enablePickMode();
     } catch (e) {}
   }
 
   async function loadKeyboardShortcuts() {
-    const stored = await _browser.storage.local.get(SHORTCUT_STORAGE_KEY).catch(() => ({}));
-    keyboardShortcuts = { ...DEFAULT_SHORTCUTS, ...(stored[SHORTCUT_STORAGE_KEY] || {}) };
+    const stored = await storageGet(SHORTCUT_STORAGE_KEY);
+    keyboardShortcuts = { ...DEFAULT_SHORTCUTS, ...normalizeShortcutMap(stored[SHORTCUT_STORAGE_KEY]) };
   }
 
-  _browser.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === 'local' && changes[SHORTCUT_STORAGE_KEY]) {
-      keyboardShortcuts = {
-        ...DEFAULT_SHORTCUTS,
-        ...(changes[SHORTCUT_STORAGE_KEY].newValue || {}),
-      };
-      updateActionBarShortcutLabel();
-    }
-  });
+  try {
+    _browser.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName === 'local' && changes[SHORTCUT_STORAGE_KEY]) {
+        keyboardShortcuts = {
+          ...DEFAULT_SHORTCUTS,
+          ...normalizeShortcutMap(changes[SHORTCUT_STORAGE_KEY].newValue),
+        };
+        updateActionBarShortcutLabel();
+      }
+    });
+  } catch (e) {}
+
+  // Keyboard shortcuts are attached immediately and independently of the async
+  // initialisation below: even if storage or the observer fails on a page, the
+  // shortcut must keep working.
+  document.addEventListener('keydown', onShortcutKeyDown, true);
 
   init();
 
@@ -98,15 +162,15 @@
     currentSiteKey = siteKey;
 
     const legacyUrlKey = normalizeUrl(window.location.href);
-    const data = await _browser.storage.local.get([siteKey, legacyUrlKey]).catch(() => ({}));
+    const data = await storageGet([siteKey, legacyUrlKey]);
     const siteSelectors = data[siteKey] || [];
     const legacySelectors = data[legacyUrlKey] || [];
 
     if (siteSelectors.length === 0 && legacySelectors.length > 0) {
       const merged = Array.from(new Set(legacySelectors));
       hiddenSelectors = merged;
-      await _browser.storage.local.set({ [siteKey]: merged }).catch(() => {});
-      await _browser.storage.local.remove(legacyUrlKey).catch(() => {});
+      await storageSet({ [siteKey]: merged });
+      await storageRemove(legacyUrlKey);
       return;
     }
 
@@ -183,44 +247,48 @@
     window.addEventListener(
       'dh-locationchange',
       async () => {
-        const url = window.location.href;
-        if (url === lastSeenUrl) return;
-        lastSeenUrl = url;
+        try {
+          const url = window.location.href;
+          if (url === lastSeenUrl) return;
+          lastSeenUrl = url;
 
-        const nextSiteKey = getSiteKey(url);
-        if (nextSiteKey && nextSiteKey !== currentSiteKey) {
-          await loadRulesForCurrentSite();
-        }
-        scheduleRehide();
+          const nextSiteKey = getSiteKey(url);
+          if (nextSiteKey && nextSiteKey !== currentSiteKey) {
+            await loadRulesForCurrentSite();
+          }
+          scheduleRehide();
+        } catch (e) {}
       },
       true
     );
   }
 
   // ── Message listener (from popup / background) ────────────────────────────
-  _browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message.action === 'setPickMode') {
-      message.active ? enablePickMode() : disablePickMode();
-      sendResponse({ ok: true });
-    } else if (message.action === 'undoLast') {
-      undoLast();
-      sendResponse({ ok: true });
-    } else if (message.action === 'restoreAll') {
-      restoreAll();
-      sendResponse({ ok: true });
-    } else if (message.action === 'siteDataCleared') {
-      if (!message.origin || normalizeOrigin(window.location.href) === message.origin) {
+  try {
+    _browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message.action === 'setPickMode') {
+        message.active ? enablePickMode() : disablePickMode();
+        sendResponse({ ok: true });
+      } else if (message.action === 'undoLast') {
+        undoLast();
+        sendResponse({ ok: true });
+      } else if (message.action === 'restoreAll') {
+        restoreAll();
+        sendResponse({ ok: true });
+      } else if (message.action === 'siteDataCleared') {
+        if (!message.origin || normalizeOrigin(window.location.href) === message.origin) {
+          restoreAllLocalOnly();
+        }
+        sendResponse({ ok: true });
+      } else if (message.action === 'allSitesCleared') {
         restoreAllLocalOnly();
+        sendResponse({ ok: true });
+      } else if (message.action === 'getStatus') {
+        sendResponse({ pickMode: pickModeActive, count: hiddenSelectors.length });
       }
-      sendResponse({ ok: true });
-    } else if (message.action === 'allSitesCleared') {
-      restoreAllLocalOnly();
-      sendResponse({ ok: true });
-    } else if (message.action === 'getStatus') {
-      sendResponse({ pickMode: pickModeActive, count: hiddenSelectors.length });
-    }
-    return true;
-  });
+      return true;
+    });
+  } catch (e) {}
 
   // ── Pick Mode ─────────────────────────────────────────────────────────────
   function enablePickMode() {
@@ -287,17 +355,41 @@
     dissolveElement(target);
   }
 
-  function shortcutFromEvent(event) {
+  // Derive the key label from a KeyboardEvent. For letter/digit keys the
+  // physical `event.code` is preferred: it is layout-independent and, on macOS,
+  // is not affected by the accented character Option produces (e.g. ⌥K -> "˚").
+  function keyLabelFromEvent(event) {
+    if (event.code) {
+      if (event.code.startsWith('Key')) return event.code.slice(3);
+      if (event.code.startsWith('Digit')) return event.code.slice(5);
+    }
+    if (event.key === ' ') return 'Space';
+    return event.key.length === 1 ? event.key.toUpperCase() : event.key;
+  }
+
+  function modifierPartsFromEvent(event) {
     const parts = [];
     if (event.ctrlKey) parts.push('Control');
     if (event.altKey) parts.push('Alt');
     if (event.shiftKey) parts.push('Shift');
     if (event.metaKey) parts.push('Meta');
+    return parts;
+  }
 
-    let key = event.key;
-    if (key === ' ') key = 'Space';
-    if (key.length === 1) key = key.toUpperCase();
-    return [...parts, key].join('+');
+  function shortcutFromEvent(event) {
+    return [...modifierPartsFromEvent(event), keyLabelFromEvent(event)].join('+');
+  }
+
+  // Matching accepts both the code-based label and the raw `event.key` label so
+  // shortcuts recorded by older versions (which used event.key, e.g. "Alt+˚")
+  // keep working.
+  function shortcutCandidates(event) {
+    const primary = shortcutFromEvent(event);
+    let raw = event.key;
+    if (raw === ' ') raw = 'Space';
+    else if (raw.length === 1) raw = raw.toUpperCase();
+    const legacy = [...modifierPartsFromEvent(event), raw].join('+');
+    return primary === legacy ? [primary] : [primary, legacy];
   }
 
   function isTypingTarget(target) {
@@ -309,12 +401,17 @@
 
   function onShortcutKeyDown(event) {
     if (isTypingTarget(event.target)) return;
-    const pressed = shortcutFromEvent(event);
-    const action = Object.entries(keyboardShortcuts).find(([, shortcut]) => shortcut === pressed)?.[0];
+    const modifierKeys = new Set(['Control', 'Alt', 'Shift', 'Meta']);
+    if (modifierKeys.has(event.key)) return; // ignore modifier-only presses
+    const candidates = shortcutCandidates(event);
+    const action = Object.entries(keyboardShortcuts).find(([, shortcut]) => candidates.includes(shortcut))?.[0];
     if (!action) return;
 
     event.preventDefault();
     event.stopPropagation();
+    // If the content script was injected twice (e.g. by the popup), the same
+    // shortcut would otherwise toggle twice and appear to do nothing.
+    event.stopImmediatePropagation();
 
     if (action === 'togglePickMode') {
       setPickModeFromShortcut(!pickModeActive);
@@ -329,20 +426,22 @@
 
   function setPickModeFromShortcut(active) {
     active ? enablePickMode() : disablePickMode();
-    _browser.runtime.sendMessage({ action: 'setPickMode', active }).catch(() => {});
+    sendToBackground({ action: 'setPickMode', active });
   }
 
   function formatShortcut(shortcut) {
     return shortcut
       .split('+')
-      .map(part => ({ Control: 'Ctrl', Meta: '⌘' }[part] || part))
+      .map(part => (IS_MAC
+        ? { Control: '⌃', Alt: '⌥', Shift: '⇧', Meta: '⌘' }[part]
+        : { Control: 'Ctrl' }[part]) || part)
       .join(' + ');
   }
 
   function updateActionBarShortcutLabel() {
     const cancelBtn = document.getElementById('dh-cancel-btn');
     if (!cancelBtn) return;
-    const done = (_browser.i18n || {}).getMessage('btnDonePlain') || 'Done';
+    const done = getMsg('btnDonePlain', 'Done');
     cancelBtn.textContent = `${done} (${formatShortcut(keyboardShortcuts.exitPickMode)})`;
   }
 
@@ -888,7 +987,7 @@
     updateActionBarCount();
 
     try {
-      await _browser.runtime.sendMessage({
+      await sendToBackground({
         action: 'addHiddenElement',
         url: window.location.href,
         selector,
@@ -899,7 +998,7 @@
   // ── Undo / Restore ────────────────────────────────────────────────────────
   async function undoLast() {
     try {
-      const resp = await _browser.runtime.sendMessage({ action: 'undoLast' });
+      const resp = await sendToBackground({ action: 'undoLast' });
       if (resp?.removed) {
         const selector = resp.removed;
         hiddenSelectors = hiddenSelectors.filter(s => s !== selector);
@@ -915,7 +1014,7 @@
 
   async function restoreAll() {
     try {
-      await _browser.runtime.sendMessage({ action: 'restoreAll' });
+      await sendToBackground({ action: 'restoreAll' });
       restoreAllLocalOnly();
     } catch (e) {}
   }
@@ -935,11 +1034,10 @@
     if (actionBarEl) return;
     
     // Fetch localized strings (fallback to English if not available)
-    const i18n = _browser.i18n || {};
-    const strHidden = i18n.getMessage('barHidden') || 'Hidden:';
-    const strUndo = i18n.getMessage('btnUndo') || 'Undo Last';
-    const strRestore = i18n.getMessage('btnRestore') || 'Restore All';
-    const strDone = i18n.getMessage('btnDone') || 'Done (Esc)';
+    const strHidden = getMsg('barHidden', 'Hidden:');
+    const strUndo = getMsg('btnUndo', 'Undo Last');
+    const strRestore = getMsg('btnRestore', 'Restore All');
+    const strDone = getMsg('btnDone', 'Done (Esc)');
 
     actionBarEl = document.createElement('div');
     actionBarEl.id = 'dh-action-bar';
@@ -989,7 +1087,7 @@
     document.getElementById('dh-cancel-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       disablePickMode();
-      _browser.runtime.sendMessage({ action: 'setPickMode', active: false }).catch(() => {});
+      sendToBackground({ action: 'setPickMode', active: false });
     });
   }
 
