@@ -12,6 +12,17 @@
 
 const _browser = typeof browser !== 'undefined' ? browser : chrome;
 
+// ── Mobile layout flag (Firefox for Android) ──────────────────────────────
+// Firefox for Android opens extension popups in a full-width panel instead of
+// the page-sized popup window desktop browsers create. Without a flag the
+// fixed 320px column leaves empty bands around the panel, hover-only controls
+// stay unreachable by touch and tap targets remain desktop-sized. popup.css
+// reacts to `dh-mobile` on <html>; it is added here, before the first paint.
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
+if (IS_ANDROID) {
+  document.documentElement.classList.add('dh-mobile');
+}
+
 // ── DOM references ────────────────────────────────────────────────────────
 const pickCheckbox = document.getElementById('pick-mode-checkbox');
 const pickCard = document.getElementById('pick-mode-section');
@@ -91,6 +102,9 @@ async function init() {
   // Apply i18n strings
   applyI18n();
 
+  // Mobile-only adjustments (Firefox for Android)
+  applyMobileLayout();
+
   // Inject version from manifest
   applyVersion();
 
@@ -139,6 +153,19 @@ function applyVersion() {
   if (menuEl) menuEl.textContent = `ODAK s${version}`;
 }
 
+// ── Mobile-only adjustments (Firefox for Android) ─────────────────────────
+// The Keys view records key chords, which needs a physical keyboard: on a
+// touch device it can never be completed, so its drawer entry is dropped and
+// switchView() refuses to open it.
+function applyMobileLayout() {
+  if (!IS_ANDROID) return;
+
+  const navKeys = document.getElementById('nav-keys');
+  if (navKeys) navKeys.remove();
+
+  if (currentView === 'keys') switchView('main', false);
+}
+
 // ── Navigation & Drawer ───────────────────────────────────────────────────
 function openMenu() {
   menuDrawer.classList.add('open');
@@ -151,6 +178,9 @@ function closeMenu() {
 }
 
 function switchView(viewName, shouldCloseDrawer = true) {
+  // The shortcut editor is unreachable on touch devices.
+  if (viewName === 'keys' && IS_ANDROID) viewName = 'main';
+
   currentView = viewName;
 
   // Hide all views

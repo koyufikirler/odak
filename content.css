@@ -128,3 +128,46 @@
 #dh-action-bar button.dh-cancel-btn:hover {
   background: rgba(248, 113, 113, 0.25) !important;
 }
+
+/* ── Narrow screens (phones) ─────────────────────────────────────────────── */
+/*
+ * The bar is centered with `width: max-content`, so on a phone its buttons
+ * push it past both screen edges and the outer buttons end up outside the
+ * viewport, unreachable. Cap it to the viewport and let the buttons wrap onto
+ * a second row instead. Desktop is untouched.
+ */
+@media (max-width: 560px) {
+  #dh-action-bar {
+    box-sizing: border-box !important;
+    max-width: calc(100% - 16px) !important;
+    left: 50% !important;
+    right: auto !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  #dh-action-bar .dh-count-badge {
+    font-size: 12px !important;
+    padding: 4px 9px !important;
+    white-space: nowrap !important;
+  }
+
+  #dh-action-bar button {
+    padding: 9px 12px !important;
+    font-size: 13px !important;
+    min-height: 40px !important;
+    max-width: 100% !important;
+    border-radius: 10px !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  #dh-action-bar button.dh-cancel-btn {
+    margin-left: 0 !important;
+    border-radius: 10px !important;
+  }
+}
