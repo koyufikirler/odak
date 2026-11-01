@@ -101,8 +101,31 @@
   // ── DOM references ────────────────────────────────────────────────────────
   const HIGHLIGHT_CLASS = 'dh-highlight';
   const CANVAS_CLASS = 'dh-particle-canvas';
-  const CURSOR_CLASS = 'dh-cursor-crosshair';
+  const CURSOR_CLASS = 'dh-cursor-pick';
   const BLOCKED_TAGS = new Set(['HTML', 'BODY', 'HEAD', 'SCRIPT', 'STYLE', 'META', 'LINK']);
+
+  // Widgets such as consent banners (e.g. Hepsiburada's <efilli-layout-dynamic>)
+  // render their UI inside a shadow root. content.css cannot reach into a shadow
+  // tree, so the hover highlight is injected into that root on demand.
+  const SHADOW_STYLE_ATTR = 'data-dh-shadow-style';
+  const SHADOW_HIGHLIGHT_CSS = `
+    .dh-highlight {
+      outline: 2px solid rgba(147, 51, 234, 0.9) !important;
+      outline-offset: 2px !important;
+      box-shadow:
+        0 0 0 2px rgba(147, 51, 234, 0.3),
+        0 0 12px rgba(147, 51, 234, 0.5),
+        0 0 24px rgba(56, 189, 248, 0.25) !important;
+      border-radius: 4px !important;
+      cursor: default !important;
+      filter: blur(1.5px) !important;
+    }
+    .dh-highlight a,
+    .dh-highlight a * {
+      pointer-events: none !important;
+    }
+  `;
+  const shadowStyleRoots = new Set();
 
   // ── Initialize: restore persisted hidden elements ─────────────────────────
   async function init() {
@@ -294,60 +317,180 @@
   function enablePickMode() {
     if (pickModeActive) return;
     pickModeActive = true;
-    createActionBar();
+    clearStaleUi();
     createPickShield();
-    document.body.classList.add(CURSOR_CLASS);
-    pickShieldEl.addEventListener('pointermove', onShieldPointerMove, true);
-    pickShieldEl.addEventListener('pointerleave', onShieldPointerLeave, true);
-    pickShieldEl.addEventListener('pointerdown', onShieldPointerDown, true);
-    pickShieldEl.addEventListener('click', onShieldClick, true);
+    createActionBar();
+    document.body?.classList.add(CURSOR_CLASS);
+    // Listen on `window` in the capture phase instead of only on the shield.
+    // Page overlays with a huge z-index (cookie bars, sticky ads) can still end
+    // up above the shield; capture-phase listeners see their events first, so
+    // the overlay can be picked instead of triggering its own buttons.
+    window.addEventListener('pointermove', onPickPointerMove, true);
+    window.addEventListener('pointerdown', onPickPointerDown, true);
+    window.addEventListener('pointerup', onPickPointerUp, true);
+    window.addEventListener('click', onPickClick, true);
+    window.addEventListener('pointerout', onPickPointerOut, true);
+    window.addEventListener('blur', onPickWindowBlur);
   }
 
   function disablePickMode() {
     if (!pickModeActive) return;
     pickModeActive = false;
     clearHighlight();
-    removePickShield();
+    window.removeEventListener('pointermove', onPickPointerMove, true);
+    window.removeEventListener('pointerdown', onPickPointerDown, true);
+    window.removeEventListener('pointerup', onPickPointerUp, true);
+    window.removeEventListener('click', onPickClick, true);
+    window.removeEventListener('pointerout', onPickPointerOut, true);
+    window.removeEventListener('blur', onPickWindowBlur);
     removeActionBar();
-    document.body.classList.remove(CURSOR_CLASS);
+    removePickShield();
+    removeShadowHighlightStyles();
+    document.body?.classList.remove(CURSOR_CLASS);
   }
 
   // ── Event Handlers ────────────────────────────────────────────────────────
+  // document.elementFromPoint() reports the *host* of a shadow tree, never the
+  // element inside it. Consent widgets render inside a zero-size host, so the
+  // host is useless for both highlighting and hit-testing; descend into open
+  // shadow roots until the real element under the pointer is found.
+  function deepElementAt(el, clientX, clientY) {
+    let node = el;
+    for (let depth = 0; node && node.shadowRoot && depth < 5; depth++) {
+      const root = node.shadowRoot;
+      let inner = null;
+      try {
+        for (const cand of root.elementsFromPoint(clientX, clientY)) {
+          if (cand instanceof Element && cand.getRootNode() === root) {
+            inner = cand;
+            break;
+          }
+        }
+      } catch (e) {
+        break;
+      }
+      if (!inner || inner === node) break;
+      node = inner;
+    }
+    return node;
+  }
+
   function getElementUnderPointer(clientX, clientY) {
     const els = document.elementsFromPoint(clientX, clientY);
     for (const el of els) {
       if (el === pickShieldEl) continue;
       if (el.id === 'dh-action-bar' || (el.closest && el.closest('#dh-action-bar'))) continue;
-      return el;
+      return deepElementAt(el, clientX, clientY);
     }
     return null;
   }
 
-  function onShieldPointerDown(e) {
+  function getEventTarget(e) {
+    const target = e.target;
+    if (
+      target instanceof Element &&
+      target !== pickShieldEl &&
+      !(target.closest && target.closest('#dh-action-bar'))
+    ) {
+      return deepElementAt(target, e.clientX, e.clientY);
+    }
+    return getElementUnderPointer(e.clientX, e.clientY);
+  }
+
+  // Hiding an element that lives in a shadow tree would only last until the
+  // next reload: a plain CSS selector cannot reach into shadow DOM, so nothing
+  // would be re-hidden. When the shadow host itself is overlay-sized (consent
+  // banners, chat widgets) hide the host instead — it is a normal light-DOM
+  // element, so the stored selector keeps working.
+  function getHideTarget(el) {
+    let root = el.getRootNode();
+    if (!(root instanceof ShadowRoot)) return el;
+
+    let host = root.host;
+    // Nested shadow roots: the outer host is the one that can be selected.
+    for (let depth = 0; depth < 5; depth++) {
+      const parentRoot = host.getRootNode();
+      if (!(parentRoot instanceof ShadowRoot)) break;
+      host = parentRoot.host;
+    }
+
+    const rect = host.getBoundingClientRect();
+    const vw = window.innerWidth || 1;
+    const vh = window.innerHeight || 1;
+    const overlayLike = rect.width <= vw * 0.5 || rect.height <= vh * 0.5;
+    return overlayLike ? host : el;
+  }
+
+  function ensureShadowHighlightStyle(el) {
+    const root = el.getRootNode();
+    if (!(root instanceof ShadowRoot)) return;
+    try {
+      if (root.querySelector(`style[${SHADOW_STYLE_ATTR}]`)) return;
+      const style = document.createElement('style');
+      style.setAttribute(SHADOW_STYLE_ATTR, '');
+      style.textContent = SHADOW_HIGHLIGHT_CSS;
+      root.appendChild(style);
+      shadowStyleRoots.add(root);
+    } catch (e) {}
+  }
+
+  function removeShadowHighlightStyles() {
+    for (const root of shadowStyleRoots) {
+      try {
+        root.querySelectorAll(`style[${SHADOW_STYLE_ATTR}]`).forEach(node => node.remove());
+      } catch (e) {}
+    }
+    shadowStyleRoots.clear();
+  }
+
+  function isActionBarEvent(e) {
+    const target = e.target;
+    return target instanceof Element && Boolean(target.closest('#dh-action-bar'));
+  }
+
+  function onPickPointerMove(e) {
+    if (isActionBarEvent(e)) {
+      clearHighlight();
+      return;
+    }
+    const raw = getEventTarget(e);
+    const target = getValidTarget(raw);
+    if (!target || target === hoveredEl) return;
+    clearHighlight();
+    hoveredEl = target;
+    ensureShadowHighlightStyle(target);
+    target.classList.add(HIGHLIGHT_CLASS);
+  }
+
+  function onPickPointerDown(e) {
+    if (isActionBarEvent(e)) return;
     if (e.pointerType !== 'touch') e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
   }
 
-  function onShieldPointerMove(e) {
-    const raw = getElementUnderPointer(e.clientX, e.clientY);
-    const target = getValidTarget(raw);
-    if (!target || target === hoveredEl) return;
-    clearHighlight();
-    hoveredEl = target;
-    target.classList.add(HIGHLIGHT_CLASS);
+  function onPickPointerUp(e) {
+    if (isActionBarEvent(e)) return;
+    e.stopPropagation();
+    e.stopImmediatePropagation();
   }
 
-  function onShieldPointerLeave() {
+  function onPickPointerOut(e) {
+    // relatedTarget is null when the pointer leaves the window entirely.
+    if (!e.relatedTarget) clearHighlight();
+  }
+
+  function onPickWindowBlur() {
     clearHighlight();
   }
 
-  function onShieldClick(e) {
+  function onPickClick(e) {
+    if (isActionBarEvent(e)) return;
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    const raw = getElementUnderPointer(e.clientX, e.clientY);
+    const raw = getEventTarget(e);
     const target = getValidTarget(raw);
     if (!target || isAnimating) return;
 
@@ -476,6 +619,47 @@
     const playerContainer = el.closest('.html5-video-player, .video-js, .plyr');
     if (playerContainer) return playerContainer;
 
+    // Cookie bars, sticky ads and floating widgets are often a fixed wrapper
+    // around an iframe or a few inner nodes. Picking the inner node leaves the
+    // wrapper's fixed box behind — invisible, but still covering the page and
+    // swallowing clicks — so pick the nearest fixed ancestor instead.
+    let fixedNode = el;
+    let fixedDepth = 0;
+    while (
+      fixedNode &&
+      fixedNode !== document.body &&
+      fixedNode !== document.documentElement &&
+      fixedDepth < 10
+    ) {
+      if (getComputedStyle(fixedNode).position === 'fixed') {
+        const rect = fixedNode.getBoundingClientRect();
+        const vw = window.innerWidth || 1;
+        const vh = window.innerHeight || 1;
+        // Only climb into bar/sidebar-sized overlays. Full-viewport fixed
+        // wrappers are usually app roots; selecting those would hide the whole
+        // page instead of the overlay the user clicked.
+        const overlayLike = rect.height <= vh * 0.5 || rect.width <= vw * 0.5;
+        if (el.tagName === 'IFRAME' || overlayLike) return fixedNode;
+      }
+      fixedNode = fixedNode.parentElement;
+      fixedDepth++;
+    }
+
+    // Shadow-DOM widgets (consent banners rendered by component frameworks, in
+    // `<efilli-layout-dynamic>` for Hepsiburada, and similar) render into a
+    // shadow root whose host is usually `display: inline` with a 0×0 box. The
+    // hover lands on the host, and the block walk below would climb to <body>
+    // and give up — which is exactly why such banners could never be picked.
+    const tagLower = el.tagName.toLowerCase();
+    const isShadowHost = Boolean(el.shadowRoot) || tagLower.includes('-');
+    if (isShadowHost) {
+      const hostRect = el.getBoundingClientRect();
+      const vw = window.innerWidth || 1;
+      const vh = window.innerHeight || 1;
+      const overlayLike = hostRect.width <= vw * 0.5 || hostRect.height <= vh * 0.5;
+      if (overlayLike) return el;
+    }
+
     // Walk up to find a block-level or meaningful element
     let node = el;
     while (node && node !== document.documentElement) {
@@ -496,15 +680,53 @@
     document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(el => el.classList.remove(HIGHLIGHT_CLASS));
   }
 
+  // A content script from an older version of the extension survives an
+  // extension reload as an orphan: its chrome.* calls are dead, but its DOM and
+  // event listeners are not. A leftover full-screen shield or action bar would
+  // sit on top of the page and swallow every click, which looks exactly like
+  // "this element cannot be selected". Drop anything this instance did not
+  // create before building our own UI.
+  function clearStaleUi() {
+    document.querySelectorAll('#dh-pick-shield').forEach(node => {
+      if (node === pickShieldEl) return;
+      try {
+        if (node.matches(':popover-open')) node.hidePopover();
+      } catch (e) {}
+      node.remove();
+    });
+    document.querySelectorAll('#dh-action-bar').forEach(node => {
+      if (node === actionBarEl) return;
+      node.remove();
+    });
+    document.querySelectorAll(`.${CANVAS_CLASS}`).forEach(node => node.remove());
+    document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach(node => node.classList.remove(HIGHLIGHT_CLASS));
+  }
+
   function createPickShield() {
     if (pickShieldEl) return;
     pickShieldEl = document.createElement('div');
     pickShieldEl.id = 'dh-pick-shield';
     (document.documentElement || document.body).appendChild(pickShieldEl);
+
+    // Put the shield in the browser's top layer. A plain z-index cannot beat
+    // the 2147483647 that cookie bars and sticky ads commonly use, and those
+    // overlays would then receive the clicks themselves. Popovers paint above
+    // every z-index; fall back to the CSS z-index when the API is unavailable.
+    if (typeof pickShieldEl.showPopover === 'function') {
+      pickShieldEl.setAttribute('popover', 'manual');
+      try {
+        pickShieldEl.showPopover();
+      } catch (e) {
+        pickShieldEl.removeAttribute('popover');
+      }
+    }
   }
 
   function removePickShield() {
     if (!pickShieldEl) return;
+    try {
+      if (pickShieldEl.matches(':popover-open')) pickShieldEl.hidePopover();
+    } catch (e) {}
     pickShieldEl.remove();
     pickShieldEl = null;
   }
@@ -679,9 +901,21 @@
       }
     };
 
-    // Try ID first
-    if (el.id && /^[a-zA-Z][\w-]*$/.test(el.id)) {
-      return `#${el.id}`;
+    // Try ID first. Escape it so ids containing characters like "/" (common
+    // in ad slots, e.g. "gpt_unit_/1024435/...") still produce a valid
+    // selector instead of being skipped. UUID-like ids are skipped: consent
+    // banners and component frameworks generate a new one on every render.
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (
+      el.id &&
+      !/\s/.test(el.id) &&
+      el.id.length <= 100 &&
+      !isUuid.test(el.id) &&
+      typeof CSS !== 'undefined' &&
+      CSS.escape
+    ) {
+      const idSelector = `#${CSS.escape(el.id)}`;
+      if (isReasonableMatch(idSelector)) return idSelector;
     }
 
     const stableAttrs = [
@@ -690,6 +924,7 @@
       'data-cy',
       'data-qa',
       'data-automation-id',
+      'data-name',
       'aria-label',
       'role',
       'name',
@@ -790,12 +1025,38 @@
    * Main dissolution: capture element visuals as particles, animate, then hide.
    */
   function dissolveElement(el) {
+    if (isAnimating) return;
     isAnimating = true;
     pauseMediaInside(el);
 
+    // Every exit path goes through finish() so the element is always hidden and
+    // `isAnimating` is always released. Previously a throttled/stalled
+    // requestAnimationFrame (background tab, reduced motion, canvas failure)
+    // left `isAnimating` true forever and pick mode silently ignored every
+    // later click.
+    let finished = false;
+    let animId = null;
+    let safetyId = null;
+    let canvas = null;
+    const hideEl = getHideTarget(el);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) finish();
+    };
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      if (animId !== null) cancelAnimationFrame(animId);
+      if (safetyId !== null) clearTimeout(safetyId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (canvas) canvas.remove();
+      finallyHide(hideEl, el);
+    }
+
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
-      finallyHide(el);
+      finish();
       return;
     }
 
@@ -808,12 +1069,16 @@
     const palette = buildPalette(bgRgb, fgRgb);
 
     // ── Create canvas ────────────────────────────────────────────────────────
-    const canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     canvas.className = CANVAS_CLASS;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     (document.documentElement || document.body).appendChild(canvas);
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      finish();
+      return;
+    }
 
     // ── Create particles ─────────────────────────────────────────────────────
     const area = rect.width * rect.height;
@@ -873,9 +1138,9 @@
 
     // ── Animation loop ───────────────────────────────────────────────────────
     let frame = 0;
-    let animId;
 
     function animate() {
+      if (finished) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       let anyAlive = false;
@@ -915,10 +1180,14 @@
         animId = requestAnimationFrame(animate);
       } else {
         // Animation done — fully hide element
-        canvas.remove();
-        finallyHide(el);
+        finish();
       }
     }
+
+    // Background tabs throttle (and may stop) requestAnimationFrame. The timer
+    // guarantees the element still gets hidden and pick mode stays usable.
+    safetyId = setTimeout(finish, 2600);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     animId = requestAnimationFrame(animate);
   }
@@ -973,7 +1242,9 @@
   }
 
   // ── Persist & finalize ────────────────────────────────────────────────────
-  async function finallyHide(el) {
+  async function finallyHide(el, visualEl) {
+    isAnimating = false;
+    if (visualEl && visualEl !== el) visualEl.style.removeProperty('visibility');
     el.style.removeProperty('visibility');
     pauseMediaInside(el);
     maybeUnlockScrollAfterHiding(el);
@@ -981,9 +1252,10 @@
     el.dataset.dhHidden = 'true';
 
     const selector = generateSelector(el);
-    hiddenSelectors.push(selector);
+    // Two content-script instances (or a double click) can resolve the same
+    // element twice; keep the stored list free of duplicates.
+    if (selector && !hiddenSelectors.includes(selector)) hiddenSelectors.push(selector);
 
-    isAnimating = false;
     updateActionBarCount();
 
     try {
@@ -1074,7 +1346,9 @@
     actionBarEl.appendChild(undoBtn);
     actionBarEl.appendChild(restoreBtn);
     actionBarEl.appendChild(cancelBtn);
-    (document.documentElement || document.body).appendChild(actionBarEl);
+    // Keep the bar inside the shield: the shield lives in the top layer, so a
+    // sibling bar would be painted underneath it and become unclickable.
+    (pickShieldEl || document.documentElement || document.body).appendChild(actionBarEl);
 
     document.getElementById('dh-undo-btn').addEventListener('click', (e) => {
       e.stopPropagation();
