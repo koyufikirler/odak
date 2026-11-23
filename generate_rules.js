@@ -1,0 +1,308 @@
+/**
+ * generate_rules.js — Builds the ad/tracker blocklist used by
+ * declarativeNetRequest (rules/ads.json).
+ *
+ * Run after editing the lists below:
+ *   node generate_rules.js
+ *
+ * The generated file is committed. The browser compiles it natively, so
+ * blocking costs no per-request JavaScript and no content-script work.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+// Requests that can carry ads. main_frame is deliberately excluded: clicking a
+// link to an ad network should still navigate instead of dying on a blank page.
+const RESOURCE_TYPES = [
+  'sub_frame',
+  'stylesheet',
+  'script',
+  'image',
+  'font',
+  'object',
+  'xmlhttprequest',
+  'ping',
+  'media',
+  'websocket',
+  'other',
+];
+
+// Curated, high-confidence ad delivery and ad-serving hosts. One entry covers
+// the whole domain tree (example.com also matches cdn.example.com).
+const AD_HOSTS = [
+  // Google, Microsoft, Amazon and social ad delivery
+  'doubleclick.net',
+  'googleadservices.com',
+  'googlesyndication.com',
+  'adservice.google.com',
+  'googletagservices.com',
+  '2mdn.net',
+  'amazon-adsystem.com',
+  'assoc-amazon.com',
+  'ads.yahoo.com',
+  'ads.linkedin.com',
+  'ads.tiktok.com',
+  'ads.twitter.com',
+  'ads.pinterest.com',
+
+  // Exchanges, SSPs and ad servers
+  'adnxs.com',
+  'adnxs-simple.com',
+  'appnexus.com',
+  'rubiconproject.com',
+  'magnite.com',
+  'pubmatic.com',
+  'openx.net',
+  'criteo.com',
+  'criteo.net',
+  'casalemedia.com',
+  '33across.com',
+  'sharethrough.com',
+  'triplelift.com',
+  'teads.tv',
+  'smartadserver.com',
+  'sascdn.com',
+  'adform.net',
+  'adition.com',
+  'yieldmo.com',
+  'sovrn.com',
+  'lijit.com',
+  'indexexchange.com',
+  'contextweb.com',
+  'districtm.io',
+  'media.net',
+  'mnet-ad.net',
+  'advertising.com',
+  'adap.tv',
+  'amobee.com',
+  'bidswitch.net',
+  'gumgum.com',
+  'undertone.com',
+  'spotxchange.com',
+  'spotx.tv',
+  '1rx.io',
+  'adroll.com',
+  'adsrvr.org',
+  'bidr.io',
+  '360yield.com',
+  'improvedigital.com',
+  'yieldlab.net',
+  'freewheel.tv',
+  'fwmrm.net',
+  'stickyadstv.com',
+  'innovid.com',
+  'tremorhub.com',
+  'tremorvideo.com',
+  'telaria.com',
+  'springserve.com',
+  'serving-sys.com',
+  'flashtalking.com',
+  'conversantmedia.com',
+  'dotomi.com',
+  'exponential.com',
+  'tribalfusion.com',
+  'valueclick.com',
+  'fastclick.net',
+  'adbutler.com',
+  'servedbyadbutler.com',
+  'admarketplace.com',
+  'bidmachine.io',
+  'smaato.com',
+  'aniview.com',
+  'adhese.com',
+  'engageya.com',
+  'kargo.com',
+  'primis.tech',
+  'connatix.com',
+  'vidazoo.com',
+  'adskeeper.com',
+  'setupad.com',
+  'adlightning.com',
+  'blockthrough.com',
+  'buysellads.com',
+  'carbonads.com',
+  'mediavine.com',
+  'adthrive.com',
+  'ezoic.net',
+  'monumetric.com',
+
+  // Native / sponsored content
+  'taboola.com',
+  'outbrain.com',
+  'zemanta.com',
+  'plista.com',
+  'ligatus.com',
+  'nativo.com',
+  'mgid.com',
+  'revcontent.com',
+  'zergnet.com',
+  'dianomi.com',
+  'adsnative.com',
+  'seedtag.com',
+  'ogury.com',
+  'loopme.me',
+  'infolinks.com',
+  'vibrantmedia.com',
+  'intellitxt.com',
+
+  // Pop-under, push and smaller ad networks
+  'adcash.com',
+  'propellerads.com',
+  'propellersads.com',
+  'popads.net',
+  'popcash.net',
+  'adsterra.com',
+  'hilltopads.net',
+  'clickadu.com',
+  'exoclick.com',
+  'juicyads.com',
+  'trafficjunky.net',
+  'trafficstars.com',
+  'tsyndicate.com',
+  'evadav.com',
+  'galaksion.com',
+  'adspyglass.com',
+  'ad-maven.com',
+  'bidvertiser.com',
+  'clicksor.com',
+];
+
+// Measurement, attribution and session-replay beacons. Privacy-friendly
+// analytics (Plausible, Matomo, Simple Analytics, Cloudflare) are intentionally
+// left alone.
+const TRACKER_HOSTS = [
+  'google-analytics.com',
+  'googletagmanager.com',
+  'scorecardresearch.com',
+  'quantserve.com',
+  'demdex.net',
+  'omtrdc.net',
+  'everesttech.net',
+  '2o7.net',
+  'bluekai.com',
+  'bkrtx.com',
+  'adsymptotic.com',
+  'krxd.net',
+  'rlcdn.com',
+  'agkn.com',
+  'tapad.com',
+  'crwdcntrl.net',
+  'exelator.com',
+  'turn.com',
+  'owneriq.net',
+  'semasio.net',
+  'zeotap.com',
+  'id5-sync.com',
+  'mathtag.com',
+  'imrworldwide.com',
+  'moatads.com',
+  'adsafeprotected.com',
+  'hotjar.com',
+  'hotjar.io',
+  'mixpanel.com',
+  'segment.com',
+  'segment.io',
+  'amplitude.com',
+  'heap.io',
+  'heapanalytics.com',
+  'fullstory.com',
+  'mouseflow.com',
+  'smartlook.com',
+  'clarity.ms',
+  'statcounter.com',
+  'inspectlet.com',
+  'luckyorange.com',
+  'crazyegg.com',
+  'clicktale.com',
+  'sessioncam.com',
+  'adjust.com',
+  'appsflyer.com',
+  'kochava.com',
+  'analytics.tiktok.com',
+  'analytics.pinterest.com',
+  'ct.pinterest.com',
+  'sc-static.net',
+  'tr.snapchat.com',
+  'px.ads.linkedin.com',
+  'snap.licdn.com',
+  'static.ads-twitter.com',
+  'analytics.twitter.com',
+  'bat.bing.com',
+  'analytics.yahoo.com',
+  'mc.yandex.ru',
+  'mc.yandex.com',
+  'top-fwz1.mail.ru',
+  'counter.yadro.ru',
+  'hm.baidu.com',
+  'cnzz.com',
+];
+
+// Some trackers live on hosts that also serve useful content (Facebook login,
+// Google Search, X links). Match only the tracking path instead of the domain.
+const PATH_RULES = [
+  { urlFilter: '||facebook.com/tr^', resourceTypes: ['image', 'script', 'xmlhttprequest', 'ping', 'other'] },
+  { urlFilter: 'fbevents.js', resourceTypes: ['script'] },
+  { urlFilter: '||google.com/pagead/', resourceTypes: ['image', 'script', 'xmlhttprequest', 'ping', 'other'] },
+  { urlFilter: '||twitter.com/i/adsct', resourceTypes: ['image', 'xmlhttprequest', 'ping', 'other'] },
+  { urlFilter: '||x.com/i/adsct', resourceTypes: ['image', 'xmlhttprequest', 'ping', 'other'] },
+];
+
+const DOMAINS_PER_RULE = 200;
+
+function chunk(list, size) {
+  const chunks = [];
+  for (let i = 0; i < list.length; i += size) chunks.push(list.slice(i, i + size));
+  return chunks;
+}
+
+const seen = new Set();
+function uniqueHosts(hosts) {
+  const result = [];
+  for (const raw of hosts) {
+    const host = String(raw).trim().toLowerCase();
+    if (!/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$/.test(host)) {
+      throw new Error(`Invalid domain: ${raw}`);
+    }
+    if (seen.has(host)) continue;
+    seen.add(host);
+    result.push(host);
+  }
+  return result;
+}
+
+const adDomains = uniqueHosts(AD_HOSTS);
+const trackerDomains = uniqueHosts(TRACKER_HOSTS);
+
+const rules = [];
+let nextId = 1;
+
+function blockRule(condition) {
+  rules.push({
+    id: nextId++,
+    priority: 1,
+    action: { type: 'block' },
+    condition,
+  });
+}
+
+for (const group of chunk(adDomains, DOMAINS_PER_RULE)) {
+  blockRule({ requestDomains: group, resourceTypes: RESOURCE_TYPES });
+}
+
+for (const group of chunk(trackerDomains, DOMAINS_PER_RULE)) {
+  blockRule({ requestDomains: group, resourceTypes: RESOURCE_TYPES });
+}
+
+for (const rule of PATH_RULES) {
+  blockRule({ urlFilter: rule.urlFilter, resourceTypes: rule.resourceTypes });
+}
+
+const outDir = path.join(__dirname, 'rules');
+if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
+fs.writeFileSync(path.join(outDir, 'ads.json'), JSON.stringify(rules, null, 2) + '\n');
+
+console.log(
+  `Generated rules/ads.json — ${rules.length} rules, ` +
+  `${adDomains.length} ad hosts, ${trackerDomains.length} tracker hosts.`
+);

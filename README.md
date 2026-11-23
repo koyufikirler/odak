@@ -4,6 +4,7 @@ ODAK is a browser extension that helps you focus by allowing you to easily hide 
 
 ## Features
 
+- **Ad & Tracker Blocking:** Blocks ad networks and tracking beacons at the browser level, on by default. No filter subscriptions, no background scanning, and almost no CPU or memory cost.
 - **Pick Mode:** Activate Pick Mode to visually select and hide elements by simply hovering over them and clicking.
 - **Hide Distractions:** Instantly remove banners, sidebars, or any other element that takes away from your focus.
 - **Undo Last:** Made a mistake? Quickly undo your last hidden element.
@@ -35,3 +36,12 @@ ODAK is a browser extension that helps you focus by allowing you to easily hide 
 4. Click on any highlighted element to hide it.
 5. You can press `Esc` to exit Pick Mode at any time.
 6. Use the **Undo Last** or **Restore All** buttons in the popup to revert your changes.
+
+### Ad Blocking
+
+Ad blocking is on out of the box. The popup shows one switch — no lists to choose,
+no levels to tune. If a site misbehaves, open the popup and use **Pause on this site**;
+everything returns to normal for that domain, and one click resumes blocking.
+
+The blocklist is compiled by the browser (`declarativeNetRequest`), so blocked
+requests never reach a content script and cost effectively nothing per page.

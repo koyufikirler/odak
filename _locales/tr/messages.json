@@ -172,5 +172,26 @@
   },
   "clearSite": {
     "message": "$1 temizle"
+  },
+  "adblockTitle": {
+    "message": "Reklam Engelleyici"
+  },
+  "adblockActive": {
+    "message": "Reklamlar ve izleyiciler engellendi"
+  },
+  "adblockInactive": {
+    "message": "Kapalı — reklamlara ve izleyicilere izin veriliyor"
+  },
+  "adblockPaused": {
+    "message": "Bu sitede duraklatıldı"
+  },
+  "adblockPause": {
+    "message": "Bu sitede duraklat"
+  },
+  "adblockResume": {
+    "message": "Bu sitede sürdür"
+  },
+  "aboutFeature4": {
+    "message": "Reklamlar ve izleyiciler varsayılan olarak engellenir"
   }
 }

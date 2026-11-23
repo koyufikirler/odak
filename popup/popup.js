@@ -33,6 +33,10 @@ const statusBadge = document.getElementById('status-badge');
 const badgeText = document.getElementById('badge-text');
 const undoBtn = document.getElementById('undo-btn');
 const restoreBtn = document.getElementById('restore-btn');
+const adBlockCard = document.getElementById('adblock-section');
+const adBlockCheckbox = document.getElementById('adblock-checkbox');
+const adBlockStatus = document.getElementById('adblock-status');
+const adBlockSiteBtn = document.getElementById('adblock-site-btn');
 
 // Menu, Tabs & Views
 const settingsBtn = document.getElementById('settings-btn');
@@ -64,6 +68,11 @@ const navSitesBadge = document.getElementById('nav-sites-badge');
 let currentView = 'main';
 
 const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
+const ADBLOCK_STORAGE_KEY = 'dh_adBlocking';
+const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
+let adBlockEnabled = true;
+let adBlockPausedSites = [];
+let adBlockHost = '';
 // Use the platform's conventional modifier for the primary shortcuts:
 //   macOS  -> Command (⌘ / Meta)
 //   Windows/Linux -> Control (Ctrl)
@@ -111,6 +120,7 @@ async function init() {
   // Setup navigation listeners
   setupNavigation();
   await loadShortcuts();
+  await loadAdBlockState();
 
   try {
     const resp = await _browser.runtime.sendMessage({ action: 'getHiddenElements' });
@@ -451,6 +461,93 @@ function updateFooterShortcut() {
   const fallback = `Press ${shortcut} to exit Pick Mode`;
   footerText.textContent = _browser.i18n.getMessage('footerTextShortcut', [shortcut]) || fallback;
 }
+
+// ── Ad blocking ───────────────────────────────────────────────────────────
+function normalizeHost(host) {
+  return String(host || '').trim().toLowerCase().replace(/^www\./, '');
+}
+
+function siteMatchesHost(site, host) {
+  return host === site || host.endsWith(`.${site}`);
+}
+
+function isAdBlockPaused() {
+  return Boolean(adBlockHost) && adBlockPausedSites.some(site => siteMatchesHost(site, adBlockHost));
+}
+
+async function loadAdBlockState() {
+  let data = {};
+  let host = '';
+
+  try {
+    const [stored, tabs] = await Promise.all([
+      _browser.storage.local.get([ADBLOCK_STORAGE_KEY, ADBLOCK_PAUSED_KEY]),
+      _browser.tabs.query({ active: true, currentWindow: true }),
+    ]);
+    data = stored || {};
+    const tab = tabs && tabs[0];
+    if (tab?.url && /^https?:/i.test(tab.url)) {
+      host = normalizeHost(new URL(tab.url).hostname);
+    }
+  } catch (e) {}
+
+  adBlockEnabled = data[ADBLOCK_STORAGE_KEY] !== false;
+  adBlockPausedSites = Array.isArray(data[ADBLOCK_PAUSED_KEY])
+    ? data[ADBLOCK_PAUSED_KEY].map(normalizeHost).filter(Boolean)
+    : [];
+  adBlockHost = host;
+  renderAdBlockUI();
+}
+
+function renderAdBlockUI() {
+  const paused = adBlockEnabled && isAdBlockPaused();
+  adBlockCheckbox.checked = adBlockEnabled;
+  adBlockCard.classList.toggle('is-muted', !adBlockEnabled || paused);
+
+  if (!adBlockEnabled) {
+    adBlockStatus.textContent = message('adblockInactive', 'Off — ads and trackers are allowed');
+  } else if (paused) {
+    adBlockStatus.textContent = message('adblockPaused', 'Paused on this site');
+  } else {
+    adBlockStatus.textContent = message('adblockActive', 'Ads & trackers blocked');
+  }
+
+  // The per-site escape hatch is only meaningful on a real http(s) page and
+  // while blocking is on; on browser pages it would just be noise.
+  const canPause = Boolean(adBlockHost) && adBlockEnabled;
+  adBlockSiteBtn.hidden = !canPause;
+  if (canPause) {
+    adBlockSiteBtn.textContent = paused
+      ? message('adblockResume', 'Resume on this site')
+      : message('adblockPause', 'Pause on this site');
+  }
+}
+
+adBlockCheckbox.addEventListener('change', async () => {
+  adBlockEnabled = adBlockCheckbox.checked;
+  renderAdBlockUI();
+  try {
+    await _browser.storage.local.set({ [ADBLOCK_STORAGE_KEY]: adBlockEnabled });
+  } catch (e) {}
+});
+
+adBlockSiteBtn.addEventListener('click', async () => {
+  if (!adBlockHost) return;
+
+  if (isAdBlockPaused()) {
+    adBlockPausedSites = adBlockPausedSites.filter(site => !siteMatchesHost(site, adBlockHost));
+  } else {
+    adBlockPausedSites = [
+      ...adBlockPausedSites.filter(site => site !== adBlockHost),
+      adBlockHost,
+    ].slice(-100);
+  }
+
+  renderAdBlockUI();
+  try {
+    await _browser.storage.local.set({ [ADBLOCK_PAUSED_KEY]: adBlockPausedSites });
+  } catch (e) {}
+});
 
 // ── Toggle Pick Mode ──────────────────────────────────────────────────────
 pickCheckbox.addEventListener('change', async () => {

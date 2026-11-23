@@ -100,6 +100,29 @@
           </button>
         </section>
 
+        <!-- Ad Blocking -->
+        <section class="card adblock-card" id="adblock-section">
+          <div class="adblock-info">
+            <div class="adblock-labels">
+              <span class="adblock-title">
+                <svg class="adblock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span data-i18n="adblockTitle">Ad Blocking</span>
+              </span>
+              <span class="adblock-subtitle" id="adblock-status" data-i18n="adblockActive">Ads &amp; trackers blocked</span>
+            </div>
+            <label class="toggle" id="adblock-toggle" aria-label="Toggle Ad Blocking">
+              <input type="checkbox" id="adblock-checkbox" checked />
+              <span class="toggle-track">
+                <span class="toggle-thumb"></span>
+              </span>
+            </label>
+          </div>
+          <button class="adblock-site-btn" id="adblock-site-btn" type="button" hidden></button>
+        </section>
+
         <!-- Footer -->
         <footer class="popup-footer">
           <span id="footer-text" data-i18n="footerText">Press Esc to exit Pick Mode</span>
@@ -236,6 +259,10 @@
             <div class="feature-item">
               <span class="feature-icon">⚡</span>
               <span class="feature-text" data-i18n="aboutFeature3">Ultra-fast & lightweight</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🚫</span>
+              <span class="feature-text" data-i18n="aboutFeature4">Ads & trackers blocked by default</span>
             </div>
           </div>
 

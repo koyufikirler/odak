@@ -24,6 +24,90 @@ async function setPickMode(tabId, active) {
   await _sessionStorage.set({ [key]: active }).catch(() => {});
 }
 
+// ── Ad blocking ─────────────────────────────────────────────────────────────
+// The heavy lifting happens inside the browser's declarativeNetRequest engine.
+// This worker only mirrors the setting into the enabled ruleset and maintains
+// one allow rule per site the user has paused — nothing runs per request.
+const ADBLOCK_KEY = 'dh_adBlocking';
+const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
+const ADBLOCK_RULESET_ID = 'ads';
+const ADBLOCK_ALLOW_RULE_BASE = 10000;
+const ADBLOCK_MAX_PAUSED_SITES = 100;
+
+function normalizeHost(host) {
+  return String(host || '').trim().toLowerCase().replace(/^www\./, '');
+}
+
+function normalizePausedSites(list) {
+  if (!Array.isArray(list)) return [];
+  const sites = [];
+  for (const value of list) {
+    const host = normalizeHost(value);
+    if (!host || sites.includes(host)) continue;
+    sites.push(host);
+    if (sites.length >= ADBLOCK_MAX_PAUSED_SITES) break;
+  }
+  return sites;
+}
+
+async function getAdBlockState() {
+  const data = await _browser.storage.local
+    .get([ADBLOCK_KEY, ADBLOCK_PAUSED_KEY])
+    .catch(() => ({}));
+  return {
+    enabled: data[ADBLOCK_KEY] !== false,
+    pausedSites: normalizePausedSites(data[ADBLOCK_PAUSED_KEY]),
+  };
+}
+
+async function syncAdBlockState() {
+  const api = _browser.declarativeNetRequest;
+  if (!api) return;
+  const { enabled, pausedSites } = await getAdBlockState();
+
+  try {
+    await api.updateEnabledRulesets(
+      enabled
+        ? { enableRulesetIds: [ADBLOCK_RULESET_ID] }
+        : { disableRulesetIds: [ADBLOCK_RULESET_ID] }
+    );
+  } catch (e) {}
+
+  try {
+    // `allowAllRequests` on the main frame covers every subresource in the
+    // page, so one low-maintenance rule per paused site is enough.
+    const existing = await api.getDynamicRules();
+    const removeRuleIds = existing
+      .filter(rule => rule.id >= ADBLOCK_ALLOW_RULE_BASE)
+      .map(rule => rule.id);
+    const addRules = (enabled ? pausedSites : []).map((domain, index) => ({
+      id: ADBLOCK_ALLOW_RULE_BASE + index,
+      priority: 100,
+      action: { type: 'allowAllRequests' },
+      condition: {
+        requestDomains: [domain],
+        resourceTypes: ['main_frame', 'sub_frame'],
+      },
+    }));
+    if (removeRuleIds.length > 0 || addRules.length > 0) {
+      await api.updateDynamicRules({ removeRuleIds, addRules });
+    }
+  } catch (e) {}
+}
+
+// Rapid toggle clicks could otherwise finish out of order; serialise them.
+let adBlockSyncQueue = Promise.resolve();
+function scheduleAdBlockSync() {
+  adBlockSyncQueue = adBlockSyncQueue.then(syncAdBlockState).catch(() => {});
+  return adBlockSyncQueue;
+}
+
+_browser.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== 'local') return;
+  if (changes[ADBLOCK_KEY] || changes[ADBLOCK_PAUSED_KEY]) scheduleAdBlockSync();
+});
+
+
 // ── Message handler ──────────────────────────────────────────────────────────
 _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   (async () => {
@@ -241,6 +325,11 @@ async function injectContentScriptIntoOpenTabs() {
 
 _browser.runtime.onInstalled.addListener(() => {
   injectContentScriptIntoOpenTabs();
+  scheduleAdBlockSync();
+});
+
+_browser.runtime.onStartup.addListener(() => {
+  scheduleAdBlockSync();
 });
 
 async function syncBadgeForTab(tabId) {
@@ -334,7 +423,7 @@ async function ensureContentScript(tabId) {
     });
     await _browser.scripting.insertCSS({
       target: { tabId },
-      files: ['content.css'],
+      files: ['adblock.css', 'content.css'],
     });
   }
 }

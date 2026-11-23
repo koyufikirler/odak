@@ -1,0 +1,100 @@
+/* ── ODAK — Cosmetic Ad Filtering ────────────────────────────────────────── */
+/*
+ * Network requests are blocked natively by declarativeNetRequest. This sheet
+ * only collapses the empty holes and the few ad containers that pages render
+ * themselves. It costs one style recalculation on load — no observers, no
+ * polling, no per-page JavaScript.
+ *
+ * The whole list is disabled by adding `dh-adblock-off` to <html>, which
+ * content.js does when the feature is turned off or paused for this site.
+ *
+ * Only exact, well-known container names are used. Bare `.ad` / `.ads` and
+ * substring matches are deliberately avoided: in several languages "ad" means
+ * "name", and substrings like "download-banner" contain "ad-banner".
+ */
+html:not(.dh-adblock-off) :is(
+  /* Google AdSense, Ad Manager and AMP ads */
+  ins.adsbygoogle,
+  [id^="google_ads_"],
+  [id^="div-gpt-ad"],
+  [id^="gpt-passback"],
+  [id^="aswift_"],
+  iframe[id^="google_ads_iframe"],
+  [data-ad-slot],
+  [data-ad-client],
+  [data-ad-unit],
+  [data-adunit],
+  [data-google-query-id],
+  amp-ad,
+
+  /* Common publisher slots */
+  .ad-slot,
+  .ad-unit,
+  .ad-container,
+  .ad-wrapper,
+  .ad-banner,
+  .ad-placeholder,
+  .advertisement,
+  .advertisement-container,
+  [id^="ad-slot-"],
+  [id^="ad-unit-"],
+  [id^="ad-container-"],
+  [id^="ad-banner-"],
+  [aria-label="Advertisement" i],
+  [aria-label="Ads" i],
+
+  /* Ad iframes from known networks */
+  iframe[src*="doubleclick.net"],
+  iframe[src*="googlesyndication.com"],
+  iframe[src*="googleadservices.com"],
+  iframe[src*="amazon-adsystem.com"],
+
+  /* Taboola / Outbrain / native networks */
+  .taboola,
+  [id^="taboola-"],
+  .trc_related_container,
+  .trc_rbox_container,
+  .outbrain,
+  .OUTBRAIN,
+  [id^="outbrain_widget"],
+  .ob-widget,
+  .ob-smartfeed-wrapper,
+  [id^="criteo-"],
+  [class^="criteo-"],
+  [class*=" criteo-"],
+  [id^="amzn-assoc-ad"],
+  .native-ad,
+  .native-ad-container,
+  .mgid,
+  [id^="mgid-"],
+  .revcontent,
+  [id^="revcontent"],
+  .zergnet,
+  [id^="zergnet"],
+  .dianomi,
+  [id^="dianomi"],
+  [class^="teads-"],
+  [class*=" teads-"],
+
+  /* Publisher ad platforms */
+  .ezoic-ad,
+  [id^="ezoic-"],
+  .adthrive-ad,
+  .adthrive-content,
+  .adthrive-footer,
+  .adthrive-video-player,
+  [id^="mediavine-"],
+
+  /* Feed ads on YouTube and Reddit */
+  #masthead-ad,
+  ytd-ad-slot-renderer,
+  ytd-in-feed-ad-layout-renderer,
+  ytd-display-ad-renderer,
+  ytd-promoted-sparkles-web-renderer,
+  ytd-companion-slot-renderer,
+  ytd-banner-promo-renderer,
+  ytd-statement-banner-renderer,
+  shreddit-ad-post
+) {
+  display: none !important;
+}

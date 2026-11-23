@@ -65,7 +65,11 @@
   let rehideTimer = null;
   let lastSeenUrl = window.location.href;
   let currentSiteKey = null;
+  let adBlockRequestId = 0;
   const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
+  const ADBLOCK_STORAGE_KEY = 'dh_adBlocking';
+  const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
+  const ADBLOCK_OFF_CLASS = 'dh-adblock-off';
   // Use the platform's conventional modifier for the primary shortcuts:
   //   macOS  -> Command (⌘ / Meta)
   //   Windows/Linux -> Control (Ctrl)
@@ -130,7 +134,9 @@
   // ── Initialize: restore persisted hidden elements ─────────────────────────
   async function init() {
     try {
-      await loadRulesForCurrentSite();
+      // Cosmetic ad filtering and the user's own hidden elements both need to
+      // land before the observer starts re-hiding things.
+      await Promise.all([loadRulesForCurrentSite(), loadAdBlockState()]);
       startDomObserver();
       startNavigationWatchers();
       scheduleRehide();
@@ -153,12 +159,16 @@
 
   try {
     _browser.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName === 'local' && changes[SHORTCUT_STORAGE_KEY]) {
+      if (areaName !== 'local') return;
+      if (changes[SHORTCUT_STORAGE_KEY]) {
         keyboardShortcuts = {
           ...DEFAULT_SHORTCUTS,
           ...normalizeShortcutMap(changes[SHORTCUT_STORAGE_KEY].newValue),
         };
         updateActionBarShortcutLabel();
+      }
+      if (changes[ADBLOCK_STORAGE_KEY] || changes[ADBLOCK_PAUSED_KEY]) {
+        loadAdBlockState();
       }
     });
   } catch (e) {}
@@ -198,6 +208,40 @@
     }
 
     hiddenSelectors = [...siteSelectors];
+  }
+
+  // ── Ad blocking (cosmetic half) ───────────────────────────────────────────
+  // Network blocking is declarative and handled by the browser. The only job
+  // here is to switch the cosmetic stylesheet off when the feature is disabled
+  // or the current site has been paused.
+  function normalizeHost(host) {
+    return String(host || '').trim().toLowerCase().replace(/^www\./, '');
+  }
+
+  function isCurrentSitePaused(pausedSites) {
+    const host = normalizeHost(window.location.hostname);
+    if (!host) return false;
+    return pausedSites.some(site => host === site || host.endsWith(`.${site}`));
+  }
+
+  function applyAdBlockState(enabled, pausedSites) {
+    let off = !enabled;
+    if (!off) off = isCurrentSitePaused(pausedSites);
+    try {
+      document.documentElement?.classList.toggle(ADBLOCK_OFF_CLASS, off);
+    } catch (e) {}
+  }
+
+  async function loadAdBlockState() {
+    const requestId = ++adBlockRequestId;
+    const data = await storageGet([ADBLOCK_STORAGE_KEY, ADBLOCK_PAUSED_KEY]);
+    // A newer toggle may have landed while this read was in flight.
+    if (requestId !== adBlockRequestId) return;
+    const enabled = data[ADBLOCK_STORAGE_KEY] !== false;
+    const pausedSites = Array.isArray(data[ADBLOCK_PAUSED_KEY])
+      ? data[ADBLOCK_PAUSED_KEY].map(normalizeHost).filter(Boolean)
+      : [];
+    applyAdBlockState(enabled, pausedSites);
   }
 
   function scheduleRehide() {
@@ -279,6 +323,9 @@
           if (nextSiteKey && nextSiteKey !== currentSiteKey) {
             await loadRulesForCurrentSite();
           }
+          // Single-page navigation can also cross hosts (e.g. a web app that
+          // switches subdomains without a reload).
+          loadAdBlockState();
           scheduleRehide();
         } catch (e) {}
       },

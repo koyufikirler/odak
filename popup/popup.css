@@ -466,6 +466,82 @@ body {
   transform: translateY(0);
 }
 
+/* ── Ad Blocking Card ────────────────────────────────────────────────────── */
+.adblock-card {
+  padding: 12px 14px;
+}
+
+.adblock-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.adblock-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.adblock-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.adblock-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--cyan);
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.adblock-subtitle {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.adblock-card.is-muted .adblock-icon {
+  color: var(--text-muted);
+}
+
+.adblock-site-btn {
+  width: 100%;
+  margin-top: 9px;
+  padding: 9px 0 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.adblock-site-btn:hover {
+  color: var(--purple-light);
+}
+
+.adblock-site-btn:focus-visible {
+  outline: 1px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.adblock-site-btn[hidden] {
+  display: none;
+}
+
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 .popup-footer {
   text-align: center;
@@ -1471,6 +1547,29 @@ html.dh-mobile .pick-mode-subtitle {
 }
 
 html.dh-mobile .pick-hint {
+  font-size: 12.5px;
+}
+
+html.dh-mobile .adblock-card {
+  padding: 14px 16px;
+}
+
+html.dh-mobile .adblock-title {
+  font-size: 14px;
+}
+
+html.dh-mobile .adblock-subtitle {
+  font-size: 12.5px;
+}
+
+html.dh-mobile .adblock-icon {
+  width: 16px;
+  height: 16px;
+}
+
+html.dh-mobile .adblock-site-btn {
+  min-height: 42px;
+  padding-top: 12px;
   font-size: 12.5px;
 }
 

@@ -90,7 +90,7 @@
     "message": "Таңдау режимінен шығу үшін Esc басыңыз"
   },
   "footerTextShortcut": {
-    "message": "Таңдау режимінен шығу үшін $1 басыңыz"
+    "message": "Таңдау режимінен шығу үшін $1 басыңыз"
   },
   "barHidden": {
     "message": "Жасырылған:"
@@ -172,5 +172,26 @@
   },
   "clearSite": {
     "message": "$1 тазалау"
+  },
+  "adblockTitle": {
+    "message": "Ad Blocking"
+  },
+  "adblockActive": {
+    "message": "Ads & trackers blocked"
+  },
+  "adblockInactive": {
+    "message": "Off — ads and trackers are allowed"
+  },
+  "adblockPaused": {
+    "message": "Paused on this site"
+  },
+  "adblockPause": {
+    "message": "Pause on this site"
+  },
+  "adblockResume": {
+    "message": "Resume on this site"
+  },
+  "aboutFeature4": {
+    "message": "Ads & trackers blocked by default"
   }
 }

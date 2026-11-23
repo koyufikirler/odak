@@ -79,6 +79,13 @@ const locales = {
     aboutFeature1: { message: "Anında parçacık çözünme efekti" },
     aboutFeature2: { message: "%100 Gizlilik, sıfır veri takibi" },
     aboutFeature3: { message: "Ultra hafif ve hızlı" },
+    aboutFeature4: { message: "Reklamlar ve izleyiciler varsayılan olarak engellenir" },
+    adblockTitle: { message: "Reklam Engelleyici" },
+    adblockActive: { message: "Reklamlar ve izleyiciler engellendi" },
+    adblockInactive: { message: "Kapalı — reklamlara ve izleyicilere izin veriliyor" },
+    adblockPaused: { message: "Bu sitede duraklatıldı" },
+    adblockPause: { message: "Bu sitede duraklat" },
+    adblockResume: { message: "Bu sitede sürdür" },
     aboutVersion: { message: "Sürüm" },
     donateTitle: { message: "Bize Destek Olun" },
     donateSubtitle: { message: "Ücretsiz ve reklamsız kalmasına destek olun" },
@@ -729,13 +736,40 @@ const sharedMessages = {
   shortcutExitPickMode: { message: "Exit Pick Mode" },
   shortcutUndoLast: { message: "Undo Last" },
   shortcutRestoreAll: { message: "Restore All" },
-  footerTextShortcut: { message: "Press $1 to exit Pick Mode" }
+  footerTextShortcut: { message: "Press $1 to exit Pick Mode" },
+  adblockTitle: { message: "Ad Blocking" },
+  adblockActive: { message: "Ads & trackers blocked" },
+  adblockInactive: { message: "Off — ads and trackers are allowed" },
+  adblockPaused: { message: "Paused on this site" },
+  adblockPause: { message: "Pause on this site" },
+  adblockResume: { message: "Resume on this site" },
+  aboutFeature4: { message: "Ads & trackers blocked by default" }
 };
 
 for (const [lang, msgs] of Object.entries(locales)) {
   const dir = path.join(localesDir, lang);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-  fs.writeFileSync(path.join(dir, 'messages.json'), JSON.stringify({ ...sharedMessages, ...msgs }, null, 2));
+  const file = path.join(dir, 'messages.json');
+
+  // Keep translations already on disk. A locale entry may only cover part of
+  // the UI; replacing the file outright would silently reset the shared
+  // strings to English.
+  let existing = {};
+  if (fs.existsSync(file)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (e) {}
+  }
+
+  const merged = { ...existing };
+  for (const [key, value] of Object.entries(sharedMessages)) {
+    if (!(key in merged)) merged[key] = value;
+  }
+  for (const [key, value] of Object.entries(msgs)) {
+    merged[key] = value;
+  }
+
+  fs.writeFileSync(file, JSON.stringify(merged, null, 2) + '\n');
 }
 
 console.log('Successfully generated locales!');
