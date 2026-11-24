@@ -193,5 +193,200 @@
   },
   "aboutFeature4": {
     "message": "Reklamlar ve izleyiciler varsayılan olarak engellenir"
+  },
+  "adblockManage": {
+    "message": "Filtreleri yönet"
+  },
+  "panelTitle": {
+    "message": "Kontrol Paneli"
+  },
+  "panelGeneral": {
+    "message": "Genel"
+  },
+  "panelFilters": {
+    "message": "Filtreler"
+  },
+  "panelAbout": {
+    "message": "Hakkında"
+  },
+  "panelOn": {
+    "message": "Koruma açık"
+  },
+  "panelOff": {
+    "message": "Koruma kapalı"
+  },
+  "panelProtectionTitle": {
+    "message": "Reklam Engelleyici"
+  },
+  "panelProtectionDesc": {
+    "message": "Tüm sitelerde reklamları ve izleyicileri engeller."
+  },
+  "panelActiveLists": {
+    "message": "Etkin listeler"
+  },
+  "panelPausedCount": {
+    "message": "Duraklatılan siteler"
+  },
+  "panelPausedSites": {
+    "message": "Duraklatılan siteler"
+  },
+  "panelPausedDesc": {
+    "message": "Bu sitelerde reklam engelleme kapalı. Diğer her şey korunmaya devam eder."
+  },
+  "panelNoPaused": {
+    "message": "Duraklatılan site yok"
+  },
+  "panelResumeAll": {
+    "message": "Tümünü sürdür"
+  },
+  "panelResume": {
+    "message": "Sürdür"
+  },
+  "panelFiltersDesc": {
+    "message": "Tarayıcı tarafından yerel olarak uygulanan filtre kuralları. Hiçbir liste indirilmez."
+  },
+  "panelFiltersNote": {
+    "message": "Değişiklikler anında uygulanır. Bir listeyi kapatmak yalnızca ağ kurallarını durdurur."
+  },
+  "panelFiltersSummary": {
+    "message": "$1 / $2 liste · $3 alan adı"
+  },
+  "panelDomains": {
+    "message": "$1 alan adı"
+  },
+  "panelRecommended": {
+    "message": "Önerilen"
+  },
+  "panelVersion": {
+    "message": "Sürüm"
+  },
+  "panelAboutDesc": {
+    "message": "Daha sakin bir web. Seçim Modu dikkat dağıtıcıları gizler; Reklam Engelleyici reklamları ve izleyicileri kaldırır."
+  },
+  "panelFeature1Title": {
+    "message": "Yerel engelleme"
+  },
+  "panelFeature1Desc": {
+    "message": "Kurallar her sayfada betik çalıştırmak yerine tarayıcının içinde çalışır."
+  },
+  "panelFeature2Title": {
+    "message": "İndirme yok"
+  },
+  "panelFeature2Desc": {
+    "message": "Listeler eklentiyle birlikte gelir. Hesap yok, abonelik yok."
+  },
+  "panelFeature3Title": {
+    "message": "Tasarımdan gelen gizlilik"
+  },
+  "panelFeature3Desc": {
+    "message": "Telemetri yok. Gezinme verileriniz hiçbir yere bildirilmez."
+  },
+  "panelAttributionTitle": {
+    "message": "Filtre verisi"
+  },
+  "panelAttributionBody": {
+    "message": "EasyPrivacy, EasyList yazarları tarafından sürdürülür ve tarayıcıya özel biçimde paketlenir. CC BY-SA 3.0 / GPLv3 lisanslıdır."
+  },
+  "categoryAds": {
+    "message": "Reklamlar"
+  },
+  "categorySecurity": {
+    "message": "Güvenlik"
+  },
+  "categoryRegional": {
+    "message": "Bölgeler ve diller"
+  },
+  "filterAdsName": {
+    "message": "ODAK Reklamlar"
+  },
+  "filterAdsDesc": {
+    "message": "Görüntülü, videolu ve yerel reklam ağları."
+  },
+  "filterEasyPrivacyName": {
+    "message": "EasyPrivacy"
+  },
+  "filterEasyPrivacyDesc": {
+    "message": "İzleyiciler, analizler ve oturum kaydı. EasyList yazarları tarafından sürdürülür."
+  },
+  "filterMobileName": {
+    "message": "Mobil reklamlar"
+  },
+  "filterMobileDesc": {
+    "message": "Uygulama içi reklam SDK'ları ve aracı ağlar."
+  },
+  "filterRiskyName": {
+    "message": "Açılır pencereler ve riskli reklamlar"
+  },
+  "filterRiskyDesc": {
+    "message": "Agresif pop-under, bildirim ve düşük kaliteli reklam ağları."
+  },
+  "categoryPrivacy": {
+    "message": "Gizlilik"
+  },
+  "panelRules": {
+    "message": "$1 kural"
+  },
+  "panelSearchPlaceholder": {
+    "message": "Listelerde ara…"
+  },
+  "panelNoMatches": {
+    "message": "Aramanızla eşleşen liste yok."
+  },
+  "panelForYourLanguage": {
+    "message": "Diliniz için"
+  },
+  "filterRegionalDesc": {
+    "message": "$1 için yerel reklam ve izleyici listesi."
+  },
+  "panelRegionalAttribution": {
+    "message": "Bölgesel listeler uBlock Origin'in bölgeler koleksiyonundan dönüştürülmüştür."
+  },
+  "panelStatistics": {
+    "message": "İstatistikler"
+  },
+  "statsLede": {
+    "message": "Neleri temizlediğinize dair sakin bir kayıt. Her şey bu cihazda kalır."
+  },
+  "statsHiddenTotal": {
+    "message": "Gizlenen öğeler"
+  },
+  "statsActiveDays": {
+    "message": "Aktif günler"
+  },
+  "statsSites": {
+    "message": "Temizlenen siteler"
+  },
+  "statsRange": {
+    "message": "Son $1 gün"
+  },
+  "statsPeriodTotal": {
+    "message": "Toplam $1"
+  },
+  "statsDailyAverage": {
+    "message": "Günde $1"
+  },
+  "statsTopSites": {
+    "message": "En çok gizlenen siteler"
+  },
+  "statsNoActivity": {
+    "message": "Henüz etkinlik yok"
+  },
+  "statsNoActivityHint": {
+    "message": "Seçim Modu ile bir öğe gizleyin, burada görünsün."
+  },
+  "statsNoSites": {
+    "message": "Henüz gizlenen öğe yok"
+  },
+  "statsSince": {
+    "message": "$1 tarihinden beri"
+  },
+  "statsBaselineNote": {
+    "message": "Takip başladığında $1 öğe zaten gizliydi."
+  },
+  "statsPrivacyNote": {
+    "message": "İstatistikler bu cihazda kalır."
+  },
+  "statsToday": {
+    "message": "Bugün"
   }
 }

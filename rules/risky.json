@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "adcash.com",
+        "propellerads.com",
+        "propellersads.com",
+        "popads.net",
+        "popcash.net",
+        "adsterra.com",
+        "hilltopads.net",
+        "clickadu.com",
+        "exoclick.com",
+        "juicyads.com",
+        "trafficjunky.net",
+        "trafficstars.com",
+        "tsyndicate.com",
+        "evadav.com",
+        "galaksion.com",
+        "adspyglass.com",
+        "ad-maven.com",
+        "bidvertiser.com",
+        "clicksor.com"
+      ],
+      "resourceTypes": [
+        "sub_frame",
+        "stylesheet",
+        "script",
+        "image",
+        "font",
+        "object",
+        "xmlhttprequest",
+        "ping",
+        "media",
+        "websocket",
+        "other"
+      ]
+    }
+  }
+]

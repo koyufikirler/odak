@@ -513,33 +513,56 @@ body {
   color: var(--text-muted);
 }
 
-.adblock-site-btn {
-  width: 100%;
+.adblock-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-top: 9px;
-  padding: 9px 0 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+}
+
+.adblock-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--border);
   color: var(--text-muted);
   font-family: var(--font);
   font-size: 11.5px;
-  text-align: left;
   cursor: pointer;
   transition: color 0.18s ease;
 }
 
-.adblock-site-btn:hover {
+.adblock-link:hover {
   color: var(--purple-light);
 }
 
-.adblock-site-btn:focus-visible {
+.adblock-link:focus-visible {
   outline: 1px solid var(--purple);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-.adblock-site-btn[hidden] {
+.adblock-link[hidden] {
   display: none;
+}
+
+.adblock-manage {
+  margin-left: auto;
+  color: var(--text-secondary);
+}
+
+.adblock-link-chevron {
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.adblock-manage:hover .adblock-link-chevron {
+  transform: translateX(2px);
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
@@ -1567,9 +1590,14 @@ html.dh-mobile .adblock-icon {
   height: 16px;
 }
 
-html.dh-mobile .adblock-site-btn {
-  min-height: 42px;
+html.dh-mobile .adblock-footer {
+  gap: 14px;
   padding-top: 12px;
+  margin-top: 12px;
+}
+
+html.dh-mobile .adblock-link {
+  min-height: 42px;
   font-size: 12.5px;
 }
 

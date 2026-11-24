@@ -11,3 +11,6 @@ release_test/
 test-build.sh
 # Chrome unpacked-extension cache
 _metadata/
+
+# Regional filter cache
+.regional-cache/

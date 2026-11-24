@@ -1,0 +1,821 @@
+{
+  "categories": [
+    {
+      "id": "ads",
+      "nameKey": "categoryAds"
+    },
+    {
+      "id": "privacy",
+      "nameKey": "categoryPrivacy"
+    },
+    {
+      "id": "security",
+      "nameKey": "categorySecurity"
+    },
+    {
+      "id": "regional",
+      "nameKey": "categoryRegional"
+    }
+  ],
+  "lists": [
+    {
+      "id": "ads",
+      "file": "rules/ads.json",
+      "category": "ads",
+      "nameKey": "filterAdsName",
+      "descKey": "filterAdsDesc",
+      "defaultEnabled": true,
+      "recommended": true,
+      "ruleCount": 1,
+      "domainCount": 112
+    },
+    {
+      "id": "privacy",
+      "file": "rules/easyprivacy.json",
+      "category": "privacy",
+      "nameKey": "filterEasyPrivacyName",
+      "descKey": "filterEasyPrivacyDesc",
+      "defaultEnabled": true,
+      "recommended": true,
+      "ruleCount": 5930,
+      "domainCount": 47572,
+      "allowRuleCount": 841,
+      "attribution": "EasyPrivacy"
+    },
+    {
+      "id": "mobile",
+      "file": "rules/mobile.json",
+      "category": "ads",
+      "nameKey": "filterMobileName",
+      "descKey": "filterMobileDesc",
+      "defaultEnabled": true,
+      "recommended": false,
+      "ruleCount": 1,
+      "domainCount": 18
+    },
+    {
+      "id": "risky",
+      "file": "rules/risky.json",
+      "category": "security",
+      "nameKey": "filterRiskyName",
+      "descKey": "filterRiskyDesc",
+      "defaultEnabled": true,
+      "recommended": false,
+      "ruleCount": 1,
+      "domainCount": 19
+    },
+    {
+      "id": "reg_alb_0",
+      "file": "rules/reg_alb_0.json",
+      "category": "regional",
+      "name": "Adblock List for Albania",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 30,
+      "domainCount": 1,
+      "langs": [
+        "al",
+        "xk"
+      ],
+      "autoLangs": [
+        "sq"
+      ],
+      "homepage": "https://github.com/AnXh3L0/blocklist"
+    },
+    {
+      "id": "reg_ara_0",
+      "file": "rules/reg_ara_0.json",
+      "category": "regional",
+      "name": "Liste AR",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 888,
+      "domainCount": 69,
+      "langs": [
+        "eg",
+        "sa",
+        "ma",
+        "dz"
+      ],
+      "autoLangs": [
+        "ar",
+        "kab"
+      ],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=98"
+    },
+    {
+      "id": "reg_bgr_0",
+      "file": "rules/reg_bgr_0.json",
+      "category": "regional",
+      "name": "Bulgarian Adblock list",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 696,
+      "domainCount": 5,
+      "langs": [
+        "bg"
+      ],
+      "autoLangs": [
+        "bg"
+      ],
+      "homepage": "https://stanev.org/abp/"
+    },
+    {
+      "id": "reg_chn_0",
+      "file": "rules/reg_chn_0.json",
+      "category": "regional",
+      "name": "AdGuard Chinese (中文)",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 5904,
+      "domainCount": 6149,
+      "langs": [
+        "cn",
+        "tw"
+      ],
+      "autoLangs": [
+        "zh",
+        "ug"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_cze_0",
+      "file": "rules/reg_cze_0.json",
+      "category": "regional",
+      "name": "EasyList Czech and Slovak",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 135,
+      "domainCount": 98,
+      "langs": [
+        "cz",
+        "sk"
+      ],
+      "autoLangs": [
+        "cs",
+        "sk"
+      ],
+      "homepage": "https://github.com/tomasko126/easylistczechandslovak"
+    },
+    {
+      "id": "reg_deu_0",
+      "file": "rules/reg_deu_0.json",
+      "category": "regional",
+      "name": "EasyList Germany",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1840,
+      "domainCount": 377,
+      "langs": [
+        "de",
+        "ch",
+        "at"
+      ],
+      "autoLangs": [
+        "de"
+      ],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=90"
+    },
+    {
+      "id": "reg_est_0",
+      "file": "rules/reg_est_0.json",
+      "category": "regional",
+      "name": "Eesti saitidele kohandatud filter",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 256,
+      "domainCount": 6,
+      "langs": [
+        "ee"
+      ],
+      "autoLangs": [
+        "et"
+      ],
+      "homepage": "https://github.com/sander85/uBO-et"
+    },
+    {
+      "id": "reg_fin_0",
+      "file": "rules/reg_fin_0.json",
+      "category": "regional",
+      "name": "Adblock List for Finland",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 177,
+      "domainCount": 30,
+      "langs": [
+        "fi"
+      ],
+      "autoLangs": [
+        "fi"
+      ],
+      "homepage": "https://github.com/finnish-easylist-addition/finnish-easylist-addition"
+    },
+    {
+      "id": "reg_fra_0",
+      "file": "rules/reg_fra_0.json",
+      "category": "regional",
+      "name": "AdGuard Français",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 4089,
+      "domainCount": 6509,
+      "langs": [
+        "fr",
+        "be",
+        "ca"
+      ],
+      "autoLangs": [
+        "fr"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_grc_0",
+      "file": "rules/reg_grc_0.json",
+      "category": "regional",
+      "name": "Greek AdBlock Filter",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 443,
+      "domainCount": 30,
+      "langs": [
+        "gr",
+        "cy"
+      ],
+      "autoLangs": [
+        "el"
+      ],
+      "homepage": "https://github.com/kargig/greek-adblockplus-filter"
+    },
+    {
+      "id": "reg_hrv_0",
+      "file": "rules/reg_hrv_0.json",
+      "category": "regional",
+      "name": "Dandelion Sprout's Serbo-Croatian filters",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 80,
+      "domainCount": 19,
+      "langs": [
+        "hr",
+        "rs"
+      ],
+      "autoLangs": [
+        "hr",
+        "bs",
+        "sr"
+      ],
+      "homepage": "https://github.com/DandelionSprout/adfilt#readme"
+    },
+    {
+      "id": "reg_hun_0",
+      "file": "rules/reg_hun_0.json",
+      "category": "regional",
+      "name": "hufilter",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 230,
+      "domainCount": 154,
+      "langs": [
+        "hu"
+      ],
+      "autoLangs": [
+        "hu"
+      ],
+      "homepage": "https://github.com/hufilter/hufilter"
+    },
+    {
+      "id": "reg_idn_0",
+      "file": "rules/reg_idn_0.json",
+      "category": "regional",
+      "name": "ABPindo",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 3302,
+      "domainCount": 397,
+      "langs": [
+        "id",
+        "my"
+      ],
+      "autoLangs": [
+        "id",
+        "ms"
+      ],
+      "homepage": "https://github.com/ABPindo/indonesianadblockrules"
+    },
+    {
+      "id": "reg_ind_0",
+      "file": "rules/reg_ind_0.json",
+      "category": "regional",
+      "name": "IndianList",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 5403,
+      "domainCount": 71,
+      "langs": [
+        "in",
+        "lk",
+        "np"
+      ],
+      "autoLangs": [
+        "as",
+        "bn",
+        "gu",
+        "hi",
+        "kn",
+        "ml",
+        "mr",
+        "ne",
+        "pa",
+        "sat",
+        "si",
+        "ta",
+        "te"
+      ],
+      "homepage": "https://github.com/mediumkreation/IndianList"
+    },
+    {
+      "id": "reg_irn_0",
+      "file": "rules/reg_irn_0.json",
+      "category": "regional",
+      "name": "فارسی (Persian)",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 623,
+      "domainCount": 268,
+      "langs": [
+        "ir"
+      ],
+      "autoLangs": [
+        "fa",
+        "ps",
+        "tg"
+      ],
+      "homepage": "https://github.com/PersianBlocker/PersianBlocker"
+    },
+    {
+      "id": "reg_isl_0",
+      "file": "rules/reg_isl_0.json",
+      "category": "regional",
+      "name": "Icelandic ABP List",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 11,
+      "domainCount": 2,
+      "langs": [
+        "is"
+      ],
+      "autoLangs": [
+        "is"
+      ],
+      "homepage": "https://github.com/brave/adblock-lists/issues"
+    },
+    {
+      "id": "reg_isr_0",
+      "file": "rules/reg_isr_0.json",
+      "category": "regional",
+      "name": "EasyList Hebrew",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 283,
+      "domainCount": 105,
+      "langs": [
+        "il"
+      ],
+      "autoLangs": [
+        "he"
+      ],
+      "homepage": "https://github.com/easylist/EasyListHebrew"
+    },
+    {
+      "id": "reg_ita_0",
+      "file": "rules/reg_ita_0.json",
+      "category": "regional",
+      "name": "EasyList Italy",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1058,
+      "domainCount": 101,
+      "langs": [
+        "it"
+      ],
+      "autoLangs": [
+        "it"
+      ],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=96"
+    },
+    {
+      "id": "reg_jpn_1",
+      "file": "rules/reg_jpn_1.json",
+      "category": "regional",
+      "name": "AdGuard Japanese",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1579,
+      "domainCount": 417,
+      "langs": [
+        "jp"
+      ],
+      "autoLangs": [
+        "ja"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_kor_1",
+      "file": "rules/reg_kor_1.json",
+      "category": "regional",
+      "name": "한국어 (Korean)",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1036,
+      "domainCount": 404,
+      "langs": [
+        "kr"
+      ],
+      "autoLangs": [
+        "ko"
+      ],
+      "homepage": "https://github.com/FilteringDev/filterslists-KO#filteringdevfilterslists-ko"
+    },
+    {
+      "id": "reg_ltu_0",
+      "file": "rules/reg_ltu_0.json",
+      "category": "regional",
+      "name": "EasyList Lithuania",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 522,
+      "domainCount": 44,
+      "langs": [
+        "lt"
+      ],
+      "autoLangs": [
+        "lt"
+      ],
+      "homepage": "https://github.com/EasyList-Lithuania/easylist_lithuania"
+    },
+    {
+      "id": "reg_lva_0",
+      "file": "rules/reg_lva_0.json",
+      "category": "regional",
+      "name": "Latvian List",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 156,
+      "domainCount": 43,
+      "langs": [
+        "lv"
+      ],
+      "autoLangs": [
+        "lv"
+      ],
+      "homepage": "https://github.com/Latvian-List/adblock-latvian"
+    },
+    {
+      "id": "reg_mkd_0",
+      "file": "rules/reg_mkd_0.json",
+      "category": "regional",
+      "name": "Macedonian adBlock Filters",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 160,
+      "domainCount": 138,
+      "langs": [
+        "mk"
+      ],
+      "autoLangs": [
+        "mk"
+      ],
+      "homepage": "https://github.com/DeepSpaceHarbor/Macedonian-adBlock-Filters"
+    },
+    {
+      "id": "reg_nld_0",
+      "file": "rules/reg_nld_0.json",
+      "category": "regional",
+      "name": "AdGuard Dutch",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 493,
+      "domainCount": 78,
+      "langs": [
+        "nl",
+        "be"
+      ],
+      "autoLangs": [
+        "nl",
+        "af",
+        "fy"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_nor_0",
+      "file": "rules/reg_nor_0.json",
+      "category": "regional",
+      "name": "Dandelion Sprouts nordiske filtre",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 586,
+      "domainCount": 80,
+      "langs": [
+        "no",
+        "dk",
+        "is"
+      ],
+      "autoLangs": [
+        "nb",
+        "nn",
+        "no",
+        "da"
+      ],
+      "homepage": "https://github.com/DandelionSprout/adfilt"
+    },
+    {
+      "id": "reg_pol_0",
+      "file": "rules/reg_pol_0.json",
+      "category": "regional",
+      "name": "Oficjalne Polskie Filtry do uBlocka Origin",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 846,
+      "domainCount": 342,
+      "langs": [
+        "pl"
+      ],
+      "autoLangs": [
+        "pl"
+      ],
+      "homepage": "https://github.com/MajkiIT/polish-ads-filter"
+    },
+    {
+      "id": "reg_pol_3",
+      "file": "rules/reg_pol_3.json",
+      "category": "regional",
+      "name": "CERT.PL's Warning List",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 114,
+      "domainCount": 22755,
+      "langs": [
+        "pl"
+      ],
+      "autoLangs": [
+        "pl"
+      ],
+      "homepage": "https://cert.pl/lista-ostrzezen/"
+    },
+    {
+      "id": "reg_rou_1",
+      "file": "rules/reg_rou_1.json",
+      "category": "regional",
+      "name": "Romanian Ad (ROad) Block List Light",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 464,
+      "domainCount": 106,
+      "langs": [
+        "ro",
+        "md"
+      ],
+      "autoLangs": [
+        "ro"
+      ],
+      "homepage": "https://github.com/tcptomato/ROad-Block"
+    },
+    {
+      "id": "reg_rus_0",
+      "file": "rules/reg_rus_0.json",
+      "category": "regional",
+      "name": "RU AdList",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 6031,
+      "domainCount": 11487,
+      "langs": [
+        "ru",
+        "ua",
+        "uz",
+        "kz"
+      ],
+      "autoLangs": [
+        "ru",
+        "be",
+        "kk",
+        "tt",
+        "uz"
+      ],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=102"
+    },
+    {
+      "id": "reg_rus_1",
+      "file": "rules/reg_rus_1.json",
+      "category": "regional",
+      "name": "RU AdList: Counters",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 637,
+      "domainCount": 544,
+      "langs": [
+        "ru",
+        "ua",
+        "uz",
+        "kz"
+      ],
+      "autoLangs": [],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=102"
+    },
+    {
+      "id": "reg_spa_0",
+      "file": "rules/reg_spa_0.json",
+      "category": "regional",
+      "name": "EasyList Spanish",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 590,
+      "domainCount": 58,
+      "langs": [
+        "es",
+        "ar",
+        "mx",
+        "co"
+      ],
+      "autoLangs": [
+        "es",
+        "ca",
+        "eu",
+        "gl",
+        "an",
+        "ast"
+      ],
+      "homepage": "https://forums.lanik.us/viewforum.php?f=103"
+    },
+    {
+      "id": "reg_spa_1",
+      "file": "rules/reg_spa_1.json",
+      "category": "regional",
+      "name": "AdGuard Spanish/Portuguese",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 967,
+      "domainCount": 209,
+      "langs": [
+        "es",
+        "ar",
+        "br",
+        "pt"
+      ],
+      "autoLangs": [
+        "es",
+        "pt",
+        "ca",
+        "eu",
+        "gl",
+        "an",
+        "ast"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_svn_0",
+      "file": "rules/reg_svn_0.json",
+      "category": "regional",
+      "name": "Slovenian List",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 81,
+      "domainCount": 46,
+      "langs": [
+        "si"
+      ],
+      "autoLangs": [
+        "sl"
+      ],
+      "homepage": "https://github.com/betterwebleon/slovenian-list"
+    },
+    {
+      "id": "reg_swe_1",
+      "file": "rules/reg_swe_1.json",
+      "category": "regional",
+      "name": "Frellwit's Swedish Filter",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1447,
+      "domainCount": 392,
+      "langs": [
+        "se"
+      ],
+      "autoLangs": [
+        "sv"
+      ],
+      "homepage": "https://github.com/lassekongo83/Frellwits-filter-lists"
+    },
+    {
+      "id": "reg_tha_0",
+      "file": "rules/reg_tha_0.json",
+      "category": "regional",
+      "name": "EasyList Thailand",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 764,
+      "domainCount": 12,
+      "langs": [
+        "th"
+      ],
+      "autoLangs": [
+        "th"
+      ],
+      "homepage": "https://github.com/easylist-thailand/easylist-thailand"
+    },
+    {
+      "id": "reg_tur_0",
+      "file": "rules/reg_tur_0.json",
+      "category": "regional",
+      "name": "AdGuard Turkish",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1388,
+      "domainCount": 235,
+      "langs": [
+        "tr"
+      ],
+      "autoLangs": [
+        "tr"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_ukr_0",
+      "file": "rules/reg_ukr_0.json",
+      "category": "regional",
+      "name": "AdGuard Ukrainian",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 1499,
+      "domainCount": 1831,
+      "langs": [
+        "ua"
+      ],
+      "autoLangs": [
+        "uk"
+      ],
+      "homepage": "https://github.com/AdguardTeam/AdguardFilters#adguard-filters"
+    },
+    {
+      "id": "reg_vie_1",
+      "file": "rules/reg_vie_1.json",
+      "category": "regional",
+      "name": "ABPVN List",
+      "descKey": "filterRegionalDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "ruleCount": 300,
+      "domainCount": 91,
+      "langs": [
+        "vn"
+      ],
+      "autoLangs": [
+        "vi"
+      ],
+      "homepage": "https://abpvn.com/"
+    }
+  ]
+}

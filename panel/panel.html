@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="panelTitle">Control Panel</title>
+  <link rel="stylesheet" href="panel.css" />
+</head>
+
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="../icons/icon-48.png" alt="" class="brand-icon" />
+        <div class="brand-text">
+          <span class="brand-name" data-i18n="extName">ODAK</span>
+          <span class="brand-sub" data-i18n="panelTitle">Control Panel</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Control panel sections">
+        <button class="nav-item active" type="button" data-tab="general">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+          <span data-i18n="panelGeneral">General</span>
+        </button>
+
+        <button class="nav-item" type="button" data-tab="stats">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19V5"></path>
+            <path d="M4 19h16"></path>
+            <path d="M8 15v-4"></path>
+            <path d="M12 15V8"></path>
+            <path d="M16 15v-6"></path>
+          </svg>
+          <span data-i18n="panelStatistics">Statistics</span>
+        </button>
+
+        <button class="nav-item" type="button" data-tab="filters">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 5h18M6 12h12M10 19h4"></path>
+          </svg>
+          <span data-i18n="panelFilters">Filters</span>
+          <span class="nav-badge" id="nav-filter-count">0</span>
+        </button>
+
+        <button class="nav-item" type="button" data-tab="about">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="12" y1="16.5" x2="12" y2="11.5"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span data-i18n="panelAbout">About</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span id="sidebar-version">ODAK</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1 id="page-title" data-i18n="panelGeneral">General</h1>
+        <div class="status-pill" id="status-pill" role="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="status-text" data-i18n="panelOn">Protection on</span>
+        </div>
+      </header>
+
+      <!-- General -->
+      <section class="tab-panel active" id="tab-general">
+        <div class="group">
+          <div class="group-card protection-card">
+            <div class="protection-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="protection-copy">
+              <h2 data-i18n="panelProtectionTitle">Ad Blocking</h2>
+              <p id="protection-desc" data-i18n="panelProtectionDesc">Blocks ads and trackers across every site.</p>
+            </div>
+            <label class="switch" aria-label="Toggle Ad Blocking">
+              <input type="checkbox" id="master-toggle" checked />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-value" id="active-lists">0</span>
+            <span class="metric-label" data-i18n="panelActiveLists">Active lists</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric">
+            <span class="metric-value" id="paused-count">0</span>
+            <span class="metric-label" data-i18n="panelPausedCount">Paused sites</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-head">
+            <h2 data-i18n="panelPausedSites">Paused sites</h2>
+            <button class="text-btn" id="resume-all" type="button" data-i18n="panelResumeAll" hidden>Resume all</button>
+          </div>
+          <div class="group-card list-card" id="paused-list"></div>
+          <p class="group-foot" data-i18n="panelPausedDesc">
+            Ad blocking is off on these sites. Everything else stays protected.
+          </p>
+        </div>
+      </section>
+
+      <!-- Statistics -->
+      <section class="tab-panel" id="tab-stats">
+        <p class="lede" data-i18n="statsLede">
+          A quiet record of what you've cleaned up. Everything stays on this device.
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="stats-total">0</span>
+            <span class="stat-label" data-i18n="statsHiddenTotal">Elements hidden</span>
+            <span class="stat-sub" id="stats-since"></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stats-days">0</span>
+            <span class="stat-label" data-i18n="statsActiveDays">Active days</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stats-sites">0</span>
+            <span class="stat-label" data-i18n="statsSites">Sites cleaned</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-head">
+            <div class="chart-heading">
+              <h2 class="chart-title" data-i18n="statsHiddenTotal">Elements hidden</h2>
+              <p class="chart-range" id="stats-range-label"></p>
+            </div>
+            <div class="segmented" id="stats-range" role="group" aria-label="Chart range">
+              <button type="button" data-days="7" aria-pressed="false">7D</button>
+              <button type="button" data-days="14" class="active" aria-pressed="true">14D</button>
+              <button type="button" data-days="30" aria-pressed="false">30D</button>
+            </div>
+          </div>
+
+          <div class="chart-plot" id="stats-chart">
+            <div class="chart-grid" aria-hidden="true"></div>
+            <div class="chart-bars" id="stats-bars"></div>
+            <div class="chart-tooltip" id="stats-tooltip" hidden></div>
+            <div class="chart-empty" id="stats-chart-empty" hidden>
+              <span class="chart-empty-title" data-i18n="statsNoActivity">No activity yet</span>
+              <span class="chart-empty-hint" data-i18n="statsNoActivityHint">
+                Hide an element with Pick Mode and it will appear here.
+              </span>
+            </div>
+          </div>
+          <div class="chart-axis" id="stats-axis" aria-hidden="true"></div>
+
+          <div class="chart-foot">
+            <span id="stats-period-total"></span>
+            <span id="stats-period-average"></span>
+          </div>
+          <p class="chart-note" id="stats-baseline-note" hidden></p>
+        </div>
+
+        <div class="group">
+          <div class="group-head">
+            <h2 data-i18n="statsTopSites">Top sites</h2>
+            <span class="filter-count" id="stats-site-count"></span>
+          </div>
+          <div class="group-card list-card" id="stats-site-list"></div>
+        </div>
+
+        <p class="note" data-i18n="statsPrivacyNote">Statistics stay on this device.</p>
+      </section>
+
+      <!-- Filters -->
+      <section class="tab-panel" id="tab-filters">
+        <p class="lede" data-i18n="panelFiltersDesc">
+          Filter rules applied natively by the browser. Nothing is downloaded.
+        </p>
+        <p class="filters-summary" id="filters-summary"></p>
+
+        <div class="filters-tools">
+          <input type="search" id="filter-search" class="filter-search" data-i18n-placeholder="panelSearchPlaceholder"
+            placeholder="Search lists…" autocomplete="off" spellcheck="false" />
+        </div>
+        <p class="filters-empty" id="filters-empty" data-i18n="panelNoMatches" hidden>No lists match your search.</p>
+
+        <div id="filter-categories"></div>
+
+        <p class="note" data-i18n="panelFiltersNote">
+          Changes apply instantly. Disabling a list stops its network rules; nothing else changes.
+        </p>
+      </section>
+
+      <!-- About -->
+      <section class="tab-panel" id="tab-about">
+        <div class="about-hero">
+          <img src="../icons/icon-48.png" alt="" class="about-icon" />
+          <div class="about-hero-text">
+            <h2 data-i18n="extName">ODAK</h2>
+            <p data-i18n="aboutTagline">Pure focus, zero distractions</p>
+          </div>
+        </div>
+
+        <p class="about-desc" data-i18n="panelAboutDesc">
+          A quieter web. Pick Mode hides distractions; Ad Blocking removes ads and trackers.
+        </p>
+
+        <div class="feature-list">
+          <div class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z"></path>
+              </svg>
+            </span>
+            <div class="feature-copy">
+              <h3 data-i18n="panelFeature1Title">Native blocking</h3>
+              <p data-i18n="panelFeature1Desc">Rules run inside the browser, not in a script on every page.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12"></path>
+                <path d="M7 10l5 5 5-5"></path>
+                <path d="M5 21h14"></path>
+              </svg>
+            </span>
+            <div class="feature-copy">
+              <h3 data-i18n="panelFeature2Title">Nothing downloaded</h3>
+              <p data-i18n="panelFeature2Desc">Lists ship with the extension. No accounts, no subscriptions.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+              </svg>
+            </span>
+            <div class="feature-copy">
+              <h3 data-i18n="panelFeature3Title">Private by design</h3>
+              <p data-i18n="panelFeature3Desc">No telemetry. Nothing about your browsing is reported.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-meta">
+          <span><span data-i18n="panelVersion">Version</span> <span id="about-version">—</span></span>
+          <span class="meta-dot">·</span>
+          <a href="https://github.com/koyufikirler/odak" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+
+        <div class="attribution">
+          <h3 data-i18n="panelAttributionTitle">Filter data</h3>
+          <p>
+            <span data-i18n="panelAttributionBody">EasyPrivacy is maintained by the EasyList authors and bundled in a browser-native format. Licensed under CC BY-SA 3.0 / GPLv3.</span>
+            <a href="https://easylist.to/" target="_blank" rel="noopener noreferrer">easylist.to</a>
+          </p>
+          <p>
+            <span data-i18n="panelRegionalAttribution">Regional lists are converted from uBlock Origin's regions collection.</span>
+            <a href="https://github.com/gorhill/uBlock" target="_blank" rel="noopener noreferrer">uBlock Origin</a>
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+
+</html>

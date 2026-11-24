@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "author": "Koyu Fikirler",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
@@ -20,8 +20,217 @@
         "id": "ads",
         "enabled": true,
         "path": "rules/ads.json"
+      },
+      {
+        "id": "privacy",
+        "enabled": true,
+        "path": "rules/easyprivacy.json"
+      },
+      {
+        "id": "mobile",
+        "enabled": true,
+        "path": "rules/mobile.json"
+      },
+      {
+        "id": "risky",
+        "enabled": true,
+        "path": "rules/risky.json"
+      },
+      {
+        "id": "reg_alb_0",
+        "enabled": false,
+        "path": "rules/reg_alb_0.json"
+      },
+      {
+        "id": "reg_ara_0",
+        "enabled": false,
+        "path": "rules/reg_ara_0.json"
+      },
+      {
+        "id": "reg_bgr_0",
+        "enabled": false,
+        "path": "rules/reg_bgr_0.json"
+      },
+      {
+        "id": "reg_chn_0",
+        "enabled": false,
+        "path": "rules/reg_chn_0.json"
+      },
+      {
+        "id": "reg_cze_0",
+        "enabled": false,
+        "path": "rules/reg_cze_0.json"
+      },
+      {
+        "id": "reg_deu_0",
+        "enabled": false,
+        "path": "rules/reg_deu_0.json"
+      },
+      {
+        "id": "reg_est_0",
+        "enabled": false,
+        "path": "rules/reg_est_0.json"
+      },
+      {
+        "id": "reg_fin_0",
+        "enabled": false,
+        "path": "rules/reg_fin_0.json"
+      },
+      {
+        "id": "reg_fra_0",
+        "enabled": false,
+        "path": "rules/reg_fra_0.json"
+      },
+      {
+        "id": "reg_grc_0",
+        "enabled": false,
+        "path": "rules/reg_grc_0.json"
+      },
+      {
+        "id": "reg_hrv_0",
+        "enabled": false,
+        "path": "rules/reg_hrv_0.json"
+      },
+      {
+        "id": "reg_hun_0",
+        "enabled": false,
+        "path": "rules/reg_hun_0.json"
+      },
+      {
+        "id": "reg_idn_0",
+        "enabled": false,
+        "path": "rules/reg_idn_0.json"
+      },
+      {
+        "id": "reg_ind_0",
+        "enabled": false,
+        "path": "rules/reg_ind_0.json"
+      },
+      {
+        "id": "reg_irn_0",
+        "enabled": false,
+        "path": "rules/reg_irn_0.json"
+      },
+      {
+        "id": "reg_isl_0",
+        "enabled": false,
+        "path": "rules/reg_isl_0.json"
+      },
+      {
+        "id": "reg_isr_0",
+        "enabled": false,
+        "path": "rules/reg_isr_0.json"
+      },
+      {
+        "id": "reg_ita_0",
+        "enabled": false,
+        "path": "rules/reg_ita_0.json"
+      },
+      {
+        "id": "reg_jpn_1",
+        "enabled": false,
+        "path": "rules/reg_jpn_1.json"
+      },
+      {
+        "id": "reg_kor_1",
+        "enabled": false,
+        "path": "rules/reg_kor_1.json"
+      },
+      {
+        "id": "reg_ltu_0",
+        "enabled": false,
+        "path": "rules/reg_ltu_0.json"
+      },
+      {
+        "id": "reg_lva_0",
+        "enabled": false,
+        "path": "rules/reg_lva_0.json"
+      },
+      {
+        "id": "reg_mkd_0",
+        "enabled": false,
+        "path": "rules/reg_mkd_0.json"
+      },
+      {
+        "id": "reg_nld_0",
+        "enabled": false,
+        "path": "rules/reg_nld_0.json"
+      },
+      {
+        "id": "reg_nor_0",
+        "enabled": false,
+        "path": "rules/reg_nor_0.json"
+      },
+      {
+        "id": "reg_pol_0",
+        "enabled": false,
+        "path": "rules/reg_pol_0.json"
+      },
+      {
+        "id": "reg_pol_3",
+        "enabled": false,
+        "path": "rules/reg_pol_3.json"
+      },
+      {
+        "id": "reg_rou_1",
+        "enabled": false,
+        "path": "rules/reg_rou_1.json"
+      },
+      {
+        "id": "reg_rus_0",
+        "enabled": false,
+        "path": "rules/reg_rus_0.json"
+      },
+      {
+        "id": "reg_rus_1",
+        "enabled": false,
+        "path": "rules/reg_rus_1.json"
+      },
+      {
+        "id": "reg_spa_0",
+        "enabled": false,
+        "path": "rules/reg_spa_0.json"
+      },
+      {
+        "id": "reg_spa_1",
+        "enabled": false,
+        "path": "rules/reg_spa_1.json"
+      },
+      {
+        "id": "reg_svn_0",
+        "enabled": false,
+        "path": "rules/reg_svn_0.json"
+      },
+      {
+        "id": "reg_swe_1",
+        "enabled": false,
+        "path": "rules/reg_swe_1.json"
+      },
+      {
+        "id": "reg_tha_0",
+        "enabled": false,
+        "path": "rules/reg_tha_0.json"
+      },
+      {
+        "id": "reg_tur_0",
+        "enabled": false,
+        "path": "rules/reg_tur_0.json"
+      },
+      {
+        "id": "reg_ukr_0",
+        "enabled": false,
+        "path": "rules/reg_ukr_0.json"
+      },
+      {
+        "id": "reg_vie_1",
+        "enabled": false,
+        "path": "rules/reg_vie_1.json"
       }
     ]
+  },
+  "options_ui": {
+    "page": "panel/panel.html",
+    "open_in_tab": true
   },
   "background": {
     "service_worker": "background.js"

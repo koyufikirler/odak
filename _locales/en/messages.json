@@ -193,5 +193,200 @@
   },
   "aboutFeature4": {
     "message": "Ads & trackers blocked by default"
+  },
+  "adblockManage": {
+    "message": "Manage filters"
+  },
+  "panelTitle": {
+    "message": "Control Panel"
+  },
+  "panelGeneral": {
+    "message": "General"
+  },
+  "panelFilters": {
+    "message": "Filters"
+  },
+  "panelAbout": {
+    "message": "About"
+  },
+  "panelOn": {
+    "message": "Protection on"
+  },
+  "panelOff": {
+    "message": "Protection off"
+  },
+  "panelProtectionTitle": {
+    "message": "Ad Blocking"
+  },
+  "panelProtectionDesc": {
+    "message": "Blocks ads and trackers across every site."
+  },
+  "panelActiveLists": {
+    "message": "Active lists"
+  },
+  "panelPausedCount": {
+    "message": "Paused sites"
+  },
+  "panelPausedSites": {
+    "message": "Paused sites"
+  },
+  "panelPausedDesc": {
+    "message": "Ad blocking is off on these sites. Everything else stays protected."
+  },
+  "panelNoPaused": {
+    "message": "No paused sites"
+  },
+  "panelResumeAll": {
+    "message": "Resume all"
+  },
+  "panelResume": {
+    "message": "Resume"
+  },
+  "panelFiltersDesc": {
+    "message": "Filter rules applied natively by the browser. Nothing is downloaded."
+  },
+  "panelFiltersNote": {
+    "message": "Changes apply instantly. Disabling a list stops its network rules; nothing else changes."
+  },
+  "panelFiltersSummary": {
+    "message": "$1 of $2 lists · $3 domains"
+  },
+  "panelDomains": {
+    "message": "$1 domains"
+  },
+  "panelRecommended": {
+    "message": "Recommended"
+  },
+  "panelVersion": {
+    "message": "Version"
+  },
+  "panelAboutDesc": {
+    "message": "A quieter web. Pick Mode hides distractions; Ad Blocking removes ads and trackers."
+  },
+  "panelFeature1Title": {
+    "message": "Native blocking"
+  },
+  "panelFeature1Desc": {
+    "message": "Rules run inside the browser, not in a script on every page."
+  },
+  "panelFeature2Title": {
+    "message": "Nothing downloaded"
+  },
+  "panelFeature2Desc": {
+    "message": "Lists ship with the extension. No accounts, no subscriptions."
+  },
+  "panelFeature3Title": {
+    "message": "Private by design"
+  },
+  "panelFeature3Desc": {
+    "message": "No telemetry. Nothing about your browsing is reported."
+  },
+  "panelAttributionTitle": {
+    "message": "Filter data"
+  },
+  "panelAttributionBody": {
+    "message": "EasyPrivacy is maintained by the EasyList authors and bundled in a browser-native format. Licensed under CC BY-SA 3.0 / GPLv3."
+  },
+  "categoryAds": {
+    "message": "Ads"
+  },
+  "categorySecurity": {
+    "message": "Security"
+  },
+  "categoryRegional": {
+    "message": "Regions & languages"
+  },
+  "filterAdsName": {
+    "message": "ODAK Ads"
+  },
+  "filterAdsDesc": {
+    "message": "Display, video and native ad networks."
+  },
+  "filterEasyPrivacyName": {
+    "message": "EasyPrivacy"
+  },
+  "filterEasyPrivacyDesc": {
+    "message": "Trackers, analytics and session recording. Maintained by the EasyList authors."
+  },
+  "filterMobileName": {
+    "message": "Mobile ads"
+  },
+  "filterMobileDesc": {
+    "message": "In-app ad SDKs and mediation networks."
+  },
+  "filterRiskyName": {
+    "message": "Pop-ups & risky ads"
+  },
+  "filterRiskyDesc": {
+    "message": "Aggressive pop-under, push and low-quality ad networks."
+  },
+  "categoryPrivacy": {
+    "message": "Privacy"
+  },
+  "panelRules": {
+    "message": "$1 rules"
+  },
+  "panelSearchPlaceholder": {
+    "message": "Search lists…"
+  },
+  "panelNoMatches": {
+    "message": "No lists match your search."
+  },
+  "panelForYourLanguage": {
+    "message": "For your language"
+  },
+  "filterRegionalDesc": {
+    "message": "Regional ad and tracker list for $1."
+  },
+  "panelRegionalAttribution": {
+    "message": "Regional lists are converted from uBlock Origin's regions collection."
+  },
+  "panelStatistics": {
+    "message": "Statistics"
+  },
+  "statsLede": {
+    "message": "A quiet record of what you've cleaned up. Everything stays on this device."
+  },
+  "statsHiddenTotal": {
+    "message": "Elements hidden"
+  },
+  "statsActiveDays": {
+    "message": "Active days"
+  },
+  "statsSites": {
+    "message": "Sites cleaned"
+  },
+  "statsRange": {
+    "message": "Last $1 days"
+  },
+  "statsPeriodTotal": {
+    "message": "$1 total"
+  },
+  "statsDailyAverage": {
+    "message": "$1 per day"
+  },
+  "statsTopSites": {
+    "message": "Top sites"
+  },
+  "statsNoActivity": {
+    "message": "No activity yet"
+  },
+  "statsNoActivityHint": {
+    "message": "Hide an element with Pick Mode and it will appear here."
+  },
+  "statsNoSites": {
+    "message": "No hidden elements yet"
+  },
+  "statsSince": {
+    "message": "Since $1"
+  },
+  "statsBaselineNote": {
+    "message": "$1 elements were already hidden when tracking began."
+  },
+  "statsPrivacyNote": {
+    "message": "Statistics stay on this device."
+  },
+  "statsToday": {
+    "message": "Today"
   }
 }

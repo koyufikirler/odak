@@ -30,9 +30,58 @@ async function setPickMode(tabId, active) {
 // one allow rule per site the user has paused — nothing runs per request.
 const ADBLOCK_KEY = 'dh_adBlocking';
 const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
-const ADBLOCK_RULESET_ID = 'ads';
+const ADBLOCK_FILTERS_KEY = 'dh_filterLists';
 const ADBLOCK_ALLOW_RULE_BASE = 10000;
 const ADBLOCK_MAX_PAUSED_SITES = 100;
+
+// Used only when rules/lists.json cannot be read. The catalogue is the source
+// of truth: it carries the core lists plus the 38 regional rulesets.
+const ADBLOCK_FALLBACK_LISTS = [
+  { id: 'ads', defaultEnabled: true, autoLangs: [] },
+  { id: 'privacy', defaultEnabled: true, autoLangs: [] },
+  { id: 'mobile', defaultEnabled: true, autoLangs: [] },
+  { id: 'risky', defaultEnabled: true, autoLangs: [] },
+];
+
+const STATS_KEY = 'dh_stats';
+const STATS_VERSION = 1;
+const STATS_MAX_DAYS = 400;
+
+let adBlockListsPromise = null;
+
+function loadAdBlockLists() {
+  if (adBlockListsPromise) return adBlockListsPromise;
+
+  adBlockListsPromise = (async () => {
+    try {
+      const response = await fetch(_browser.runtime.getURL('rules/lists.json'));
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (!Array.isArray(data.lists) || data.lists.length === 0) {
+        throw new Error('Invalid list catalogue');
+      }
+      return data.lists
+        .filter(list => list && typeof list.id === 'string')
+        .map(list => ({
+          id: list.id,
+          defaultEnabled: list.defaultEnabled === true,
+          autoLangs: Array.isArray(list.autoLangs) ? list.autoLangs : [],
+        }));
+    } catch (e) {
+      return ADBLOCK_FALLBACK_LISTS;
+    }
+  })();
+
+  return adBlockListsPromise;
+}
+
+function getUiLanguage() {
+  try {
+    return String(_browser.i18n.getUILanguage() || '').toLowerCase().split(/[-_]/)[0];
+  } catch (e) {
+    return '';
+  }
+}
 
 function normalizeHost(host) {
   return String(host || '').trim().toLowerCase().replace(/^www\./, '');
@@ -50,27 +99,68 @@ function normalizePausedSites(list) {
   return sites;
 }
 
+async function resolveFilterLists(saved) {
+  const lists = await loadAdBlockLists();
+  const map = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+  const language = getUiLanguage();
+  const resolved = {};
+
+  for (const list of lists) {
+    if (typeof map[list.id] === 'boolean') {
+      resolved[list.id] = map[list.id];
+    } else {
+      // Regional lists are off unless they match the browser's UI language;
+      // an explicit choice in the panel always wins.
+      resolved[list.id] = list.defaultEnabled ||
+        (language !== '' && list.autoLangs.includes(language));
+    }
+  }
+
+  return resolved;
+}
+
 async function getAdBlockState() {
   const data = await _browser.storage.local
-    .get([ADBLOCK_KEY, ADBLOCK_PAUSED_KEY])
+    .get([ADBLOCK_KEY, ADBLOCK_PAUSED_KEY, ADBLOCK_FILTERS_KEY])
     .catch(() => ({}));
   return {
     enabled: data[ADBLOCK_KEY] !== false,
     pausedSites: normalizePausedSites(data[ADBLOCK_PAUSED_KEY]),
+    filters: await resolveFilterLists(data[ADBLOCK_FILTERS_KEY]),
   };
 }
 
 async function syncAdBlockState() {
   const api = _browser.declarativeNetRequest;
   if (!api) return;
-  const { enabled, pausedSites } = await getAdBlockState();
+  const { enabled, pausedSites, filters } = await getAdBlockState();
+  const lists = await loadAdBlockLists();
+  const validIds = new Set(lists.map(list => list.id));
+
+  const enableRulesetIds = new Set();
+  const disableRulesetIds = new Set();
+
+  for (const list of lists) {
+    if (enabled && filters[list.id]) enableRulesetIds.add(list.id);
+    else disableRulesetIds.add(list.id);
+  }
+
+  // Retire rulesets that disappeared from the catalogue (for example the old
+  // single "turkiye" list) so they cannot linger enabled.
+  try {
+    const current = await api.getEnabledRulesets();
+    for (const id of current) {
+      if (!validIds.has(id)) disableRulesetIds.add(id);
+    }
+  } catch (e) {}
+
+  for (const id of enableRulesetIds) disableRulesetIds.delete(id);
 
   try {
-    await api.updateEnabledRulesets(
-      enabled
-        ? { enableRulesetIds: [ADBLOCK_RULESET_ID] }
-        : { disableRulesetIds: [ADBLOCK_RULESET_ID] }
-    );
+    await api.updateEnabledRulesets({
+      enableRulesetIds: [...enableRulesetIds],
+      disableRulesetIds: [...disableRulesetIds],
+    });
   } catch (e) {}
 
   try {
@@ -104,8 +194,164 @@ function scheduleAdBlockSync() {
 
 _browser.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== 'local') return;
-  if (changes[ADBLOCK_KEY] || changes[ADBLOCK_PAUSED_KEY]) scheduleAdBlockSync();
+  if (changes[ADBLOCK_KEY] || changes[ADBLOCK_PAUSED_KEY] || changes[ADBLOCK_FILTERS_KEY]) scheduleAdBlockSync();
 });
+
+
+// ── Statistics ──────────────────────────────────────────────────────────────
+// Hidden-element activity is aggregated per local calendar day. The chart is
+// based on real events; on first use, elements already hidden at that moment
+// are recorded as a one-day baseline so the first chart is not misleadingly
+// empty.
+
+function localDayKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function normalizeStats(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+
+  const daily = {};
+  if (value.daily && typeof value.daily === 'object' && !Array.isArray(value.daily)) {
+    for (const [key, count] of Object.entries(value.daily)) {
+      const amount = Number(count);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isFinite(amount) && amount > 0) {
+        daily[key] = Math.round(amount);
+      }
+    }
+  }
+
+  const sum = Object.values(daily).reduce((total, amount) => total + amount, 0);
+  const storedTotal = Number(value.totalHidden);
+  return {
+    version: STATS_VERSION,
+    since: /^\d{4}-\d{2}-\d{2}$/.test(value.since) ? value.since : localDayKey(),
+    updated: /^\d{4}-\d{2}-\d{2}$/.test(value.updated) ? value.updated : localDayKey(),
+    baseline: Number.isFinite(Number(value.baseline))
+      ? Math.max(0, Math.round(Number(value.baseline)))
+      : 0,
+    totalHidden: Number.isFinite(storedTotal)
+      ? Math.max(0, Math.round(storedTotal), sum)
+      : sum,
+    daily,
+  };
+}
+
+function pruneStats(stats) {
+  const keys = Object.keys(stats.daily).sort();
+  if (keys.length <= STATS_MAX_DAYS) return stats;
+  const keep = new Set(keys.slice(-STATS_MAX_DAYS));
+  for (const key of keys) {
+    if (!keep.has(key)) delete stats.daily[key];
+  }
+  return stats;
+}
+
+// Reads the current per-origin selector lists, migrating legacy per-URL keys
+// on the way. Shared by the Sites view and by statistics initialization.
+async function readHiddenSites() {
+  const all = await _browser.storage.local.get(null).catch(() => ({}));
+  const selectorsByOrigin = new Map();
+  const legacyKeysToRemove = [];
+
+  for (const [key, value] of Object.entries(all)) {
+    if (!Array.isArray(value) || value.length === 0) continue;
+
+    if (key.startsWith('dh_site:')) {
+      const origin = key.replace('dh_site:', '');
+      const set = selectorsByOrigin.get(origin) || new Set();
+      for (const selector of value) set.add(selector);
+      selectorsByOrigin.set(origin, set);
+      continue;
+    }
+
+    if (key.startsWith('http://') || key.startsWith('https://')) {
+      try {
+        const origin = new URL(key).origin;
+        const set = selectorsByOrigin.get(origin) || new Set();
+        for (const selector of value) set.add(selector);
+        selectorsByOrigin.set(origin, set);
+        legacyKeysToRemove.push(key);
+      } catch (e) {}
+    }
+  }
+
+  // Only write when legacy per-URL keys actually need migrating. Re-writing
+  // every dh_site: key on each read would fire storage.onChanged in a loop.
+  if (legacyKeysToRemove.length > 0) {
+    const write = {};
+    for (const [origin, set] of selectorsByOrigin.entries()) {
+      write[`dh_site:${origin}`] = Array.from(set);
+    }
+    await _browser.storage.local.set(write).catch(() => {});
+    await _browser.storage.local.remove(legacyKeysToRemove).catch(() => {});
+  }
+
+  const sites = [];
+  let totalHidden = 0;
+  for (const [origin, set] of selectorsByOrigin.entries()) {
+    const count = set.size;
+    if (count === 0) continue;
+    sites.push({ origin, count });
+    totalHidden += count;
+  }
+
+  sites.sort((a, b) => b.count - a.count || a.origin.localeCompare(b.origin));
+  return { sites, totalHidden };
+}
+
+let statsInitPromise = null;
+function ensureStatsInitialized() {
+  if (statsInitPromise) return statsInitPromise;
+
+  const task = (async () => {
+    const data = await _browser.storage.local.get(STATS_KEY).catch(() => ({}));
+    const existing = normalizeStats(data[STATS_KEY]);
+    if (existing) return existing;
+
+    const { totalHidden } = await readHiddenSites();
+    const today = localDayKey();
+    const stats = {
+      version: STATS_VERSION,
+      since: today,
+      updated: today,
+      baseline: totalHidden,
+      totalHidden,
+      daily: totalHidden > 0 ? { [today]: totalHidden } : {},
+    };
+
+    await _browser.storage.local.set({ [STATS_KEY]: stats }).catch(() => {});
+    return stats;
+  })();
+
+  statsInitPromise = task.finally(() => {
+    statsInitPromise = null;
+  });
+  return statsInitPromise;
+}
+
+// Serialise increments so two hidden elements in quick succession cannot
+// overwrite each other's counter update.
+let statsWriteQueue = Promise.resolve();
+function recordHiddenEvent(count = 1) {
+  const amount = Math.max(0, Math.round(Number(count) || 0));
+  if (!amount) return statsWriteQueue;
+
+  statsWriteQueue = statsWriteQueue.then(async () => {
+    const stats = await ensureStatsInitialized();
+    const today = localDayKey();
+    stats.daily[today] = (stats.daily[today] || 0) + amount;
+    stats.totalHidden += amount;
+    stats.updated = today;
+    pruneStats(stats);
+    await _browser.storage.local.set({ [STATS_KEY]: stats }).catch(() => {});
+  }).catch(() => {});
+
+  return statsWriteQueue;
+}
 
 
 // ── Message handler ──────────────────────────────────────────────────────────
@@ -154,8 +400,12 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const data = await _browser.storage.local.get(siteKey).catch(() => ({}));
         const elements = data[siteKey] || [];
         if (!elements.includes(message.selector)) {
+          // Make sure an existing hidden total is captured before this new
+          // element is written, otherwise the baseline would double-count it.
+          await ensureStatsInitialized();
           elements.push(message.selector);
           await _browser.storage.local.set({ [siteKey]: elements });
+          await recordHiddenEvent(1);
         }
         await updateBadge(tabId, elements.length);
         sendResponse({ count: elements.length });
@@ -209,57 +459,13 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ active: next });
 
       } else if (message.action === 'getAllSitesData') {
-        // Return all sites that have hidden elements
-        // Supports both current per-site keys (dh_site:<origin>) and legacy per-URL keys.
-        const all = await _browser.storage.local.get(null).catch(() => ({}));
-        const selectorsByOrigin = new Map();
-        const legacyKeysToRemove = [];
-
-        for (const [key, value] of Object.entries(all)) {
-          if (!Array.isArray(value) || value.length === 0) continue;
-
-          if (key.startsWith('dh_site:')) {
-            const origin = key.replace('dh_site:', '');
-            const set = selectorsByOrigin.get(origin) || new Set();
-            for (const sel of value) set.add(sel);
-            selectorsByOrigin.set(origin, set);
-            continue;
-          }
-
-          if (key.startsWith('http://') || key.startsWith('https://')) {
-            try {
-              const origin = new URL(key).origin;
-              const set = selectorsByOrigin.get(origin) || new Set();
-              for (const sel of value) set.add(sel);
-              selectorsByOrigin.set(origin, set);
-              legacyKeysToRemove.push(key);
-            } catch {}
-          }
-        }
-
-        if (selectorsByOrigin.size > 0) {
-          const write = {};
-          for (const [origin, set] of selectorsByOrigin.entries()) {
-            write[`dh_site:${origin}`] = Array.from(set);
-          }
-          await _browser.storage.local.set(write).catch(() => {});
-        }
-
-        if (legacyKeysToRemove.length > 0) {
-          await _browser.storage.local.remove(legacyKeysToRemove).catch(() => {});
-        }
-
-        const sites = [];
-        let totalHidden = 0;
-        for (const [origin, set] of selectorsByOrigin.entries()) {
-          const count = set.size;
-          if (count === 0) continue;
-          sites.push({ origin, count });
-          totalHidden += count;
-        }
-
-        sites.sort((a, b) => b.count - a.count);
+        const { sites, totalHidden } = await readHiddenSites();
         sendResponse({ sites, totalHidden });
+
+      } else if (message.action === 'getStatistics') {
+        const stats = await ensureStatsInitialized();
+        const { sites, totalHidden } = await readHiddenSites();
+        sendResponse({ stats, current: { sites, totalHidden } });
 
       } else if (message.action === 'clearAllSites') {
         // Remove all hidden element data across all sites
@@ -326,10 +532,12 @@ async function injectContentScriptIntoOpenTabs() {
 _browser.runtime.onInstalled.addListener(() => {
   injectContentScriptIntoOpenTabs();
   scheduleAdBlockSync();
+  ensureStatsInitialized().catch(() => {});
 });
 
 _browser.runtime.onStartup.addListener(() => {
   scheduleAdBlockSync();
+  ensureStatsInitialized().catch(() => {});
 });
 
 async function syncBadgeForTab(tabId) {

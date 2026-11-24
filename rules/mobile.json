@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "applovin.com",
+        "applvn.com",
+        "unityads.unity3d.com",
+        "ironsrc.com",
+        "supersonicads.com",
+        "vungle.com",
+        "chartboost.com",
+        "mintegral.com",
+        "mopub.com",
+        "inmobi.com",
+        "startapp.com",
+        "tapjoy.com",
+        "adcolony.com",
+        "fyber.com",
+        "appodeal.com",
+        "digitalturbine.com",
+        "liftoff.io",
+        "mobvista.com"
+      ],
+      "resourceTypes": [
+        "sub_frame",
+        "stylesheet",
+        "script",
+        "image",
+        "font",
+        "object",
+        "xmlhttprequest",
+        "ping",
+        "media",
+        "websocket",
+        "other"
+      ]
+    }
+  }
+]

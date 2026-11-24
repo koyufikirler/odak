@@ -37,6 +37,7 @@ const adBlockCard = document.getElementById('adblock-section');
 const adBlockCheckbox = document.getElementById('adblock-checkbox');
 const adBlockStatus = document.getElementById('adblock-status');
 const adBlockSiteBtn = document.getElementById('adblock-site-btn');
+const adBlockManageBtn = document.getElementById('adblock-manage-btn');
 
 // Menu, Tabs & Views
 const settingsBtn = document.getElementById('settings-btn');
@@ -546,6 +547,13 @@ adBlockSiteBtn.addEventListener('click', async () => {
   renderAdBlockUI();
   try {
     await _browser.storage.local.set({ [ADBLOCK_PAUSED_KEY]: adBlockPausedSites });
+  } catch (e) {}
+});
+
+adBlockManageBtn.addEventListener('click', () => {
+  try {
+    _browser.tabs.create({ url: _browser.runtime.getURL('panel/panel.html#filters') });
+    window.close();
   } catch (e) {}
 });
 
