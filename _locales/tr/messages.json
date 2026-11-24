@@ -345,7 +345,7 @@
     "message": "İstatistikler"
   },
   "statsLede": {
-    "message": "Neleri temizlediğinize dair sakin bir kayıt. Her şey bu cihazda kalır."
+    "message": "Neleri temizlediğinize dair sakin bir kayıt."
   },
   "statsHiddenTotal": {
     "message": "Gizlenen öğeler"
@@ -372,7 +372,7 @@
     "message": "Henüz etkinlik yok"
   },
   "statsNoActivityHint": {
-    "message": "Seçim Modu ile bir öğe gizleyin, burada görünsün."
+    "message": "Korumayı açık tutarak gezinin veya Seçim Modu ile bir öğe gizleyin."
   },
   "statsNoSites": {
     "message": "Henüz gizlenen öğe yok"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Bugün"
+  },
+  "statsChartRange": {
+    "message": "Grafik aralığı"
+  },
+  "statsInsightMore": {
+    "message": "Önceki $2 güne göre %$1 daha fazla"
+  },
+  "statsInsightFewer": {
+    "message": "Önceki $2 güne göre %$1 daha az"
+  },
+  "statsInsightSame": {
+    "message": "Önceki $1 günle yaklaşık aynı"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Bu dönemde etkinlik yok"
+  },
+  "statsRemovedTotal": {
+    "message": "Kaldırılan öğeler"
+  },
+  "statsSeriesHidden": {
+    "message": "Sizin gizledikleriniz"
+  },
+  "statsSeriesCleaned": {
+    "message": "Otomatik temizlenen"
+  },
+  "statsBarAria": {
+    "message": "$1 — toplam $2 ($3 gizlenen, $4 otomatik)"
   }
 }

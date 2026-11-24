@@ -44,7 +44,7 @@ const ADBLOCK_FALLBACK_LISTS = [
 ];
 
 const STATS_KEY = 'dh_stats';
-const STATS_VERSION = 1;
+const STATS_VERSION = 2;
 const STATS_MAX_DAYS = 400;
 
 let adBlockListsPromise = null;
@@ -211,21 +211,30 @@ function localDayKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+function normalizeDayMap(value) {
+  const daily = {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return daily;
+  for (const [key, count] of Object.entries(value)) {
+    const amount = Number(count);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isFinite(amount) && amount > 0) {
+      daily[key] = Math.round(amount);
+    }
+  }
+  return daily;
+}
+
 function normalizeStats(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 
-  const daily = {};
-  if (value.daily && typeof value.daily === 'object' && !Array.isArray(value.daily)) {
-    for (const [key, count] of Object.entries(value.daily)) {
-      const amount = Number(count);
-      if (/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isFinite(amount) && amount > 0) {
-        daily[key] = Math.round(amount);
-      }
-    }
-  }
+  const daily = normalizeDayMap(value.daily);
+  // Cosmetic filtering was added after the first statistics release. Older
+  // records simply have no cleaned series yet.
+  const cleanedDaily = normalizeDayMap(value.cleanedDaily);
 
   const sum = Object.values(daily).reduce((total, amount) => total + amount, 0);
+  const cleanedSum = Object.values(cleanedDaily).reduce((total, amount) => total + amount, 0);
   const storedTotal = Number(value.totalHidden);
+  const storedCleaned = Number(value.totalCleaned);
   return {
     version: STATS_VERSION,
     since: /^\d{4}-\d{2}-\d{2}$/.test(value.since) ? value.since : localDayKey(),
@@ -236,17 +245,26 @@ function normalizeStats(value) {
     totalHidden: Number.isFinite(storedTotal)
       ? Math.max(0, Math.round(storedTotal), sum)
       : sum,
+    totalCleaned: Number.isFinite(storedCleaned)
+      ? Math.max(0, Math.round(storedCleaned), cleanedSum)
+      : cleanedSum,
     daily,
+    cleanedDaily,
   };
 }
 
-function pruneStats(stats) {
-  const keys = Object.keys(stats.daily).sort();
-  if (keys.length <= STATS_MAX_DAYS) return stats;
+function pruneDayMap(daily) {
+  const keys = Object.keys(daily).sort();
+  if (keys.length <= STATS_MAX_DAYS) return;
   const keep = new Set(keys.slice(-STATS_MAX_DAYS));
   for (const key of keys) {
-    if (!keep.has(key)) delete stats.daily[key];
+    if (!keep.has(key)) delete daily[key];
   }
+}
+
+function pruneStats(stats) {
+  pruneDayMap(stats.daily);
+  pruneDayMap(stats.cleanedDaily);
   return stats;
 }
 
@@ -320,7 +338,9 @@ function ensureStatsInitialized() {
       updated: today,
       baseline: totalHidden,
       totalHidden,
+      totalCleaned: 0,
       daily: totalHidden > 0 ? { [today]: totalHidden } : {},
+      cleanedDaily: {},
     };
 
     await _browser.storage.local.set({ [STATS_KEY]: stats }).catch(() => {});
@@ -346,6 +366,56 @@ function recordHiddenEvent(count = 1) {
     stats.daily[today] = (stats.daily[today] || 0) + amount;
     stats.totalHidden += amount;
     stats.updated = today;
+    pruneStats(stats);
+    await _browser.storage.local.set({ [STATS_KEY]: stats }).catch(() => {});
+  }).catch(() => {});
+
+  return statsWriteQueue;
+}
+
+// Cosmetic counts arrive on page load, so they are buffered for a few seconds
+// instead of writing storage on every navigation. getStatistics flushes the
+// buffer first, so the panel never shows a stale number.
+const CLEAN_FLUSH_DELAY = 6000;
+const CLEAN_PER_PAGE_CAP = 250;
+let pendingClean = new Map();
+let cleanFlushTimer = null;
+
+function recordCleanEvent(count = 1) {
+  const amount = Math.min(
+    CLEAN_PER_PAGE_CAP,
+    Math.max(0, Math.round(Number(count) || 0))
+  );
+  if (!amount) return;
+
+  const today = localDayKey();
+  pendingClean.set(today, (pendingClean.get(today) || 0) + amount);
+
+  if (!cleanFlushTimer) {
+    cleanFlushTimer = setTimeout(() => {
+      cleanFlushTimer = null;
+      flushCleanEvents();
+    }, CLEAN_FLUSH_DELAY);
+  }
+}
+
+function flushCleanEvents() {
+  if (pendingClean.size === 0) return statsWriteQueue;
+
+  const batch = pendingClean;
+  pendingClean = new Map();
+  if (cleanFlushTimer) {
+    clearTimeout(cleanFlushTimer);
+    cleanFlushTimer = null;
+  }
+
+  statsWriteQueue = statsWriteQueue.then(async () => {
+    const stats = await ensureStatsInitialized();
+    for (const [day, amount] of batch) {
+      stats.cleanedDaily[day] = (stats.cleanedDaily[day] || 0) + amount;
+      stats.totalCleaned += amount;
+    }
+    stats.updated = localDayKey();
     pruneStats(stats);
     await _browser.storage.local.set({ [STATS_KEY]: stats }).catch(() => {});
   }).catch(() => {});
@@ -462,7 +532,13 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const { sites, totalHidden } = await readHiddenSites();
         sendResponse({ sites, totalHidden });
 
+      } else if (message.action === 'recordCleanEvent' && tabId != null) {
+        // Reported by content.js as cosmetic slots are counted on the page.
+        recordCleanEvent(message.count);
+        sendResponse({ ok: true });
+
       } else if (message.action === 'getStatistics') {
+        await flushCleanEvents();
         const stats = await ensureStatsInitialized();
         const { sites, totalHidden } = await readHiddenSites();
         sendResponse({ stats, current: { sites, totalHidden } });
@@ -627,7 +703,7 @@ async function ensureContentScript(tabId) {
     // Not loaded yet — inject now
     await _browser.scripting.executeScript({
       target: { tabId },
-      files: ['content.js'],
+      files: ['cosmetic.js', 'content.js'],
     });
     await _browser.scripting.insertCSS({
       target: { tabId },

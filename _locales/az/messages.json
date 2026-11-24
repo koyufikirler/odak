@@ -345,7 +345,7 @@
     "message": "Statistika"
   },
   "statsLede": {
-    "message": "Təmizlədiklərinizin sakit qeydi. Hər şey bu cihazda qalır."
+    "message": "Təmizlədiklərinizin sakit qeydi."
   },
   "statsHiddenTotal": {
     "message": "Gizlədilən elementlər"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Bugün"
+  },
+  "statsChartRange": {
+    "message": "Qrafik aralığı"
+  },
+  "statsInsightMore": {
+    "message": "Əvvəlki $2 günə nisbətən %$1 çox"
+  },
+  "statsInsightFewer": {
+    "message": "Əvvəlki $2 günə nisbətən %$1 az"
+  },
+  "statsInsightSame": {
+    "message": "Əvvəlki $1 günlə təxminən eyni"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Bu dövrdə fəaliyyət yoxdur"
+  },
+  "statsRemovedTotal": {
+    "message": "Silinən elementlər"
+  },
+  "statsSeriesHidden": {
+    "message": "Sizin gizlətdikləriniz"
+  },
+  "statsSeriesCleaned": {
+    "message": "Avtomatik təmizlənən"
+  },
+  "statsBarAria": {
+    "message": "$1 — cəmi $2 ($3 gizlədilən, $4 avtomatik)"
   }
 }

@@ -241,6 +241,7 @@
         "<all_urls>"
       ],
       "js": [
+        "cosmetic.js",
         "content.js"
       ],
       "css": [

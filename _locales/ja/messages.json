@@ -345,7 +345,7 @@
     "message": "統計"
   },
   "statsLede": {
-    "message": "片付けたものを静かに記録します。すべてこのデバイス内に保存されます。"
+    "message": "片付けたものを静かに記録します。"
   },
   "statsHiddenTotal": {
     "message": "非表示にした要素"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "今日"
+  },
+  "statsChartRange": {
+    "message": "グラフの期間"
+  },
+  "statsInsightMore": {
+    "message": "過去 $2 日間より $1% 多い"
+  },
+  "statsInsightFewer": {
+    "message": "過去 $2 日間より $1% 少ない"
+  },
+  "statsInsightSame": {
+    "message": "過去 $1 日間とほぼ同じ"
+  },
+  "statsNoActivityPeriod": {
+    "message": "この期間のアクティビティはありません"
+  },
+  "statsRemovedTotal": {
+    "message": "削除した要素"
+  },
+  "statsSeriesHidden": {
+    "message": "あなたが非表示にしたもの"
+  },
+  "statsSeriesCleaned": {
+    "message": "自動で整理されたもの"
+  },
+  "statsBarAria": {
+    "message": "$1 — 合計 $2（非表示 $3、自動整理 $4）"
   }
 }

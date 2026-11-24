@@ -66,6 +66,12 @@
   let lastSeenUrl = window.location.href;
   let currentSiteKey = null;
   let adBlockRequestId = 0;
+  let adBlockApplied = false;
+  let cosmeticIdleScheduled = false;
+  let cosmeticDelayedTimer = null;
+  let cosmeticCountedTotal = 0;
+  const cosmeticSeen = new WeakSet();
+  const COSMETIC_PAGE_CAP = 250;
   const SHORTCUT_STORAGE_KEY = 'dh_keyboardShortcuts';
   const ADBLOCK_STORAGE_KEY = 'dh_adBlocking';
   const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
@@ -227,9 +233,14 @@
   function applyAdBlockState(enabled, pausedSites) {
     let off = !enabled;
     if (!off) off = isCurrentSitePaused(pausedSites);
+    const wasOff = !adBlockApplied;
+    adBlockApplied = !off;
     try {
       document.documentElement?.classList.toggle(ADBLOCK_OFF_CLASS, off);
     } catch (e) {}
+    // Turning protection on — or unpausing this site — reveals matches that
+    // were never counted. Count them once the class has been applied.
+    if (wasOff && !off) scheduleCosmeticCount();
   }
 
   async function loadAdBlockState() {
@@ -242,6 +253,60 @@
       ? data[ADBLOCK_PAUSED_KEY].map(normalizeHost).filter(Boolean)
       : [];
     applyAdBlockState(enabled, pausedSites);
+  }
+
+  // Count what the cosmetic sheet collapsed. Ads often arrive after load on
+  // feed and video sites, so one idle pass runs at load and one delayed pass
+  // catches late slots. Elements already counted are remembered, and each page
+  // reports at most COSMETIC_PAGE_CAP so the numbers stay bounded.
+  function scheduleCosmeticCount() {
+    if (!cosmeticIdleScheduled) {
+      cosmeticIdleScheduled = true;
+      const run = () => {
+        cosmeticIdleScheduled = false;
+        countCosmeticMatches();
+      };
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(run, { timeout: 2000 });
+      } else {
+        setTimeout(run, 500);
+      }
+    }
+    if (!cosmeticDelayedTimer) {
+      cosmeticDelayedTimer = setTimeout(() => {
+        cosmeticDelayedTimer = null;
+        countCosmeticMatches();
+      }, 3500);
+    }
+  }
+
+  function countCosmeticMatches() {
+    try {
+      if (document.documentElement?.classList.contains(ADBLOCK_OFF_CLASS)) return;
+      if (cosmeticCountedTotal >= COSMETIC_PAGE_CAP) return;
+
+      const selector = globalThis.ODAK_COSMETIC_SELECTOR;
+      if (!selector) return;
+
+      let count = 0;
+      for (const el of document.querySelectorAll(selector)) {
+        if (cosmeticSeen.has(el)) continue;
+        // A manually hidden container is already counted by the hidden series.
+        if (el.closest('[data-dh-hidden]')) continue;
+        if (el.style.display === 'none') continue;
+        // Skip nested slots: the outer container is the one that was cleaned.
+        const parent = el.parentElement;
+        if (parent && parent.closest(selector)) continue;
+        cosmeticSeen.add(el);
+        count++;
+        if (cosmeticCountedTotal + count >= COSMETIC_PAGE_CAP) break;
+      }
+
+      if (count > 0) {
+        cosmeticCountedTotal += count;
+        sendToBackground({ action: 'recordCleanEvent', count });
+      }
+    } catch (e) {}
   }
 
   function scheduleRehide() {
@@ -324,9 +389,11 @@
             await loadRulesForCurrentSite();
           }
           // Single-page navigation can also cross hosts (e.g. a web app that
-          // switches subdomains without a reload).
-          loadAdBlockState();
+          // switches subdomains without a reload). Await the state so a paused
+          // site never gets counted before its class is applied.
+          await loadAdBlockState();
           scheduleRehide();
+          scheduleCosmeticCount();
         } catch (e) {}
       },
       true

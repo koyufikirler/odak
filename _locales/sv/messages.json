@@ -345,7 +345,7 @@
     "message": "Statistik"
   },
   "statsLede": {
-    "message": "En stilla överblick över det du har städat bort. Allt stannar på den här enheten."
+    "message": "En stilla överblick över det du har städat bort."
   },
   "statsHiddenTotal": {
     "message": "Dolda element"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Idag"
+  },
+  "statsChartRange": {
+    "message": "Diagramintervall"
+  },
+  "statsInsightMore": {
+    "message": "$1 % mer än de senaste $2 dagarna"
+  },
+  "statsInsightFewer": {
+    "message": "$1 % mindre än de senaste $2 dagarna"
+  },
+  "statsInsightSame": {
+    "message": "Ungefär som de senaste $1 dagarna"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Ingen aktivitet under perioden"
+  },
+  "statsRemovedTotal": {
+    "message": "Borttagna element"
+  },
+  "statsSeriesHidden": {
+    "message": "Dolda av dig"
+  },
+  "statsSeriesCleaned": {
+    "message": "Rensade automatiskt"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 totalt ($3 dolda, $4 rensade)"
   }
 }

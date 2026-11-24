@@ -345,7 +345,7 @@
     "message": "统计"
   },
   "statsLede": {
-    "message": "安静地记录你清理过的内容。所有数据都留在此设备上。"
+    "message": "安静地记录你清理过的内容。"
   },
   "statsHiddenTotal": {
     "message": "已隐藏元素"
@@ -372,7 +372,7 @@
     "message": "暂无活动"
   },
   "statsNoActivityHint": {
-    "message": "使用选择模式隐藏一个元素，它就会出现在这里。"
+    "message": "开启保护浏览网页，或使用选择模式隐藏元素。"
   },
   "statsNoSites": {
     "message": "暂无隐藏元素"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "今天"
+  },
+  "statsChartRange": {
+    "message": "图表范围"
+  },
+  "statsInsightMore": {
+    "message": "比前 $2 天多 $1%"
+  },
+  "statsInsightFewer": {
+    "message": "比前 $2 天少 $1%"
+  },
+  "statsInsightSame": {
+    "message": "与前 $1 天大致相同"
+  },
+  "statsNoActivityPeriod": {
+    "message": "此期间没有活动"
+  },
+  "statsRemovedTotal": {
+    "message": "已移除元素"
+  },
+  "statsSeriesHidden": {
+    "message": "你隐藏的"
+  },
+  "statsSeriesCleaned": {
+    "message": "自动清理的"
+  },
+  "statsBarAria": {
+    "message": "$1 — 共 $2（$3 个手动隐藏，$4 个自动清理）"
   }
 }

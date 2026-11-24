@@ -9,7 +9,7 @@ ODAK is a browser extension that helps you focus by allowing you to easily hide 
 - **Hide Distractions:** Instantly remove banners, sidebars, or any other element that takes away from your focus.
 - **Undo Last:** Made a mistake? Quickly undo your last hidden element.
 - **Restore All:** Bring back all hidden elements on the current page with a single click.
-- **Stats Tracking:** Keep track of how many elements you have hidden on the current page.
+- **Stats Tracking:** See lifetime totals, a daily chart of what you hid and what ODAK cleaned automatically, and the sites you clean up most — all stored on your device.
 
 ## Installation
 
@@ -52,6 +52,10 @@ Open the popup and choose **Manage filters** (or use the extension's Options pag
 to open the control panel:
 
 - **General** — the main protection switch and every site you have paused.
+- **Statistics** — a private, on-device record of what you have removed:
+  lifetime totals, a daily chart with 7/14/30-day ranges that separates what
+  you hid from what ODAK cleaned automatically, a period-over-period
+  comparison, and the sites you clean up most.
 - **Filters** — filter lists grouped into Ads, Privacy, Security and Regional
   categories, with a switch, a rule count and a domain count for each list. The
   Regional group contains the 38 lists from uBlock Origin's regions collection;

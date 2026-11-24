@@ -345,7 +345,7 @@
     "message": "Statistiche"
   },
   "statsLede": {
-    "message": "Un registro discreto di ciò che hai ripulito. Tutto resta su questo dispositivo."
+    "message": "Un registro discreto di ciò che hai ripulito."
   },
   "statsHiddenTotal": {
     "message": "Elementi nascosti"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Oggi"
+  },
+  "statsChartRange": {
+    "message": "Intervallo del grafico"
+  },
+  "statsInsightMore": {
+    "message": "$1% in più rispetto ai $2 giorni precedenti"
+  },
+  "statsInsightFewer": {
+    "message": "$1% in meno rispetto ai $2 giorni precedenti"
+  },
+  "statsInsightSame": {
+    "message": "Più o meno come i $1 giorni precedenti"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Nessuna attività in questo periodo"
+  },
+  "statsRemovedTotal": {
+    "message": "Elementi rimossi"
+  },
+  "statsSeriesHidden": {
+    "message": "Nascosti da te"
+  },
+  "statsSeriesCleaned": {
+    "message": "Puliti automaticamente"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 in totale ($3 nascosti, $4 puliti)"
   }
 }

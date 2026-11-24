@@ -345,7 +345,7 @@
     "message": "Statistiques"
   },
   "statsLede": {
-    "message": "Un journal discret de ce que vous avez nettoyé. Tout reste sur cet appareil."
+    "message": "Un journal discret de ce que vous avez nettoyé."
   },
   "statsHiddenTotal": {
     "message": "Éléments masqués"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Aujourd'hui"
+  },
+  "statsChartRange": {
+    "message": "Période du graphique"
+  },
+  "statsInsightMore": {
+    "message": "$1 % de plus que les $2 jours précédents"
+  },
+  "statsInsightFewer": {
+    "message": "$1 % de moins que les $2 jours précédents"
+  },
+  "statsInsightSame": {
+    "message": "Environ comme les $1 jours précédents"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Aucune activité sur cette période"
+  },
+  "statsRemovedTotal": {
+    "message": "Éléments supprimés"
+  },
+  "statsSeriesHidden": {
+    "message": "Masqués par vous"
+  },
+  "statsSeriesCleaned": {
+    "message": "Nettoyés automatiquement"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 au total ($3 masqués, $4 nettoyés)"
   }
 }

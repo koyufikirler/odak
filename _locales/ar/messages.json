@@ -345,7 +345,7 @@
     "message": "الإحصاءات"
   },
   "statsLede": {
-    "message": "سجل هادئ لما قمت بتنظيفه. كل شيء يبقى على هذا الجهاز."
+    "message": "سجل هادئ لما قمت بتنظيفه."
   },
   "statsHiddenTotal": {
     "message": "العناصر المخفية"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "اليوم"
+  },
+  "statsChartRange": {
+    "message": "نطاق الرسم البياني"
+  },
+  "statsInsightMore": {
+    "message": "أكثر بنسبة $1٪ من الأيام $2 السابقة"
+  },
+  "statsInsightFewer": {
+    "message": "أقل بنسبة $1٪ من الأيام $2 السابقة"
+  },
+  "statsInsightSame": {
+    "message": "تقريبًا مثل الأيام $1 السابقة"
+  },
+  "statsNoActivityPeriod": {
+    "message": "لا يوجد نشاط في هذه الفترة"
+  },
+  "statsRemovedTotal": {
+    "message": "العناصر التي أُزيلت"
+  },
+  "statsSeriesHidden": {
+    "message": "ما أخفيته"
+  },
+  "statsSeriesCleaned": {
+    "message": "تم تنظيفه تلقائيًا"
+  },
+  "statsBarAria": {
+    "message": "$1 — الإجمالي $2 ($3 مخفي، $4 تلقائي)"
   }
 }

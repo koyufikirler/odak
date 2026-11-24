@@ -12,6 +12,7 @@ const _browser = typeof browser !== 'undefined' ? browser : chrome;
 const ADBLOCK_KEY = 'dh_adBlocking';
 const PAUSED_KEY = 'dh_adBlockSites';
 const FILTERS_KEY = 'dh_filterLists';
+const STATS_RANGE_KEY = 'odak.statsRange';
 
 const ICONS = {
   globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="3" y1="12" x2="21" y2="12"></line><path d="M12 3a14 14 0 0 1 3.6 9 14 14 0 0 1-3.6 9 14 14 0 0 1-3.6-9A14 14 0 0 1 12 3z"></path></svg>',
@@ -27,7 +28,7 @@ const state = {
   query: '',
   stats: null,
   statsCurrent: null,
-  statsDays: 14,
+  statsDays: readStoredStatsRange(),
 };
 
 const UI_LANG = (() => {
@@ -83,9 +84,13 @@ const els = {
   statsRangeLabel: document.getElementById('stats-range-label'),
   statsChart: document.getElementById('stats-chart'),
   statsBars: document.getElementById('stats-bars'),
+  statsAverage: document.getElementById('stats-average'),
   statsAxis: document.getElementById('stats-axis'),
   statsTooltip: document.getElementById('stats-tooltip'),
   statsChartEmpty: document.getElementById('stats-chart-empty'),
+  statsChartEmptyTitle: document.getElementById('stats-chart-empty-title'),
+  statsInsight: document.getElementById('stats-insight'),
+  statsInsightText: document.getElementById('stats-insight-text'),
   statsPeriodTotal: document.getElementById('stats-period-total'),
   statsPeriodAverage: document.getElementById('stats-period-average'),
   statsBaselineNote: document.getElementById('stats-baseline-note'),
@@ -120,12 +125,16 @@ function applyI18n() {
     const value = message(el.getAttribute('data-i18n-placeholder'), '');
     if (value) el.placeholder = value;
   });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    const value = message(el.getAttribute('data-i18n-aria-label'), '');
+    if (value) el.setAttribute('aria-label', value);
+  });
   document.title = `${message('panelTitle', 'Control Panel')} — ODAK`;
 }
 
 function formatNumber(value) {
   try {
-    return new Intl.NumberFormat().format(value);
+    return new Intl.NumberFormat(UI_LANG || undefined).format(value);
   } catch (e) {
     return String(value);
   }
@@ -200,6 +209,22 @@ function localDayKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+// The chart range is a view preference, not extension state. Keeping it in
+// localStorage lets the panel reopen on the range the user last chose.
+function readStoredStatsRange() {
+  try {
+    const value = Number(localStorage.getItem(STATS_RANGE_KEY));
+    if ([7, 14, 30].includes(value)) return value;
+  } catch (e) {}
+  return 14;
+}
+
+function storeStatsRange(days) {
+  try {
+    localStorage.setItem(STATS_RANGE_KEY, String(days));
+  } catch (e) {}
+}
+
 function parseDayKey(key) {
   const [year, month, day] = String(key).split('-').map(Number);
   return new Date(year, month - 1, day, 12, 0, 0);
@@ -241,7 +266,7 @@ function formatStatAverage(value) {
 
 function formatDayLabel(key, days) {
   try {
-    const options = days > 14
+    const options = days > 7
       ? { month: 'short', day: 'numeric' }
       : { weekday: 'short' };
     return new Intl.DateTimeFormat(UI_LANG || undefined, options).format(parseDayKey(key));
@@ -250,8 +275,37 @@ function formatDayLabel(key, days) {
   }
 }
 
+function formatTooltipDate(key) {
+  if (key === localDayKey()) return message('statsToday', 'Today');
+  try {
+    return new Intl.DateTimeFormat(UI_LANG || undefined, {
+      month: 'short',
+      day: 'numeric',
+    }).format(parseDayKey(key));
+  } catch (e) {
+    return formatStatDate(key);
+  }
+}
+
 function activeDayCount(stats) {
-  return Object.values(stats.daily || {}).filter(value => Number(value) > 0).length;
+  const days = new Set();
+  for (const [key, value] of Object.entries(stats.daily || {})) {
+    if (Number(value) > 0) days.add(key);
+  }
+  for (const [key, value] of Object.entries(stats.cleanedDaily || {})) {
+    if (Number(value) > 0) days.add(key);
+  }
+  return days.size;
+}
+
+function statsDay(stats, key) {
+  const hidden = Number(stats?.daily?.[key]) || 0;
+  const cleaned = Number(stats?.cleanedDaily?.[key]) || 0;
+  return { hidden, cleaned, total: hidden + cleaned };
+}
+
+function statsLifetimeTotal(stats) {
+  return (Number(stats?.totalHidden) || 0) + (Number(stats?.totalCleaned) || 0);
 }
 
 function normalizeHost(host) {
@@ -390,7 +444,7 @@ function renderStats() {
 
   const stats = state.stats;
   const current = state.statsCurrent || { sites: [], totalHidden: 0 };
-  const total = Number(stats.totalHidden) || 0;
+  const total = statsLifetimeTotal(stats);
 
   els.statsTotal.textContent = formatNumber(total);
   els.statsDays.textContent = formatNumber(activeDayCount(stats));
@@ -404,16 +458,22 @@ function renderStats() {
     els.statsSince.textContent = '';
   }
 
-  if (els.statsRange) {
-    els.statsRange.querySelectorAll('button[data-days]').forEach(button => {
-      const active = Number(button.dataset.days) === state.statsDays;
-      button.classList.toggle('active', active);
-      button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-  }
+  renderStatsRangeControl();
 
   renderStatsChart();
   renderStatsSites(current.sites || []);
+}
+
+function renderStatsRangeControl() {
+  if (!els.statsRange) return;
+
+  els.statsRange.querySelectorAll('button[data-days]').forEach(button => {
+    const days = Number(button.dataset.days);
+    const active = days === state.statsDays;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    button.setAttribute('aria-label', message('statsRange', 'Last $1 days', [String(days)]));
+  });
 }
 
 function renderStatsChart() {
@@ -421,11 +481,13 @@ function renderStatsChart() {
 
   const count = state.statsDays;
   const keys = lastDayKeys(count);
-  const values = keys.map(key => Number(state.stats.daily?.[key]) || 0);
+  const days = keys.map(key => statsDay(state.stats, key));
+  const values = days.map(day => day.total);
   const total = values.reduce((sum, value) => sum + value, 0);
   const max = Math.max(...values, 1) * 1.08;
   const today = localDayKey();
   const baseline = Number(state.stats.baseline) || 0;
+  const hasPeriodActivity = total > 0;
 
   els.statsRangeLabel.textContent = message('statsRange', 'Last $1 days', [String(count)]);
   els.statsPeriodTotal.textContent = message('statsPeriodTotal', '$1 total', [formatNumber(total)]);
@@ -448,30 +510,75 @@ function renderStatsChart() {
   hideStatsTooltip();
   els.statsBars.textContent = '';
   els.statsBars.style.setProperty('--cols', String(count));
-  els.statsChartEmpty.hidden = values.some(value => value > 0);
+  els.statsChartEmpty.hidden = hasPeriodActivity;
+
+  if (!hasPeriodActivity && els.statsChartEmptyTitle) {
+    // Lifetime activity can exist while the selected window is empty; saying
+    // "No activity yet" then would contradict the totals above the chart.
+    const hasHistory = statsLifetimeTotal(state.stats) > 0;
+    els.statsChartEmptyTitle.textContent = message(
+      hasHistory ? 'statsNoActivityPeriod' : 'statsNoActivity',
+      hasHistory ? 'No activity in this period' : 'No activity yet'
+    );
+  }
+
+  const average = total / count;
+  if (hasPeriodActivity && average > 0) {
+    els.statsAverage.hidden = false;
+    els.statsAverage.style.setProperty('--avg', String(Math.min(1, average / max)));
+  } else {
+    els.statsAverage.hidden = true;
+    els.statsAverage.style.removeProperty('--avg');
+  }
+
+  renderStatsInsight(keys, total);
 
   keys.forEach((key, index) => {
-    const value = values[index];
+    const day = days[index];
     const bar = document.createElement('button');
     bar.type = 'button';
     bar.className = 'chart-bar';
     if (key === today) bar.classList.add('is-today');
     bar.dataset.day = key;
-    bar.dataset.value = String(value);
-    bar.setAttribute('aria-label', `${formatStatDate(key)}: ${formatNumber(value)}`);
+    bar.dataset.value = String(day.total);
+    bar.tabIndex = index === keys.length - 1 ? 0 : -1;
+    bar.setAttribute('aria-label', message(
+      'statsBarAria',
+      '$1 — $2 total ($3 hidden, $4 cleaned)',
+      [formatStatDate(key), formatNumber(day.total), formatNumber(day.hidden), formatNumber(day.cleaned)]
+    ));
 
     const track = document.createElement('span');
     track.className = 'chart-bar-track';
 
-    const fill = document.createElement('span');
-    fill.className = 'chart-bar-fill';
-    fill.style.height = value > 0 ? `${Math.max(4, (value / max) * 100)}%` : '0%';
-    fill.style.setProperty('--i', String(index));
-    track.appendChild(fill);
+    const stack = document.createElement('span');
+    stack.className = 'chart-bar-stack';
+    stack.style.height = day.total > 0
+      ? `${Math.max(3, (day.total / max) * 100)}%`
+      : '0%';
+    stack.style.setProperty('--i', String(index));
+
+    const segments = [];
+    if (day.hidden > 0) segments.push(['is-hidden', day.hidden]);
+    if (day.cleaned > 0) segments.push(['is-cleaned', day.cleaned]);
+
+    segments.forEach(([className, value]) => {
+      const segment = document.createElement('span');
+      segment.className = `chart-bar-seg ${className}`;
+      segment.style.height = `${(value / day.total) * 100}%`;
+      stack.appendChild(segment);
+    });
+
+    track.appendChild(stack);
     bar.appendChild(track);
 
-    bar.addEventListener('pointerenter', () => showStatsTooltip(bar, key, value));
-    bar.addEventListener('focus', () => showStatsTooltip(bar, key, value));
+    bar.addEventListener('pointerenter', () => showStatsTooltip(bar, key, day));
+    bar.addEventListener('focus', () => {
+      statsBarElements().forEach(el => {
+        el.tabIndex = el === bar ? 0 : -1;
+      });
+      showStatsTooltip(bar, key, day);
+    });
     bar.addEventListener('pointerleave', hideStatsTooltip);
     bar.addEventListener('blur', hideStatsTooltip);
 
@@ -496,7 +603,84 @@ function renderStatsChart() {
   });
 }
 
-function showStatsTooltip(bar, key, value) {
+function renderStatsInsight(keys, total) {
+  if (!els.statsInsight || !els.statsInsightText) return;
+
+  const insight = statsPeriodInsight(keys, total);
+  if (!insight) {
+    els.statsInsight.hidden = true;
+    els.statsInsightText.textContent = '';
+    els.statsInsight.classList.remove('is-down', 'is-same');
+    return;
+  }
+
+  els.statsInsight.hidden = false;
+  els.statsInsight.classList.toggle('is-down', insight.direction === 'down');
+  els.statsInsight.classList.toggle('is-same', insight.direction === 'same');
+  els.statsInsightText.textContent = insight.text;
+}
+
+function statsPeriodInsight(keys, total) {
+  if (!state.stats || total <= 0) return null;
+
+  const count = keys.length;
+  const since = state.stats.since;
+  const previousKeys = lastDayKeys(count * 2).slice(0, count);
+
+  // Only compare fully tracked windows, and never include the day tracking
+  // began: it carries the pre-existing baseline and would distort the result.
+  if (!since || previousKeys[0] <= since) return null;
+
+  const previousTotal = previousKeys.reduce(
+    (sum, key) => sum + statsDay(state.stats, key).total,
+    0
+  );
+  if (previousTotal <= 0) return null;
+
+  const change = ((total - previousTotal) / previousTotal) * 100;
+  const percent = Math.round(Math.abs(change));
+
+  if (percent === 0) {
+    return {
+      direction: 'same',
+      text: message('statsInsightSame', 'About the same as the previous $1 days', [String(count)]),
+    };
+  }
+
+  if (change > 0) {
+    return {
+      direction: 'up',
+      text: message('statsInsightMore', '$1% more than the previous $2 days', [
+        formatNumber(percent),
+        String(count),
+      ]),
+    };
+  }
+
+  return {
+    direction: 'down',
+    text: message('statsInsightFewer', '$1% fewer than the previous $2 days', [
+      formatNumber(percent),
+      String(count),
+    ]),
+  };
+}
+
+function statsBarElements() {
+  return Array.from(els.statsBars.querySelectorAll('.chart-bar'));
+}
+
+function focusStatsBar(index) {
+  const bars = statsBarElements();
+  if (bars.length === 0) return;
+  const target = Math.max(0, Math.min(bars.length - 1, index));
+  bars.forEach((bar, i) => {
+    bar.tabIndex = i === target ? 0 : -1;
+  });
+  bars[target].focus();
+}
+
+function showStatsTooltip(bar, key, day) {
   if (!els.statsTooltip || !els.statsChart) return;
 
   const plotRect = els.statsChart.getBoundingClientRect();
@@ -504,16 +688,35 @@ function showStatsTooltip(bar, key, value) {
   if (!plotRect.width || !barRect.width) return;
 
   const center = barRect.left - plotRect.left + barRect.width / 2;
-  const half = 74;
+  const stack = bar.querySelector('.chart-bar-stack');
+  const stackHeight = stack ? stack.getBoundingClientRect().height : 0;
+  const top = Math.max(34, plotRect.height - stackHeight - 8);
+
+  els.statsTooltip.textContent = '';
+
+  const totalLine = document.createElement('span');
+  totalLine.className = 'chart-tooltip-total';
+  totalLine.textContent = `${formatTooltipDate(key)} · ${formatNumber(day.total)}`;
+  els.statsTooltip.appendChild(totalLine);
+
+  if (day.hidden > 0 && day.cleaned > 0) {
+    const split = document.createElement('span');
+    split.className = 'chart-tooltip-split';
+    split.textContent = `${formatNumber(day.hidden)} ${message('statsSeriesHidden', 'Hidden by you')} · ${formatNumber(day.cleaned)} ${message('statsSeriesCleaned', 'Cleaned automatically')}`;
+    els.statsTooltip.appendChild(split);
+  }
+
+  els.statsTooltip.style.left = '0px';
+  els.statsTooltip.hidden = false;
+
+  // Measure the real tooltip so longer localized dates still stay inside the
+  // plot instead of relying on a fixed guess.
+  const tooltipWidth = els.statsTooltip.getBoundingClientRect().width;
+  const half = Math.min(tooltipWidth / 2 + 4, plotRect.width / 2);
   const left = Math.min(Math.max(center, half), plotRect.width - half);
-  const fill = bar.querySelector('.chart-bar-fill');
-  const fillHeight = fill ? fill.getBoundingClientRect().height : 0;
-  const top = Math.max(34, plotRect.height - fillHeight - 8);
 
   els.statsTooltip.style.left = `${left}px`;
   els.statsTooltip.style.top = `${top}px`;
-  els.statsTooltip.textContent = `${formatStatDate(key)} · ${formatNumber(value)}`;
-  els.statsTooltip.hidden = false;
 }
 
 function hideStatsTooltip() {
@@ -522,7 +725,10 @@ function hideStatsTooltip() {
 
 function renderStatsSites(sites) {
   els.statsSiteList.textContent = '';
-  els.statsSiteCount.textContent = sites.length > 0 ? formatNumber(sites.length) : '';
+  const siteTotal = sites.reduce((sum, site) => sum + (Number(site.count) || 0), 0);
+  els.statsSiteCount.textContent = siteTotal > 0
+    ? message('siteHiddenCount', '$1 hidden', [formatNumber(siteTotal)])
+    : '';
 
   const top = sites.slice(0, 5);
   if (top.length === 0) {
@@ -583,14 +789,9 @@ function setStatsRange(days) {
   const value = [7, 14, 30].includes(days) ? days : 14;
   if (state.statsDays === value) return;
   state.statsDays = value;
+  storeStatsRange(value);
   renderStatsChart();
-  if (els.statsRange) {
-    els.statsRange.querySelectorAll('button[data-days]').forEach(button => {
-      const active = Number(button.dataset.days) === value;
-      button.classList.toggle('active', active);
-      button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-  }
+  renderStatsRangeControl();
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────
@@ -845,6 +1046,22 @@ function setupEvents() {
     const button = event.target.closest('button[data-days]');
     if (!button) return;
     setStatsRange(Number(button.dataset.days));
+  });
+
+  els.statsBars?.addEventListener('keydown', event => {
+    const bars = statsBarElements();
+    const index = bars.indexOf(document.activeElement);
+    if (index === -1) return;
+
+    let next = null;
+    if (event.key === 'ArrowLeft') next = index - 1;
+    else if (event.key === 'ArrowRight') next = index + 1;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = bars.length - 1;
+    if (next == null) return;
+
+    event.preventDefault();
+    focusStatsBar(next);
   });
 
   els.filterCategories.addEventListener('change', event => {

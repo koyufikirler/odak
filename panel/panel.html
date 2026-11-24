@@ -125,21 +125,21 @@
       <!-- Statistics -->
       <section class="tab-panel" id="tab-stats">
         <p class="lede" data-i18n="statsLede">
-          A quiet record of what you've cleaned up. Everything stays on this device.
+          A quiet record of what you've cleaned up.
         </p>
 
         <div class="stat-grid">
           <div class="stat-card">
-            <span class="stat-value" id="stats-total">0</span>
-            <span class="stat-label" data-i18n="statsHiddenTotal">Elements hidden</span>
+            <span class="stat-value" id="stats-total">—</span>
+            <span class="stat-label" data-i18n="statsRemovedTotal">Elements removed</span>
             <span class="stat-sub" id="stats-since"></span>
           </div>
           <div class="stat-card">
-            <span class="stat-value" id="stats-days">0</span>
+            <span class="stat-value" id="stats-days">—</span>
             <span class="stat-label" data-i18n="statsActiveDays">Active days</span>
           </div>
           <div class="stat-card">
-            <span class="stat-value" id="stats-sites">0</span>
+            <span class="stat-value" id="stats-sites">—</span>
             <span class="stat-label" data-i18n="statsSites">Sites cleaned</span>
           </div>
         </div>
@@ -147,33 +147,56 @@
         <div class="chart-card">
           <div class="chart-head">
             <div class="chart-heading">
-              <h2 class="chart-title" data-i18n="statsHiddenTotal">Elements hidden</h2>
+              <h2 class="chart-title" id="stats-chart-title" data-i18n="statsRemovedTotal">Elements removed</h2>
               <p class="chart-range" id="stats-range-label"></p>
             </div>
-            <div class="segmented" id="stats-range" role="group" aria-label="Chart range">
+            <div class="segmented" id="stats-range" role="group" data-i18n-aria-label="statsChartRange"
+              aria-label="Chart range">
               <button type="button" data-days="7" aria-pressed="false">7D</button>
               <button type="button" data-days="14" class="active" aria-pressed="true">14D</button>
               <button type="button" data-days="30" aria-pressed="false">30D</button>
             </div>
           </div>
 
+          <div class="chart-legend">
+            <span class="legend-item">
+              <span class="legend-dot legend-dot-hidden" aria-hidden="true"></span>
+              <span data-i18n="statsSeriesHidden">Hidden by you</span>
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot legend-dot-cleaned" aria-hidden="true"></span>
+              <span data-i18n="statsSeriesCleaned">Cleaned automatically</span>
+            </span>
+          </div>
+
           <div class="chart-plot" id="stats-chart">
             <div class="chart-grid" aria-hidden="true"></div>
-            <div class="chart-bars" id="stats-bars"></div>
+            <div class="chart-average" id="stats-average" aria-hidden="true" hidden></div>
+            <div class="chart-bars" id="stats-bars" role="group" aria-labelledby="stats-chart-title"></div>
             <div class="chart-tooltip" id="stats-tooltip" hidden></div>
             <div class="chart-empty" id="stats-chart-empty" hidden>
-              <span class="chart-empty-title" data-i18n="statsNoActivity">No activity yet</span>
+              <span class="chart-empty-title" id="stats-chart-empty-title" data-i18n="statsNoActivity">No activity yet</span>
               <span class="chart-empty-hint" data-i18n="statsNoActivityHint">
-                Hide an element with Pick Mode and it will appear here.
+                Browse with protection on, or hide an element with Pick Mode.
               </span>
             </div>
           </div>
           <div class="chart-axis" id="stats-axis" aria-hidden="true"></div>
 
-          <div class="chart-foot">
+          <div class="chart-foot" aria-live="polite">
             <span id="stats-period-total"></span>
             <span id="stats-period-average"></span>
           </div>
+          <p class="chart-insight" id="stats-insight" hidden>
+            <span class="chart-insight-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 17L17 7"></path>
+                <path d="M8 7h9v9"></path>
+              </svg>
+            </span>
+            <span id="stats-insight-text"></span>
+          </p>
           <p class="chart-note" id="stats-baseline-note" hidden></p>
         </div>
 

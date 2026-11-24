@@ -345,7 +345,7 @@
     "message": "Statistik"
   },
   "statsLede": {
-    "message": "Ein ruhiger Überblick über das, was du aufgeräumt hast. Alles bleibt auf diesem Gerät."
+    "message": "Ein ruhiger Überblick über das, was du aufgeräumt hast."
   },
   "statsHiddenTotal": {
     "message": "Ausgeblendete Elemente"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Heute"
+  },
+  "statsChartRange": {
+    "message": "Diagrammzeitraum"
+  },
+  "statsInsightMore": {
+    "message": "$1 % mehr als in den vorherigen $2 Tagen"
+  },
+  "statsInsightFewer": {
+    "message": "$1 % weniger als in den vorherigen $2 Tagen"
+  },
+  "statsInsightSame": {
+    "message": "Etwa gleich wie in den vorherigen $1 Tagen"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Keine Aktivität in diesem Zeitraum"
+  },
+  "statsRemovedTotal": {
+    "message": "Entfernte Elemente"
+  },
+  "statsSeriesHidden": {
+    "message": "Von dir ausgeblendet"
+  },
+  "statsSeriesCleaned": {
+    "message": "Automatisch bereinigt"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 insgesamt ($3 ausgeblendet, $4 bereinigt)"
   }
 }

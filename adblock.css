@@ -2,15 +2,14 @@
 /*
  * Network requests are blocked natively by declarativeNetRequest. This sheet
  * only collapses the empty holes and the few ad containers that pages render
- * themselves. It costs one style recalculation on load — no observers, no
- * polling, no per-page JavaScript.
+ * themselves. It costs one style recalculation and one selector pass on load —
+ * no observers, no polling.
  *
  * The whole list is disabled by adding `dh-adblock-off` to <html>, which
  * content.js does when the feature is turned off or paused for this site.
  *
- * Only exact, well-known container names are used. Bare `.ad` / `.ads` and
- * substring matches are deliberately avoided: in several languages "ad" means
- * "name", and substrings like "download-banner" contain "ad-banner".
+ * Generated from cosmetic.js — edit that file, then run:
+ *   node generate_cosmetic_css.js
  */
 html:not(.dh-adblock-off) :is(
   /* Google AdSense, Ad Manager and AMP ads */

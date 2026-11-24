@@ -345,7 +345,7 @@
     "message": "Статистика"
   },
   "statsLede": {
-    "message": "Тазалағандарыңыздың тыныш жазбасы. Барлығы осы құрылғыда қалады."
+    "message": "Тазалағандарыңыздың тыныш жазбасы."
   },
   "statsHiddenTotal": {
     "message": "Жасырылған элементтер"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Бүгін"
+  },
+  "statsChartRange": {
+    "message": "Диаграмма ауқымы"
+  },
+  "statsInsightMore": {
+    "message": "Алдыңғы $2 күнмен салыстырғанда $1% көп"
+  },
+  "statsInsightFewer": {
+    "message": "Алдыңғы $2 күнмен салыстырғанда $1% аз"
+  },
+  "statsInsightSame": {
+    "message": "Алдыңғы $1 күнмен шамамен бірдей"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Бұл кезеңде белсенділік жоқ"
+  },
+  "statsRemovedTotal": {
+    "message": "Жойылған элементтер"
+  },
+  "statsSeriesHidden": {
+    "message": "Сіз жасырғандар"
+  },
+  "statsSeriesCleaned": {
+    "message": "Автоматты тазаланған"
+  },
+  "statsBarAria": {
+    "message": "$1 — барлығы $2 ($3 жасырылған, $4 автоматты)"
   }
 }

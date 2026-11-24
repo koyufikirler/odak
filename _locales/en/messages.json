@@ -15,7 +15,7 @@
     "message": "Shortcuts work on webpages. They do not run while you are typing in a field."
   },
   "keysRecording": {
-    "message": "Press the keys."
+    "message": "Press a key combination…"
   },
   "keysConflict": {
     "message": "That shortcut is already in use."
@@ -345,7 +345,7 @@
     "message": "Statistics"
   },
   "statsLede": {
-    "message": "A quiet record of what you've cleaned up. Everything stays on this device."
+    "message": "A quiet record of what you've cleaned up."
   },
   "statsHiddenTotal": {
     "message": "Elements hidden"
@@ -372,7 +372,7 @@
     "message": "No activity yet"
   },
   "statsNoActivityHint": {
-    "message": "Hide an element with Pick Mode and it will appear here."
+    "message": "Browse with protection on, or hide an element with Pick Mode."
   },
   "statsNoSites": {
     "message": "No hidden elements yet"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Today"
+  },
+  "statsChartRange": {
+    "message": "Chart range"
+  },
+  "statsInsightMore": {
+    "message": "$1% more than the previous $2 days"
+  },
+  "statsInsightFewer": {
+    "message": "$1% fewer than the previous $2 days"
+  },
+  "statsInsightSame": {
+    "message": "About the same as the previous $1 days"
+  },
+  "statsNoActivityPeriod": {
+    "message": "No activity in this period"
+  },
+  "statsRemovedTotal": {
+    "message": "Elements removed"
+  },
+  "statsSeriesHidden": {
+    "message": "Hidden by you"
+  },
+  "statsSeriesCleaned": {
+    "message": "Cleaned automatically"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 total ($3 hidden, $4 cleaned)"
   }
 }

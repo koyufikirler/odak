@@ -345,7 +345,7 @@
     "message": "Статистика"
   },
   "statsLede": {
-    "message": "Тихая летопись того, что вы убрали. Всё остаётся на этом устройстве."
+    "message": "Тихая летопись того, что вы убрали."
   },
   "statsHiddenTotal": {
     "message": "Скрытые элементы"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Сегодня"
+  },
+  "statsChartRange": {
+    "message": "Диапазон графика"
+  },
+  "statsInsightMore": {
+    "message": "На $1% больше, чем за предыдущие $2 дней"
+  },
+  "statsInsightFewer": {
+    "message": "На $1% меньше, чем за предыдущие $2 дней"
+  },
+  "statsInsightSame": {
+    "message": "Примерно столько же, сколько за предыдущие $1 дней"
+  },
+  "statsNoActivityPeriod": {
+    "message": "За этот период активности нет"
+  },
+  "statsRemovedTotal": {
+    "message": "Удалённые элементы"
+  },
+  "statsSeriesHidden": {
+    "message": "Скрытые вами"
+  },
+  "statsSeriesCleaned": {
+    "message": "Очищено автоматически"
+  },
+  "statsBarAria": {
+    "message": "$1 — всего $2 (скрыто $3, очищено $4)"
   }
 }

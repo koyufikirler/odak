@@ -345,7 +345,7 @@
     "message": "Tilastot"
   },
   "statsLede": {
-    "message": "Rauhallinen katsaus siihen, mitä olet siivonnut. Kaikki pysyy tällä laitteella."
+    "message": "Rauhallinen katsaus siihen, mitä olet siivonnut."
   },
   "statsHiddenTotal": {
     "message": "Piilotetut elementit"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "Tänään"
+  },
+  "statsChartRange": {
+    "message": "Kaavion aikaväli"
+  },
+  "statsInsightMore": {
+    "message": "$1 % enemmän kuin edellisinä $2 päivänä"
+  },
+  "statsInsightFewer": {
+    "message": "$1 % vähemmän kuin edellisinä $2 päivänä"
+  },
+  "statsInsightSame": {
+    "message": "Suunnilleen sama kuin edellisinä $1 päivänä"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Ei toimintaa tällä jaksolla"
+  },
+  "statsRemovedTotal": {
+    "message": "Poistetut elementit"
+  },
+  "statsSeriesHidden": {
+    "message": "Sinun piilottamasi"
+  },
+  "statsSeriesCleaned": {
+    "message": "Automaattisesti siivottu"
+  },
+  "statsBarAria": {
+    "message": "$1 — yhteensä $2 ($3 piilotettu, $4 siivottu)"
   }
 }

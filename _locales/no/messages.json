@@ -345,7 +345,7 @@
     "message": "Statistikk"
   },
   "statsLede": {
-    "message": "En rolig oversikt over det du har ryddet bort. Alt blir på denne enheten."
+    "message": "En rolig oversikt over det du har ryddet bort."
   },
   "statsHiddenTotal": {
     "message": "Skjulte elementer"
@@ -388,5 +388,32 @@
   },
   "statsToday": {
     "message": "I dag"
+  },
+  "statsChartRange": {
+    "message": "Diagramområde"
+  },
+  "statsInsightMore": {
+    "message": "$1 % mer enn de forrige $2 dagene"
+  },
+  "statsInsightFewer": {
+    "message": "$1 % mindre enn de forrige $2 dagene"
+  },
+  "statsInsightSame": {
+    "message": "Omtrent som de forrige $1 dagene"
+  },
+  "statsNoActivityPeriod": {
+    "message": "Ingen aktivitet i denne perioden"
+  },
+  "statsRemovedTotal": {
+    "message": "Fjernede elementer"
+  },
+  "statsSeriesHidden": {
+    "message": "Skjult av deg"
+  },
+  "statsSeriesCleaned": {
+    "message": "Ryddet automatisk"
+  },
+  "statsBarAria": {
+    "message": "$1 — $2 totalt ($3 skjult, $4 ryddet)"
   }
 }

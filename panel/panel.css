@@ -882,6 +882,23 @@ a:hover {
   pointer-events: none;
 }
 
+/* A faint rule at the period average — present, but never competing with
+   the bars. The foot below spells the value out. */
+.chart-average {
+  position: absolute;
+  right: 0;
+  bottom: calc((100% - 9px) * var(--avg, 0));
+  left: 0;
+  z-index: 0;
+  border-top: 1px dashed var(--line-strong);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.chart-average[hidden] {
+  display: none;
+}
+
 .chart-bars {
   position: relative;
   z-index: 1;
@@ -902,6 +919,12 @@ a:hover {
   border-radius: 6px;
   background: transparent;
   cursor: default;
+  transition: background 0.16s ease;
+}
+
+.chart-bar:hover,
+.chart-bar:focus-visible {
+  background: rgba(120, 120, 128, 0.07);
 }
 
 .chart-bar-track {
@@ -913,24 +936,48 @@ a:hover {
   height: 100%;
 }
 
-.chart-bar-fill {
-  display: block;
+.chart-bar-stack {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   border-radius: 6px 6px 3px 3px;
-  background: linear-gradient(180deg, rgba(124, 58, 237, 0.82), rgba(124, 58, 237, 0.38));
+  overflow: hidden;
   transform-origin: bottom;
   transition: filter 0.18s ease;
   animation: chart-grow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: calc(var(--i, 0) * 18ms);
 }
 
-.chart-bar.is-today .chart-bar-fill {
-  background: linear-gradient(180deg, #8b5cf6, #6d28d9);
-  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.12), 0 4px 14px rgba(124, 58, 237, 0.18);
+/* Two series, one bar: what the user chose to hide sits on top of what the
+   cosmetic sheet removed on its own. */
+.chart-bar-seg {
+  display: block;
+  width: 100%;
+  min-height: 2px;
 }
 
-.chart-bar:hover .chart-bar-fill,
-.chart-bar:focus-visible .chart-bar-fill {
+.chart-bar-seg.is-hidden {
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.82), rgba(124, 58, 237, 0.38));
+}
+
+.chart-bar-seg.is-cleaned {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.62), rgba(56, 189, 248, 0.3));
+}
+
+.chart-bar.is-today .chart-bar-stack {
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.16), 0 4px 14px rgba(124, 58, 237, 0.16);
+}
+
+.chart-bar.is-today .chart-bar-seg.is-hidden {
+  background: linear-gradient(180deg, #8b5cf6, #6d28d9);
+}
+
+.chart-bar.is-today .chart-bar-seg.is-cleaned {
+  background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+}
+
+.chart-bar:hover .chart-bar-stack,
+.chart-bar:focus-visible .chart-bar-stack {
   filter: brightness(1.08);
 }
 
@@ -970,6 +1017,9 @@ a:hover {
 .chart-tooltip {
   position: absolute;
   z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   padding: 6px 9px;
   border-radius: 8px;
   background: rgba(29, 29, 31, 0.92);
@@ -982,6 +1032,16 @@ a:hover {
   pointer-events: none;
   transform: translate(-50%, -100%);
   backdrop-filter: blur(8px);
+}
+
+.chart-tooltip[hidden] {
+  display: none;
+}
+
+.chart-tooltip-split {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10.5px;
+  font-weight: 500;
 }
 
 .chart-empty {
@@ -1024,6 +1084,72 @@ a:hover {
   color: var(--text-2);
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 10px 0 8px;
+  color: var(--text-2);
+  font-size: 11px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.legend-dot-hidden {
+  background: #7c3aed;
+}
+
+.legend-dot-cleaned {
+  background: #38bdf8;
+}
+
+.chart-insight {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 7px 0 0;
+  color: var(--text-2);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.chart-insight[hidden] {
+  display: none;
+}
+
+.chart-insight-icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--text-3);
+}
+
+.chart-insight-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.chart-insight.is-down .chart-insight-icon {
+  transform: rotate(90deg);
+}
+
+.chart-insight.is-same .chart-insight-icon {
+  display: none;
 }
 
 .chart-note {
@@ -1089,7 +1215,7 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chart-bar-fill,
+  .chart-bar-stack,
   .stat-site-fill {
     animation: none;
   }
