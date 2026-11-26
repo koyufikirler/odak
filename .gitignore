@@ -9,6 +9,7 @@ release_test/
 
 # Test Betikleri
 test-build.sh
+dev-watch.sh
 # Chrome unpacked-extension cache
 _metadata/
 
