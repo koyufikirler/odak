@@ -31,8 +31,12 @@ async function setPickMode(tabId, active) {
 const ADBLOCK_KEY = 'dh_adBlocking';
 const ADBLOCK_PAUSED_KEY = 'dh_adBlockSites';
 const ADBLOCK_FILTERS_KEY = 'dh_filterLists';
+const ADBLOCK_REMOTE_META_KEY = 'dh_remoteFilterMeta';
+const ADBLOCK_REMOTE_RULES_PREFIX = 'dh_remoteFilterRules_';
+const ADBLOCK_REMOTE_TTL_MS = 24 * 60 * 60 * 1000;
 const ADBLOCK_ALLOW_RULE_BASE = 10000;
 const ADBLOCK_MAX_PAUSED_SITES = 100;
+const ADBLOCK_REMOTE_RULE_BASE = 20000;
 
 // Used only when rules/lists.json cannot be read. The catalogue is the source
 // of truth: it carries the core lists plus the 38 regional rulesets.
@@ -66,6 +70,7 @@ function loadAdBlockLists() {
           id: list.id,
           defaultEnabled: list.defaultEnabled === true,
           autoLangs: Array.isArray(list.autoLangs) ? list.autoLangs : [],
+          remoteUrl: typeof list.remoteUrl === 'string' && list.remoteUrl ? list.remoteUrl : null,
         }));
     } catch (e) {
       return ADBLOCK_FALLBACK_LISTS;
@@ -130,17 +135,379 @@ async function getAdBlockState() {
   };
 }
 
-async function syncAdBlockState() {
+// ── Remote ABP filter parser (EasyList) ─────────────────────────────────────
+const REMOTE_ALL_TYPES = [
+  'sub_frame', 'stylesheet', 'script', 'image', 'font', 'object',
+  'xmlhttprequest', 'ping', 'media', 'websocket', 'other',
+];
+
+const REMOTE_TYPE_MAP = {
+  image: 'image',
+  media: 'media',
+  script: 'script',
+  stylesheet: 'stylesheet',
+  css: 'stylesheet',
+  object: 'object',
+  'object-subrequest': 'object',
+  xmlhttprequest: 'xmlhttprequest',
+  xhr: 'xmlhttprequest',
+  subdocument: 'sub_frame',
+  frame: 'sub_frame',
+  font: 'font',
+  websocket: 'websocket',
+  ping: 'ping',
+  beacon: 'ping',
+  other: 'other',
+};
+
+const REMOTE_SKIP_OPTIONS = new Set([
+  'redirect', 'redirect-rule', 'csp', 'removeparam', 'replace', 'rewrite',
+  'empty', 'mp4', 'inline-script', 'inline-font', 'webrtc', 'cookie',
+  'permissions', 'urltransform', 'method', 'header', 'badfilter',
+  'generichide', 'elemhide', 'specifichide', 'genericblock', 'document',
+  'doc', 'popup', 'popunder', 'match-case', 'sitekey', 'denyallow', 'to',
+  'from', 'all',
+]);
+
+const REMOTE_HOST_RE = /^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$/i;
+const REMOTE_DOMAIN_RE = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i;
+const REMOTE_ASCII_RE = /^[\x20-\x7e]+$/;
+const REMOTE_DOMAINS_PER_RULE = 200;
+
+function toAsciiHost(value) {
+  const host = String(value || '').trim().toLowerCase();
+  if (!host) return null;
+  if (REMOTE_DOMAIN_RE.test(host)) return host;
+  try {
+    const ascii = new URL(`http://${host}`).hostname;
+    if (ascii && REMOTE_DOMAIN_RE.test(ascii)) return ascii;
+  } catch (e) {}
+  return null;
+}
+
+function cleanRemoteDomains(values) {
+  const result = [];
+  for (const value of values) {
+    const ascii = toAsciiHost(value.replace(/^\*\./, ''));
+    if (ascii && !result.includes(ascii)) result.push(ascii);
+  }
+  return result;
+}
+
+function parseRemoteOptions(raw) {
+  const opts = {
+    types: [],
+    negTypes: [],
+    initiators: [],
+    excludedInitiators: [],
+    thirdParty: false,
+    firstParty: false,
+    important: false,
+  };
+  if (!raw) return opts;
+
+  for (const piece of raw.split(',')) {
+    if (!piece) return null;
+    let name = piece;
+    let neg = false;
+    if (name.startsWith('~')) {
+      neg = true;
+      name = name.slice(1);
+    }
+    const eq = name.indexOf('=');
+    const key = (eq === -1 ? name : name.slice(0, eq)).toLowerCase();
+    const value = eq === -1 ? '' : name.slice(eq + 1);
+
+    if (key === 'third-party' || key === '3p') {
+      if (neg) opts.firstParty = true;
+      else opts.thirdParty = true;
+      continue;
+    }
+    if (key === 'first-party' || key === '1p') {
+      if (neg) opts.thirdParty = true;
+      else opts.firstParty = true;
+      continue;
+    }
+    if (key === 'domain') {
+      for (const domain of value.split('|')) {
+        if (!domain) continue;
+        if (domain.startsWith('~')) opts.excludedInitiators.push(domain.slice(1));
+        else opts.initiators.push(domain);
+      }
+      continue;
+    }
+    if (key === 'important') {
+      opts.important = true;
+      continue;
+    }
+    if (REMOTE_SKIP_OPTIONS.has(key)) return null;
+    if (REMOTE_TYPE_MAP[key]) {
+      if (neg) opts.negTypes.push(REMOTE_TYPE_MAP[key]);
+      else opts.types.push(REMOTE_TYPE_MAP[key]);
+      continue;
+    }
+    return null;
+  }
+
+  return opts;
+}
+
+function convertRemoteLine(line, isException, bareHost) {
+  let body = isException ? line.slice(2) : line;
+  body = body.trim();
+  if (!body) return null;
+  if (body.startsWith('/') && body.endsWith('/')) return null;
+  if (body.includes('##') || body.includes('#@#') || body.includes('#$#') || body.includes('#%#') || body.includes('#?#')) return null;
+
+  let pattern = body;
+  let optionsRaw = '';
+  const dollar = body.lastIndexOf('$');
+  if (dollar !== -1) {
+    pattern = body.slice(0, dollar);
+    optionsRaw = body.slice(dollar + 1);
+  }
+  if (!pattern) return null;
+  if (/[\s\x00-\x1f]/.test(pattern)) return null;
+
+  const opts = parseRemoteOptions(optionsRaw);
+  if (!opts) return null;
+
+  const condition = {};
+  const effectivePattern = bareHost ? `||${pattern}^` : pattern;
+
+  const exactHost = effectivePattern.match(/^\|\|([^/*|^]+)\^$/);
+  if (exactHost) {
+    const ascii = toAsciiHost(exactHost[1]);
+    if (ascii) condition.requestDomains = [ascii];
+  }
+
+  if (!condition.requestDomains) {
+    if (!REMOTE_ASCII_RE.test(effectivePattern)) return null;
+    if (effectivePattern.startsWith('||*')) return null;
+    if (effectivePattern.indexOf('||', 2) !== -1) return null;
+    if (effectivePattern.length > 200) return null;
+    condition.urlFilter = effectivePattern;
+  }
+
+  if (opts.thirdParty && !opts.firstParty) condition.domainType = 'thirdParty';
+  if (opts.firstParty && !opts.thirdParty) condition.domainType = 'firstParty';
+
+  const initiators = cleanRemoteDomains(opts.initiators);
+  const excluded = cleanRemoteDomains(opts.excludedInitiators);
+  if (initiators.length) condition.initiatorDomains = initiators;
+  if (excluded.length) condition.excludedInitiatorDomains = excluded;
+  if (opts.initiators.length && initiators.length === 0) return null;
+  if (opts.excludedInitiators.length && excluded.length === 0) return null;
+
+  if (opts.types.length) {
+    condition.resourceTypes = [...new Set(opts.types)];
+  } else if (opts.negTypes.length) {
+    condition.resourceTypes = REMOTE_ALL_TYPES.filter(type => !opts.negTypes.includes(type));
+    if (condition.resourceTypes.length === 0) return null;
+  }
+
+  return {
+    priority: isException ? 3 : opts.important ? 4 : 1,
+    action: { type: isException ? 'allow' : 'block' },
+    condition,
+  };
+}
+
+function buildRemoteDnrRules(text, maxRules) {
+  const groups = new Map();
+  const urlRules = [];
+  const seenUrl = new Set();
+
+  for (const rawLine of String(text || '').split('\n')) {
+    let line = rawLine.trim();
+    if (!line || line.startsWith('!') || line.startsWith('[') || line.startsWith('#')) continue;
+
+    const isException = line.startsWith('@@');
+    if (isException) line = line.slice(2).trim();
+
+    const bareHost = !isException && !line.startsWith('|') && !line.startsWith('.') && REMOTE_HOST_RE.test(line) && line.includes('.');
+    const rule = convertRemoteLine(isException ? `@@${line}` : line, isException, bareHost);
+    if (!rule) continue;
+
+    if (rule.condition.requestDomains) {
+      const { requestDomains, ...rest } = rule.condition;
+      const key = JSON.stringify([rule.priority, rule.action.type, rest]);
+      if (!groups.has(key)) groups.set(key, { rule, domains: new Set() });
+      for (const domain of requestDomains) groups.get(key).domains.add(domain);
+    } else {
+      const key = JSON.stringify(rule);
+      if (seenUrl.has(key)) continue;
+      seenUrl.add(key);
+      urlRules.push(rule);
+    }
+  }
+
+  const rules = [];
+  for (const { rule, domains } of groups.values()) {
+    const list = [...domains].sort();
+    for (let i = 0; i < list.length; i += REMOTE_DOMAINS_PER_RULE) {
+      if (rules.length >= maxRules) break;
+      const chunk = list.slice(i, i + REMOTE_DOMAINS_PER_RULE);
+      rules.push({
+        priority: rule.priority,
+        action: rule.action,
+        condition: { ...rule.condition, requestDomains: chunk },
+      });
+    }
+    if (rules.length >= maxRules) break;
+  }
+
+  for (const rule of urlRules) {
+    if (rules.length >= maxRules) break;
+    rules.push(rule);
+  }
+
+  const uniqueDomains = new Set();
+  for (const rule of rules) {
+    for (const domain of rule.condition?.requestDomains || []) {
+      uniqueDomains.add(domain);
+    }
+  }
+
+  return { rules, domainCount: uniqueDomains.size };
+}
+
+async function setRemoteMetaEntry(listId, entry) {
+  const stored = await _browser.storage.local.get(ADBLOCK_REMOTE_META_KEY).catch(() => ({}));
+  const current = stored[ADBLOCK_REMOTE_META_KEY] && typeof stored[ADBLOCK_REMOTE_META_KEY] === 'object'
+    ? stored[ADBLOCK_REMOTE_META_KEY]
+    : {};
+  const next = { ...current, [listId]: entry };
+  await _browser.storage.local.set({ [ADBLOCK_REMOTE_META_KEY]: next }).catch(() => {});
+}
+
+async function syncRemoteFilters(api, { enabled, filters, lists, existingDynamicRules, forceIds = new Set() }) {
+  const remoteLists = lists.filter(list => Boolean(list.remoteUrl));
+  if (remoteLists.length === 0) return;
+
+  const existingRemoteIds = existingDynamicRules
+    .filter(rule => rule.id >= ADBLOCK_REMOTE_RULE_BASE)
+    .map(rule => rule.id);
+
+  const activeLists = enabled ? remoteLists.filter(list => filters[list.id]) : [];
+  if (activeLists.length === 0) {
+    if (existingRemoteIds.length > 0) {
+      await api.updateDynamicRules({ removeRuleIds: existingRemoteIds, addRules: [] });
+    }
+    return;
+  }
+
+  const maxDynamic = api.MAX_NUMBER_OF_DYNAMIC_RULES || api.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES || 5000;
+  const budget = Math.max(0, maxDynamic - ADBLOCK_MAX_PAUSED_SITES);
+  const perListBudget = Math.floor(budget / activeLists.length);
+  const metaStored = await _browser.storage.local.get(ADBLOCK_REMOTE_META_KEY).catch(() => ({}));
+  const metaMap = metaStored[ADBLOCK_REMOTE_META_KEY] && typeof metaStored[ADBLOCK_REMOTE_META_KEY] === 'object'
+    ? metaStored[ADBLOCK_REMOTE_META_KEY]
+    : {};
+
+  const combinedRules = [];
+  let needsDnrUpdate = existingRemoteIds.length === 0 || forceIds.size > 0;
+
+  for (const list of activeLists) {
+    const cacheKey = `${ADBLOCK_REMOTE_RULES_PREFIX}${list.id}`;
+    const cachedStored = await _browser.storage.local.get(cacheKey).catch(() => ({}));
+    const cached = cachedStored[cacheKey];
+    const isFresh =
+      cached &&
+      cached.url === list.remoteUrl &&
+      Array.isArray(cached.rules) &&
+      typeof cached.updatedAt === 'number' &&
+      Date.now() - cached.updatedAt < ADBLOCK_REMOTE_TTL_MS &&
+      !forceIds.has(list.id);
+
+    if (isFresh) {
+      combinedRules.push(...cached.rules);
+      continue;
+    }
+
+    needsDnrUpdate = true;
+    const prevMeta = metaMap[list.id] || {};
+    await setRemoteMetaEntry(list.id, {
+      ...prevMeta,
+      url: list.remoteUrl,
+      status: 'loading',
+      error: null,
+    });
+
+    try {
+      const response = await fetch(list.remoteUrl, { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = await response.text();
+      const { rules, domainCount } = buildRemoteDnrRules(text, perListBudget);
+      const updatedAt = Date.now();
+
+      await _browser.storage.local.set({
+        [cacheKey]: { url: list.remoteUrl, updatedAt, rules },
+      }).catch(() => {});
+
+      await setRemoteMetaEntry(list.id, {
+        url: list.remoteUrl,
+        updatedAt,
+        ruleCount: rules.length,
+        domainCount,
+        status: 'ready',
+        error: null,
+      });
+
+      combinedRules.push(...rules);
+    } catch (err) {
+      await setRemoteMetaEntry(list.id, {
+        ...prevMeta,
+        url: list.remoteUrl,
+        status: 'error',
+        error: err?.message || 'Failed to fetch list',
+      });
+
+      if (cached && Array.isArray(cached.rules)) {
+        combinedRules.push(...cached.rules);
+      }
+    }
+  }
+
+  if (!needsDnrUpdate && existingRemoteIds.length === combinedRules.length) {
+    return;
+  }
+
+  const addRules = combinedRules.slice(0, budget).map((rule, index) => ({
+    ...rule,
+    id: ADBLOCK_REMOTE_RULE_BASE + index,
+  }));
+
+  try {
+    await api.updateDynamicRules({
+      removeRuleIds: existingRemoteIds,
+      addRules,
+    });
+  } catch (err) {
+    for (const list of activeLists) {
+      const prevMeta = metaMap[list.id] || {};
+      await setRemoteMetaEntry(list.id, {
+        ...prevMeta,
+        url: list.remoteUrl,
+        status: 'error',
+        error: err?.message || 'Failed to apply rules',
+      });
+    }
+  }
+}
+
+async function syncAdBlockState(options = {}) {
   const api = _browser.declarativeNetRequest;
   if (!api) return;
   const { enabled, pausedSites, filters } = await getAdBlockState();
   const lists = await loadAdBlockLists();
-  const validIds = new Set(lists.map(list => list.id));
+  const staticLists = lists.filter(list => !list.remoteUrl);
+  const validStaticIds = new Set(staticLists.map(list => list.id));
 
   const enableRulesetIds = new Set();
   const disableRulesetIds = new Set();
 
-  for (const list of lists) {
+  for (const list of staticLists) {
     if (enabled && filters[list.id]) enableRulesetIds.add(list.id);
     else disableRulesetIds.add(list.id);
   }
@@ -150,7 +517,7 @@ async function syncAdBlockState() {
   try {
     const current = await api.getEnabledRulesets();
     for (const id of current) {
-      if (!validIds.has(id)) disableRulesetIds.add(id);
+      if (!validStaticIds.has(id)) disableRulesetIds.add(id);
     }
   } catch (e) {}
 
@@ -163,12 +530,13 @@ async function syncAdBlockState() {
     });
   } catch (e) {}
 
+  let existingDynamicRules = [];
   try {
+    existingDynamicRules = await api.getDynamicRules();
     // `allowAllRequests` on the main frame covers every subresource in the
     // page, so one low-maintenance rule per paused site is enough.
-    const existing = await api.getDynamicRules();
-    const removeRuleIds = existing
-      .filter(rule => rule.id >= ADBLOCK_ALLOW_RULE_BASE)
+    const removeRuleIds = existingDynamicRules
+      .filter(rule => rule.id >= ADBLOCK_ALLOW_RULE_BASE && rule.id < ADBLOCK_REMOTE_RULE_BASE)
       .map(rule => rule.id);
     const addRules = (enabled ? pausedSites : []).map((domain, index) => ({
       id: ADBLOCK_ALLOW_RULE_BASE + index,
@@ -183,12 +551,22 @@ async function syncAdBlockState() {
       await api.updateDynamicRules({ removeRuleIds, addRules });
     }
   } catch (e) {}
+
+  try {
+    await syncRemoteFilters(api, {
+      enabled,
+      filters,
+      lists,
+      existingDynamicRules,
+      forceIds: options.forceRemoteIds instanceof Set ? options.forceRemoteIds : new Set(),
+    });
+  } catch (e) {}
 }
 
 // Rapid toggle clicks could otherwise finish out of order; serialise them.
 let adBlockSyncQueue = Promise.resolve();
-function scheduleAdBlockSync() {
-  adBlockSyncQueue = adBlockSyncQueue.then(syncAdBlockState).catch(() => {});
+function scheduleAdBlockSync(options = {}) {
+  adBlockSyncQueue = adBlockSyncQueue.then(() => syncAdBlockState(options)).catch(() => {});
   return adBlockSyncQueue;
 }
 
@@ -542,6 +920,15 @@ _browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const stats = await ensureStatsInitialized();
         const { sites, totalHidden } = await readHiddenSites();
         sendResponse({ stats, current: { sites, totalHidden } });
+
+      } else if (message.action === 'refreshRemoteFilter') {
+        const listId = typeof message.listId === 'string' ? message.listId : '';
+        if (!listId) {
+          sendResponse({ ok: false, error: 'Missing listId' });
+          return;
+        }
+        await scheduleAdBlockSync({ forceRemoteIds: new Set([listId]) });
+        sendResponse({ ok: true });
 
       } else if (message.action === 'clearAllSites') {
         // Remove all hidden element data across all sites

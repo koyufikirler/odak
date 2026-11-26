@@ -524,6 +524,10 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 
+.row-meta.is-error {
+  color: var(--danger);
+}
+
 .pill {
   display: inline-block;
   padding: 2px 7px;
@@ -535,6 +539,11 @@ a:hover {
   letter-spacing: 0.02em;
   line-height: 1.5;
   white-space: nowrap;
+}
+
+.pill.remote {
+  background: rgba(120, 120, 128, 0.12);
+  color: var(--text-2);
 }
 
 .row-switch {

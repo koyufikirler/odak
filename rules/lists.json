@@ -30,6 +30,16 @@
       "domainCount": 112
     },
     {
+      "id": "easylist",
+      "remoteUrl": "https://easylist.to/easylist/easylist.txt",
+      "category": "ads",
+      "nameKey": "filterEasyListName",
+      "descKey": "filterEasyListDesc",
+      "defaultEnabled": false,
+      "recommended": false,
+      "attribution": "EasyList"
+    },
+    {
       "id": "privacy",
       "file": "rules/easyprivacy.json",
       "category": "privacy",

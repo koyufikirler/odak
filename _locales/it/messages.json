@@ -415,5 +415,26 @@
   },
   "statsBarAria": {
     "message": "$1 — $2 in totale ($3 nascosti, $4 puliti)"
+  },
+  "filterEasyListName": {
+    "message": "EasyList"
+  },
+  "filterEasyListDesc": {
+    "message": "Blocks ads across websites. Connected remotely from easylist.to."
+  },
+  "panelRemoteBadge": {
+    "message": "Remote"
+  },
+  "panelRemoteLoading": {
+    "message": "Fetching remote list…"
+  },
+  "panelRemoteError": {
+    "message": "Failed to load remote list ($1)"
+  },
+  "panelRemoteSource": {
+    "message": "Remote · $1"
+  },
+  "panelRemoteRefresh": {
+    "message": "Refresh"
   }
 }

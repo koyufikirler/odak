@@ -12,6 +12,7 @@ const _browser = typeof browser !== 'undefined' ? browser : chrome;
 const ADBLOCK_KEY = 'dh_adBlocking';
 const PAUSED_KEY = 'dh_adBlockSites';
 const FILTERS_KEY = 'dh_filterLists';
+const REMOTE_META_KEY = 'dh_remoteFilterMeta';
 const STATS_RANGE_KEY = 'odak.statsRange';
 
 const ICONS = {
@@ -24,6 +25,7 @@ const state = {
   enabled: true,
   pausedSites: [],
   filters: {},
+  remoteMeta: {},
   meta: null,
   query: '',
   stats: null,
@@ -380,7 +382,7 @@ async function loadState() {
   let stored = {};
 
   try {
-    stored = await _browser.storage.local.get([ADBLOCK_KEY, PAUSED_KEY, FILTERS_KEY]);
+    stored = await _browser.storage.local.get([ADBLOCK_KEY, PAUSED_KEY, FILTERS_KEY, REMOTE_META_KEY]);
   } catch (e) {
     stored = {};
   }
@@ -389,6 +391,9 @@ async function loadState() {
   state.enabled = stored[ADBLOCK_KEY] !== false;
   state.pausedSites = normalizePausedSites(stored[PAUSED_KEY]);
   state.filters = resolveFilters(meta, stored[FILTERS_KEY]);
+  state.remoteMeta = stored[REMOTE_META_KEY] && typeof stored[REMOTE_META_KEY] === 'object'
+    ? stored[REMOTE_META_KEY]
+    : {};
   render();
 }
 
@@ -877,7 +882,10 @@ function renderPausedSites() {
 function renderFilters() {
   const meta = state.meta;
   const enabled = enabledLists();
-  const domains = enabled.reduce((sum, list) => sum + (list.domainCount || 0), 0);
+  const domains = enabled.reduce((sum, list) => {
+    const remote = list.remoteUrl ? state.remoteMeta[list.id] : null;
+    return sum + (remote?.domainCount ?? list.domainCount ?? 0);
+  }, 0);
   const query = state.query.trim().toLowerCase();
 
   els.filtersSummary.textContent = message(
@@ -974,6 +982,12 @@ function renderFilterRow(list) {
       : message('panelForYourLanguage', 'For your language');
     title.appendChild(pill);
   }
+  if (list.remoteUrl) {
+    const pill = document.createElement('span');
+    pill.className = 'pill remote';
+    pill.textContent = message('panelRemoteBadge', 'Remote');
+    title.appendChild(pill);
+  }
 
   const desc = document.createElement('p');
   desc.className = 'row-desc';
@@ -981,14 +995,49 @@ function renderFilterRow(list) {
 
   const meta = document.createElement('p');
   meta.className = 'row-meta';
-  const metaParts = [];
-  if (typeof list.ruleCount === 'number') {
-    metaParts.push(message('panelRules', '$1 rules', [formatNumber(list.ruleCount)]));
+  const remote = list.remoteUrl ? (state.remoteMeta[list.id] || {}) : null;
+
+  if (remote) {
+    if (remote.status === 'loading') {
+      meta.textContent = message('panelRemoteLoading', 'Fetching remote list…');
+    } else if (remote.status === 'error') {
+      meta.classList.add('is-error');
+      meta.textContent = message('panelRemoteError', 'Failed to load remote list ($1)', [remote.error || 'error']);
+    } else if (typeof remote.ruleCount === 'number') {
+      const metaParts = [
+        message('panelRules', '$1 rules', [formatNumber(remote.ruleCount)]),
+        message('panelDomains', '$1 domains', [formatNumber(remote.domainCount || 0)]),
+      ];
+      meta.textContent = metaParts.join(' · ');
+    } else {
+      let host = list.remoteUrl;
+      try {
+        host = new URL(list.remoteUrl).hostname;
+      } catch (e) {}
+      meta.textContent = message('panelRemoteSource', 'Remote · $1', [host]);
+    }
+  } else {
+    const metaParts = [];
+    if (typeof list.ruleCount === 'number') {
+      metaParts.push(message('panelRules', '$1 rules', [formatNumber(list.ruleCount)]));
+    }
+    metaParts.push(message('panelDomains', '$1 domains', [formatNumber(list.domainCount || 0)]));
+    meta.textContent = metaParts.join(' · ');
   }
-  metaParts.push(message('panelDomains', '$1 domains', [formatNumber(list.domainCount || 0)]));
-  meta.textContent = metaParts.join(' · ');
 
   copy.append(title, desc, meta);
+
+  const controls = document.createElement('div');
+  controls.className = 'row-switch';
+
+  if (list.remoteUrl && state.filters[list.id] && remote?.status !== 'loading') {
+    const refreshBtn = document.createElement('button');
+    refreshBtn.type = 'button';
+    refreshBtn.className = 'text-btn';
+    refreshBtn.dataset.refreshList = list.id;
+    refreshBtn.textContent = message('panelRemoteRefresh', 'Refresh');
+    controls.appendChild(refreshBtn);
+  }
 
   const switchWrap = document.createElement('label');
   switchWrap.className = 'switch small';
@@ -1003,7 +1052,8 @@ function renderFilterRow(list) {
   track.className = 'switch-track';
 
   switchWrap.append(input, track);
-  row.append(copy, switchWrap);
+  controls.appendChild(switchWrap);
+  row.append(copy, controls);
   return row;
 }
 
@@ -1077,6 +1127,14 @@ function setupEvents() {
     if (next) next.focus();
   });
 
+  els.filterCategories.addEventListener('click', event => {
+    const button = event.target.closest('button[data-refresh-list]');
+    if (!button) return;
+    const listId = button.dataset.refreshList;
+    if (!listId) return;
+    _browser.runtime.sendMessage({ action: 'refreshRemoteFilter', listId }).catch(() => {});
+  });
+
   els.pausedList.addEventListener('click', event => {
     const button = event.target.closest('button[data-site]');
     if (!button) return;
@@ -1113,6 +1171,13 @@ function setupEvents() {
         key.startsWith('https://')
       );
       if (statsChanged) loadStats();
+
+      if (changes[REMOTE_META_KEY]) {
+        state.remoteMeta = changes[REMOTE_META_KEY].newValue && typeof changes[REMOTE_META_KEY].newValue === 'object'
+          ? changes[REMOTE_META_KEY].newValue
+          : {};
+        renderFilters();
+      }
 
       if (!changes[ADBLOCK_KEY] && !changes[PAUSED_KEY] && !changes[FILTERS_KEY]) return;
       if (isLocalEcho(changes)) return;

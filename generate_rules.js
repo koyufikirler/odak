@@ -218,6 +218,16 @@ const LISTS = [
     recommended: true,
   },
   {
+    id: 'easylist',
+    remoteUrl: 'https://easylist.to/easylist/easylist.txt',
+    category: 'ads',
+    nameKey: 'filterEasyListName',
+    descKey: 'filterEasyListDesc',
+    defaultEnabled: false,
+    recommended: false,
+    attribution: 'EasyList',
+  },
+  {
     id: 'privacy',
     file: 'easyprivacy.json',
     external: true,
@@ -343,6 +353,24 @@ function readRegionalMetadata() {
 }
 
 for (const list of LISTS) {
+  if (list.remoteUrl) {
+    metadata.push({
+      id: list.id,
+      remoteUrl: list.remoteUrl,
+      category: list.category,
+      nameKey: list.nameKey,
+      descKey: list.descKey,
+      defaultEnabled: list.defaultEnabled,
+      recommended: list.recommended,
+      attribution: list.attribution,
+    });
+
+    console.log(
+      `${list.id.padEnd(8)} → ${list.remoteUrl} (remote)`
+    );
+    continue;
+  }
+
   if (list.external) {
     const filePath = path.join(outDir, list.file);
     if (!fs.existsSync(filePath)) {
@@ -443,15 +471,17 @@ fs.writeFileSync(
 const manifestPath = path.join(__dirname, 'manifest.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 manifest.declarative_net_request = {
-  rule_resources: metadata.map(list => ({
-    id: list.id,
-    enabled: list.defaultEnabled === true,
-    path: list.file,
-  })),
+  rule_resources: metadata
+    .filter(list => !list.remoteUrl)
+    .map(list => ({
+      id: list.id,
+      enabled: list.defaultEnabled === true,
+      path: list.file,
+    })),
 };
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 
-const totalRules = metadata.reduce((sum, list) => sum + list.ruleCount, 0);
+const totalRules = metadata.reduce((sum, list) => sum + (list.ruleCount || 0), 0);
 console.log(
   `\nGenerated ${metadata.length} rulesets ` +
   `(${LISTS.length} core + ${regional.length} regional) — ` +

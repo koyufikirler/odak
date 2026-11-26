@@ -415,5 +415,26 @@
   },
   "statsBarAria": {
     "message": "$1 — toplam $2 ($3 gizlenen, $4 otomatik)"
+  },
+  "filterEasyListName": {
+    "message": "EasyList"
+  },
+  "filterEasyListDesc": {
+    "message": "Web sitelerindeki reklamları engeller. easylist.to adresinden uzaktan bağlanır."
+  },
+  "panelRemoteBadge": {
+    "message": "Uzak"
+  },
+  "panelRemoteLoading": {
+    "message": "Uzak liste alınıyor…"
+  },
+  "panelRemoteError": {
+    "message": "Uzak liste yüklenemedi ($1)"
+  },
+  "panelRemoteSource": {
+    "message": "Uzak · $1"
+  },
+  "panelRemoteRefresh": {
+    "message": "Yenile"
   }
 }
