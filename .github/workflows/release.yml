@@ -26,7 +26,7 @@ jobs:
           mkdir -p build-chrome release
 
           # Proje dosyalarını kopyala
-          cp -r _locales icons popup panel background.js content.js content.css adblock.css rules THIRD_PARTY_NOTICES.md build-chrome/
+          cp -r _locales icons popup panel background.js content.js cosmetic.js content.css adblock.css rules THIRD_PARTY_NOTICES.md build-chrome/
           cp manifest.json build-chrome/manifest.json
 
           # Zip oluştur
@@ -42,7 +42,7 @@ jobs:
           mkdir -p build-firefox
 
           # Proje dosyalarını kopyala
-          cp -r _locales icons popup panel background.js content.js content.css adblock.css rules THIRD_PARTY_NOTICES.md build-firefox/
+          cp -r _locales icons popup panel background.js content.js cosmetic.js content.css adblock.css rules THIRD_PARTY_NOTICES.md build-firefox/
 
           # Manifestleri birleştir ve background objesini Firefox'unkiyle tamamen değiştir
           jq -s '.[0] as $base | .[1] as $override | $base * $override | .background = $override.background' manifest.json manifest.firefox.json > build-firefox/manifest.json
